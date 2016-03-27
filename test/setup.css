@@ -1,0 +1,10 @@
+.tickerPanel {
+  border: 1px solid black;
+  background-color: silver;
+  padding: 2px;
+}
+
+#autorun:hover {
+  cursor: pointer;
+}
+

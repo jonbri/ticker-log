@@ -1,0 +1,27 @@
+{
+  "name": "ticker-log",
+  "version": "0.0.4",
+  "description": "Write console statements to the screen",
+  "main": "ticker.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jonbri/ticker-log"
+  },
+  "devDependencies": {
+      "grunt": "*",
+      "grunt-cli": "*",
+      "grunt-contrib-uglify": "*",
+      "grunt-contrib-jshint": "*",
+      "grunt-contrib-qunit": "*",
+      "grunt-contrib-copy": "*",
+      "grunt-serve": "*",
+      "jquery": "*",
+      "qunit": "*",
+      "qunitjs": "*"
+  },
+  "author": "",
+  "license": "BSD-2-Clause"
+}

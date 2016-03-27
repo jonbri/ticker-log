@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Ticker Testing</title>
+  <link rel="stylesheet" href="node_modules/qunitjs/qunit/qunit.css">
+  <link rel="stylesheet" href="test/setup.css">
+</head>
+<body>
+  <div>
+  Note: to prevent the qUnit tests from auto-running: <code id="autorun">?autorun=false</code>.
+  The tests will override url settings
+  </div>
+
+  <div id="mainAPI" class="tickerPanel">
+    <button id="testButton">test</button>
+    <button id="helpButton">help</button>
+    <button id="pauseButton">pause</button>
+    <button id="killButton">kill</button>
+    <button id="outputButton">output</button>
+    <button id="outputAllButton">outputAll</button>
+    <button id="dumpButton">dump</button>
+    <br />
+
+    <button id="moveUpButton">moveUp</button>
+    <button id="moveDownButton">moveDown</button>
+    <button id="moveRightButton">moveRight</button>
+    <button id="moveLeftButton">moveLeft</button>
+    <br />
+
+    <button id="increaseSpeedButton">increaseSpeed</button>
+    <button id="decreaseSpeedButton">decreaseSpeed</button>
+    <button id="runTestsButton">run tests</button>
+    <button id="nextChannel">nextChannel</button>
+    <br />
+
+    <button id="consoleLogButton">console.log</button>
+    <button id="consoleDebugButton">console.debug</button>
+    <button id="consoleWarnButton">console.warn</button>
+    <button id="consoleErrorButton">console.error</button>
+    <button id="consoleTraceButton">console.trace</button>
+    <input id="useBacktick" type="checkbox" checked>use backtick</input>
+  </div>
+
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+
+  <script src="node_modules/jquery/dist/jquery.min.js"></script>
+  <script src="node_modules/qunitjs/qunit/qunit.js"></script>
+  <script src="./src/ticker.js"></script>
+  <script src="test/tests.js"></script>
+  <script src="test/setup.js"></script>
+</body>
+</html>
