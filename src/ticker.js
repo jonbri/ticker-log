@@ -21,7 +21,6 @@
         oConfig = {
             silentMode: false,
             pauseMode: false,
-            assumedHeightOfLogEntry: 10,
             channel: 'log',
             adjustmentInterval: 25,
             lastTextareaAction: undefined,
@@ -432,7 +431,7 @@
                         if (iCurrentTop <= 0) {
                             oLogNode.parentNode.removeChild(oLogNode);
                         } else {
-                            oLogNode.style.top = (iCurrentTop - oConfig.assumedHeightOfLogEntry) + "px";
+                            oLogNode.style.top = (iCurrentTop - oLogNode.offsetHeight) + "px";
                         }
                     });
                 }
@@ -540,7 +539,7 @@
         if (!oLastNode) {
             return oConfig.logStartTop;
         } else {
-            return parseInt(oLastNode.style.top, 10) + (oConfig.assumedHeightOfLogEntry*2);
+            return parseInt(oLastNode.style.top, 10) + (oLastNode.offsetHeight);
         }
     }
 
