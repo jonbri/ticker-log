@@ -32,7 +32,8 @@
                 "z-index": 9998,
                 top: 0,
                 left: 0,
-                'font-family': "courier",
+                'font-family': "monospace",
+                'font-size': "14px",
                 opacity: 0.85
             }
         },
