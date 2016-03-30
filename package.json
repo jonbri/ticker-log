@@ -1,7 +1,7 @@
 {
   "name": "ticker-log",
-  "version": "0.0.4",
-  "description": "Write console statements to the screen",
+  "version": "0.0.5",
+  "description": "On-screen VanillaJS logging utility.",
   "main": "ticker.js",
   "scripts": {
     "test": "grunt test"
@@ -23,5 +23,13 @@
       "qunitjs": "*"
   },
   "author": "",
-  "license": "BSD-2-Clause"
+  "license": "BSD-2-Clause",
+  "keywords": [
+    "logging",
+    "tool",
+    "vanillajs",
+    "tabletdebugging",
+    "phonedebugging",
+    "onscreen"
+  ]
 }
