@@ -32,7 +32,7 @@ Load via `script` tag either `ticker.js` or `ticker.min.js`.
 
 Or via npm...
 
-    npm install jonbri-ticker
+    npm install ticker-log
 
 ## Interface
 To write to Ticker's "ticker tape" simply pass in a back-tick (`` ` ``) as a first argument to `console`'s logging functions (`log`, `fatal`, etc...).
