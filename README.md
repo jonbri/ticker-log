@@ -12,6 +12,7 @@ Features:
 * Ability to save output to a textarea for easy copy/pasting
 * Lightweight
 * No dependencies
+* Macros
 
 ## Motivation
 
@@ -72,6 +73,19 @@ Most on-screen actions can be scripted by using the global `_ticker` object. For
     window._ticker.pause();         # pause ticker tape
     window._ticker.kill();          # remove all ticker logs from screen
     window._ticker.dump();          # show all configuration
+
+### Macros
+Macros are bits of code you want to run in at ad-hoc times. There are 9 "slots" available and stored in keys 1-9.
+
+Macros 1-8 are reserved for api-driven macros:
+
+```
+ticker.registerMacro(1, function() {
+    console.log('`', 'in the macro');
+});
+```
+
+Macro 9 is reserved for an on-screen editing option. Press `` `m `` and a textarea will appear. Enter the macro code and press `` `m `` again to "register" the macro.
 
 
 ## Technical

@@ -24,6 +24,7 @@
             channel: 'log',
             adjustmentInterval: 25,
             lastTextareaAction: undefined,
+            sMacro9Code: '// macro 9\r\r',
             logStyle: {
                 position: "fixed",
                 color: "black",
@@ -44,6 +45,9 @@
         // buffer of logs still-to-be-rendered
         aRenderBuffer = [],
 
+        // macros (1-9)
+        aMacros = {},
+
         // leave a 1/4 page buffer
         iAllowedHeight = window.innerHeight * 1.25,
 
@@ -54,6 +58,8 @@
             'align',
             'requireBackTick'
         ],
+
+        sTextareaId = '_tickerTextarea',
 
         //
         keyIsDown = false,
@@ -108,14 +114,24 @@
             A: 65,
             B: 66,
             O: 79,
-            "0": 48,
             D: 68,
             T: 84,
             P: 80,
             S: 83,
             K: 75,
             C: 67,
-            H: 72
+            H: 72,
+            M: 77,
+            "0": 48,
+            "1": 49,
+            "2": 50,
+            "3": 51,
+            "4": 52,
+            "5": 53,
+            "6": 54,
+            "7": 55,
+            "8": 56,
+            "9": 57
         },
 
         //
@@ -136,9 +152,20 @@
             KEYS.C,
             KEYS.H,
             KEYS.S,
+            KEYS.M,
             KEYS.PageDown,
             KEYS.PageUp,
-            KEYS.Tab
+            KEYS.Tab,
+            KEYS["0"],
+            KEYS["1"],
+            KEYS["2"],
+            KEYS["3"],
+            KEYS["4"],
+            KEYS["5"],
+            KEYS["6"],
+            KEYS["7"],
+            KEYS["8"],
+            KEYS["9"]
         ];
 
     //////////////////////////////////
@@ -421,6 +448,42 @@
         print("start: " + oConfig.logStartTop);
     }
 
+    // overwrite with default settings
+    function registerMacro(iNumToRegister, fn) {
+        console.log('`', 'registering macro: ' + iNumToRegister);
+        aMacros[iNumToRegister] = fn;
+    }
+
+    function macroEdit() {
+        var sDefaultText = oConfig.sMacro9Code;
+
+        toggleTextarea({
+            text: sDefaultText,
+            source: KEYS.M,
+            buttons: {
+                clear: function() {
+                    killTextarea();
+                    macroEdit();
+                }
+            },
+            exit: function(sValue) {
+                oConfig.sMacro9Code = sValue;
+                registerMacro(9, function() {
+                    eval(sValue);
+                });
+            }
+        });
+    }
+
+    function runMacro(iNum) {
+        if (typeof aMacros[iNum] === 'function') {
+            console.log('`', 'running macro: ' + iNum);
+            aMacros[iNum]();
+        } else {
+            console.log('`', 'macro empty');
+        }
+    }
+
 
     //////////////////////////////////
     // domain functions
@@ -515,10 +578,10 @@
             actionMap[KEYS.S] = silent;
             actionMap[KEYS.T] = test;
             actionMap[KEYS.O] = output;
-            actionMap[KEYS[0]] = outputAll;
             actionMap[KEYS.P] = pause;
             actionMap[KEYS.K] = kill;
             actionMap[KEYS.H] = help;
+            actionMap[KEYS.M] = macroEdit;
             actionMap[KEYS.Up] = increaseSpeed;
             actionMap[KEYS.Down] = decreaseSpeed;
             actionMap[KEYS.Right] = moveRight;
@@ -528,6 +591,13 @@
             actionMap[KEYS.Enter] = saveConfig;
             actionMap[KEYS.Tab] = nextChannel;
             actionMap[KEYS.Esc] = killTextarea;
+            actionMap[KEYS[0]] = outputAll;
+
+            [1,2,3,4,5,6,7,8,9].forEach(function(i) {
+                actionMap[KEYS[i]] = function() {
+                    runMacro(i);
+                };
+            });
 
             if (typeof actionMap[e.keyCode] === "function") {
                 actionMap[e.keyCode]();
@@ -609,7 +679,7 @@
         var heightOfPage = window.innerHeight;
         var widthOfPage = window.innerWidth;
         var textareaDiv = document.createElement('div');
-        textareaDiv.id = '_tickerTextarea';
+        textareaDiv.id = sTextareaId;
         textareaDiv.style.position = "fixed";
         textareaDiv.style.left = 0;
         textareaDiv.style.top = 0;
@@ -620,14 +690,14 @@
         var textarea = document.createElement('textarea');
         textarea.style.height = "100%";
         textarea.style.width = "100%";
-        textarea.value = sText;
+        textarea.innerHTML = sText;
 
         textareaDiv.appendChild(textarea);
         document.body.appendChild(textareaDiv);
     }
 
     function killTextarea() {
-        var oTickerTextarea = document.getElementById("_tickerTextarea");
+        var oTickerTextarea = document.getElementById(sTextareaId);
         if (oTickerTextarea) {
             oTickerTextarea.parentNode.removeChild(oTickerTextarea);
         }
@@ -637,6 +707,9 @@
     //   - text: (string) the text to show in the textarea
     //   - source: (string) the source key
     //                      (what the user used to toggle with)
+    //   - buttons: (object) map of buttons, with their labels as keys
+    //   - exit: (fn) callback function when textarea is closed.
+    //                value of textarea passed along
     function toggleTextarea(o) {
         // if it's a new action, clear slate and render
         if (oConfig.lastTextareaAction !== o.source) {
@@ -644,12 +717,42 @@
         }
         oConfig.lastTextareaAction = o.source;
 
-        if (document.getElementById("_tickerTextarea")) {
+        if (document.getElementById(sTextareaId)) {
             oConfig.pauseMode = false;
+
+            if (typeof o.exit === 'function') {
+                var textarea = document.getElementById(sTextareaId).querySelectorAll('textarea')[0];
+                o.exit(textarea.value);
+            }
             killTextarea();
         } else {
             oConfig.pauseMode = true;
             renderTextarea(o.text);
+            var textareaContainer = document.getElementById(sTextareaId);
+
+            if (typeof o.buttons === 'object') {
+                var buttonContainer = document.createElement('div');
+                buttonContainer.style.position = 'absolute';
+                buttonContainer.style.bottom = 0;
+                buttonContainer.style.left = 0;
+                buttonContainer.style.height = '20px';
+                buttonContainer.style.borderTopWidth = '1px';
+                buttonContainer.style.borderTopStyle = 'solid';
+                buttonContainer.style.width = '100%';
+                buttonContainer.style.paddingTop = '5px';
+
+                for (var key in o.buttons) {
+                    if (o.buttons.hasOwnProperty(key)) {
+                        var button = document.createElement('button');
+                        button.innerHTML = key;
+                        button.onclick = o.buttons[key];
+                        button.style['float'] = 'left';
+                        buttonContainer.appendChild(button);
+                    }
+                }
+
+                textareaContainer.appendChild(buttonContainer);
+            }
         }
     }
 
@@ -708,6 +811,7 @@
         _ticker.decreaseSpeed = decreaseSpeed;
         _ticker.nextChannel = nextChannel;
         _ticker.reset = reset;
+        _ticker.registerMacro = registerMacro;
 
         // private
         _ticker._oConfig = oConfig;
