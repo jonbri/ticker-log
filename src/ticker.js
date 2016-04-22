@@ -272,7 +272,10 @@
             }
         }
 
-        toggleTextarea(sAllOutput, KEYS.O);
+        toggleTextarea({
+            text: sAllOutput,
+            source: KEYS.O
+        });
     }
 
     //
@@ -287,7 +290,10 @@
             s += (sKey + ': ' + oConfig[sKey]) + "\n";
         });
         s += "listening to console." + oConfig.channel + "\n";
-        toggleTextarea(s, KEYS.D);
+        toggleTextarea({
+            text: s,
+            source: KEYS.D
+        });
     }
 
     //
@@ -627,19 +633,23 @@
         }
     }
 
-    function toggleTextarea(s, sSource) {
+    // keys:
+    //   - text: (string) the text to show in the textarea
+    //   - source: (string) the source key
+    //                      (what the user used to toggle with)
+    function toggleTextarea(o) {
         // if it's a new action, clear slate and render
-        if (oConfig.lastTextareaAction !== sSource) {
+        if (oConfig.lastTextareaAction !== o.source) {
             killTextarea();
         }
-        oConfig.lastTextareaAction = sSource;
+        oConfig.lastTextareaAction = o.source;
 
         if (document.getElementById("_tickerTextarea")) {
             oConfig.pauseMode = false;
             killTextarea();
         } else {
             oConfig.pauseMode = true;
-            renderTextarea(s);
+            renderTextarea(o.text);
         }
     }
 
