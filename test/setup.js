@@ -29,7 +29,7 @@ aButtons.forEach(function(sButton) {
 
 // macro
 jQuery('#registerMacroButton').click(function() {
-    ticker.registerMacro(0, function() {
+    ticker.registerMacro(9, function() {
         console.log('`', 'in the macro');
     });
 });
