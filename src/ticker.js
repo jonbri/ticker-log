@@ -45,7 +45,7 @@
         // buffer of logs still-to-be-rendered
         aRenderBuffer = [],
 
-        // macros (1-9)
+        // macros (0-9)
         aMacros = {},
 
         // leave a 1/4 page buffer
@@ -121,6 +121,7 @@
             K: 75,
             C: 67,
             H: 72,
+            L: 76,
             M: 77,
             "0": 48,
             "1": 49,
@@ -146,13 +147,13 @@
             KEYS.D,
             KEYS.T,
             KEYS.O,
-            KEYS[0],
             KEYS.P,
             KEYS.K,
             KEYS.C,
             KEYS.H,
             KEYS.S,
             KEYS.M,
+            KEYS.L,
             KEYS.PageDown,
             KEYS.PageUp,
             KEYS.Tab,
@@ -578,6 +579,7 @@
             actionMap[KEYS.S] = silent;
             actionMap[KEYS.T] = test;
             actionMap[KEYS.O] = output;
+            actionMap[KEYS.L] = outputAll;
             actionMap[KEYS.P] = pause;
             actionMap[KEYS.K] = kill;
             actionMap[KEYS.H] = help;
@@ -591,9 +593,8 @@
             actionMap[KEYS.Enter] = saveConfig;
             actionMap[KEYS.Tab] = nextChannel;
             actionMap[KEYS.Esc] = killTextarea;
-            actionMap[KEYS[0]] = outputAll;
 
-            [1,2,3,4,5,6,7,8,9].forEach(function(i) {
+            [0,1,2,3,4,5,6,7,8,9].forEach(function(i) {
                 actionMap[KEYS[i]] = function() {
                     runMacro(i);
                 };

@@ -13,8 +13,7 @@ var aButtons = [
     'moveRight',
     'moveLeft',
     'increaseSpeed',
-    'decreaseSpeed',
-    'nextChannel',
+    'decreaseSpeed'
 ];
 
 // initialize test page
@@ -30,7 +29,7 @@ aButtons.forEach(function(sButton) {
 
 // macro
 jQuery('#registerMacroButton').click(function() {
-    ticker.registerMacro(1, function() {
+    ticker.registerMacro(0, function() {
         console.log('`', 'in the macro');
     });
 });
