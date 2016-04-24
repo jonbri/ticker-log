@@ -53,21 +53,21 @@ window.ticker_runTests = function() {
         }
 
         // at the start there is no output textarea
-        QUnit.strictEqual(getTA().length, 0, "no output textarea present");
+        assert.strictEqual(getTA().length, 0, "no output textarea present");
 
         // show a log div and output textarea
         jQuery('#testButton').trigger("click");
         window._ticker.output();
 
         // make sure the textarea shows with the correct content
-        QUnit.strictEqual(getTA().length, 1, "output textarea shows");
-        QUnit.strictEqual(getTA().val().indexOf("test: "), 0, "output textarea has correct content");
+        assert.strictEqual(getTA().length, 1, "output textarea shows");
+        assert.strictEqual(getTA().val().indexOf("test: "), 0, "output textarea has correct content");
 
         // now hide the textarea
         window._ticker.output();
 
         // make sure textarea is gone
-        QUnit.strictEqual(getTA().length, 0, "no output textarea present afterwards");
+        assert.strictEqual(getTA().length, 0, "no output textarea present afterwards");
     });
 
     QUnit.test("dump", function(assert) {
@@ -156,12 +156,13 @@ window.ticker_runTests = function() {
     });
 
     // keep this as the final test
-    QUnit.asyncTest("final", function(assert) {
+    QUnit.test("final", function(assert) {
+        var done = assert.async();
         window._ticker.kill();
         assert.ok(true, "");
         setTimeout(function() {
             jQuery('#runTestsButton').prop("disabled", false);
-            QUnit.start();
+            done();
         }, 100);
     });
 }
