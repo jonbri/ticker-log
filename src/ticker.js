@@ -516,11 +516,12 @@
       },
       exit: function(sValue) {
         oConfig.sMacro9Code = sValue;
-        registerMacro(9, function() {
+        console.log('`', 'registering macro: 9');
+        aMacros[9] = function() {
           /* jshint ignore:start */
           eval(sValue);
           /* jshint ignore:end */
-        });
+        };
       }
     });
   }
