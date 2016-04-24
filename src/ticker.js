@@ -221,15 +221,16 @@
 
   // "p" api function
   // print log div to screen
-  // bOverrideSilentMode - still print, even if silent mode is on
-  // bInternal - do not track in aBuffer
-  function print(text, bOverrideSilentMode, bInternal) {
+  // param o ->
+  //   overrideSilentMode - still print, even if silent mode is on
+  //   internal - do not track in aBuffer
+  function print(text, o) {
     // TODO: move this so it's still in the buffer
-    if (oConfig.silentMode === true && !bOverrideSilentMode) {
+    if (oConfig.silentMode === true && o && !o.overrideSilentMode) {
       return;
     }
 
-    if (bInternal !== true) {
+    if (o && o.internal !== true) {
       aBuffer.unshift(text);
     }
     aRenderBuffer.unshift(text);
@@ -243,7 +244,9 @@
       _nonSavedPrint('pauseMode');
       return;
     }
-    print('test: ' + new Date(), true);
+    print('test: ' + new Date(), {
+        overrideSilentMode: true
+    });
   }
 
   // "h" api function
@@ -258,7 +261,9 @@
     for (var i = 0; i < aHelp.length; i++) {
       var text = aHelp[i];
       text = text.replace(/\_/g, '&nbsp;');
-      print(text, true);
+      print(text, {
+          overrideSilentMode: true
+      });
     }
   }
 
@@ -565,9 +570,12 @@
   // domain/private functions
 
   // print but don't save to aBuffer
-  // uses "print" function's bInternal parameter
+  // uses "print" function's o.internal parameter
   function _nonSavedPrint(text) {
-    print(text, false, true);
+    print(text, {
+        overrideSilentMode: false,
+        internal: true
+    });
   }
 
   // start timeout loop
