@@ -11,16 +11,16 @@
     "url": "https://github.com/jonbri/ticker-log"
   },
   "devDependencies": {
-      "grunt": "*",
-      "grunt-cli": "*",
-      "grunt-contrib-uglify": "*",
-      "grunt-contrib-jshint": "*",
-      "grunt-contrib-qunit": "*",
-      "grunt-contrib-copy": "*",
-      "grunt-serve": "*",
-      "jquery": "*",
-      "qunit": "*",
-      "qunitjs": "*"
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-qunit": "^1.2.0",
+    "grunt-contrib-uglify": "^1.0.1",
+    "grunt-serve": "^0.1.6",
+    "jquery": "^2.2.3",
+    "qunit": "^0.9.1",
+    "qunitjs": "^2.0.0-rc1"
   },
   "author": "",
   "license": "BSD-2-Clause",
