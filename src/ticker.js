@@ -219,8 +219,8 @@
     }
   }
 
-  // "p" api function
   // print log div to screen
+  // only an api function...doesn't map (directly) to a key
   // param o ->
   //   overrideSilentMode - still print, even if silent mode is on
   //   internal - do not track in aBuffer
@@ -228,6 +228,10 @@
     // TODO: move this so it's still in the buffer
     if (oConfig.silentMode === true && o && !o.overrideSilentMode) {
       return;
+    }
+
+    if (o && o.textarea) {
+      _renderTextarea(text);
     }
 
     if (o && o.internal !== true) {
@@ -899,6 +903,7 @@
     _ticker.decreaseSpeed = decreaseSpeed;
     _ticker.nextChannel = nextChannel;
     _ticker.reset = reset;
+    _ticker.print = print;
     _ticker.registerMacro = registerMacro;
 
     // private

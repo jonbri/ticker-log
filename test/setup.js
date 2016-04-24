@@ -29,8 +29,9 @@ aButtons.forEach(function(sButton) {
 
 // macro
 jQuery('#registerMacroButton').click(function() {
-    ticker.registerMacro(9, function() {
+    ticker.registerMacro(1, function() {
         console.log('`', 'in the macro');
+        // ticker.print('hi', {textarea: true});
     });
 });
 
