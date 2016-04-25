@@ -457,7 +457,11 @@
     url = url.replace(/\?&/, '?');
     url = url.replace(/(&&)+/, '&');
 
-    window.location.replace(url);
+    if (history.pushState) {
+      window.history.pushState({path:url},'',url);
+    } else {
+      window.location.replace(url);
+    }
   }
 
   // "pageUp" api function
