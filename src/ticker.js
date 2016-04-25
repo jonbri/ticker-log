@@ -14,14 +14,14 @@
       interval: 300,
       logStartTop: 30,
       align: 'left',
-      requireBackTick: true
+      requireBackTick: true,
+      channel: 'log'
     },
 
     // global (to ticker) config
     oConfig = {
       silentMode: false,
       pauseMode: false,
-      channel: 'log',
       adjustmentInterval: 25,
       lastTextareaAction: undefined,
       sMacro9Code: '// macro 9\r\r',
@@ -57,7 +57,8 @@
       'interval',
       'logStartTop',
       'align',
-      'requireBackTick'
+      'requireBackTick',
+      'channel'
     ],
 
     // dom id of the "output" textarea
