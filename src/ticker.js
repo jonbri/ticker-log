@@ -532,6 +532,7 @@
   }
 
   // "0-9" api function
+  // also can be called directly
   // execute macro
   function runMacro(iMacroSlot) {
     if (typeof aMacros[iMacroSlot] === 'function') {
@@ -911,6 +912,7 @@
     _ticker.reset = reset;
     _ticker.print = print;
     _ticker.registerMacro = registerMacro;
+    _ticker.runMacro = runMacro;
 
     // private
     _ticker._oConfig = oConfig;

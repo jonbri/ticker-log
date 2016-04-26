@@ -1,3 +1,7 @@
+function howManyLogDivs() {
+    return jQuery('._ticker_log').length;
+}
+
 window.ticker_runTests = function() {
     var iSafeDelay = 500;
 
@@ -130,10 +134,6 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("backtick and requireBackTick", function(assert) {
-        function howManyLogDivs() {
-            return jQuery('._ticker_log').length;
-        }
-
         window._ticker.kill();
         console.log('`', 'lorum ipsum');
         assert.strictEqual(howManyLogDivs(), 1, "(back-tick used) one div present because back-tick used in console statement");
@@ -153,6 +153,16 @@ window.ticker_runTests = function() {
         window._ticker.kill();
         console.log('`', 'lorum ipsum');
         assert.strictEqual(howManyLogDivs(), 1, "(back-tick used) using back-tick still works");
+    });
+
+    QUnit.test("macro", function(assert) {
+        ticker.registerMacro(8, function() {
+            console.log('`', 'testing macro 8');
+        });
+        ticker.kill();
+        assert.strictEqual(howManyLogDivs(), 0, "zero log divs prior to running macro");
+        ticker.runMacro(8)
+        assert.strictEqual(howManyLogDivs(), 2, "two log divs after running macro");
     });
 
     // keep this as the final test
