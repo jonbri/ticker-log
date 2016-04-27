@@ -23,11 +23,11 @@ window.ticker_runTests = function() {
         window._ticker.kill();
 
         // at the start there are no log divs
-        assert.strictEqual(jQuery('._ticker_log').length, 0, "zero log divs are present");
+        assert.strictEqual(howManyLogDivs(), 0, "zero log divs are present");
 
         // add one log div
         jQuery('#testButton').trigger("click");
-        assert.strictEqual(jQuery('._ticker_log').length, 1, "one log div is present");
+        assert.strictEqual(howManyLogDivs(), 1, "one log div is present");
 
         // clear log divs
         window._ticker.kill();
@@ -35,18 +35,18 @@ window.ticker_runTests = function() {
         // add two log divs
         jQuery('#testButton').trigger("click");
         jQuery('#testButton').trigger("click");
-        assert.strictEqual(jQuery('._ticker_log').length, 2, "two log divs are present");
+        assert.strictEqual(howManyLogDivs(), 2, "two log divs are present");
     });
 
     QUnit.test("namespace", function(assert) {
         window._ticker.kill();
 
         // at the start there are no log divs
-        assert.strictEqual(jQuery('._ticker_log').length, 0, "zero log divs are present");
+        assert.strictEqual(howManyLogDivs(), 0, "zero log divs are present");
 
         // make sure log occurs when using console.log form
         console.log('`', 'hello ');
-        assert.strictEqual(jQuery('._ticker_log').length, 1, "one log div is present");
+        assert.strictEqual(howManyLogDivs(), 1, "one log div is present");
     });
 
     QUnit.test("output", function (assert) {
@@ -78,26 +78,26 @@ window.ticker_runTests = function() {
         window._ticker.kill();
 
         // make sure no logging showing
-        assert.strictEqual(jQuery('._ticker_log').length, 0, "no log divs at start");
+        assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");
 
         // show configuration on screen
         jQuery('#testButton').trigger("click");
 
         // make sure config shows
-        assert.ok(jQuery('._ticker_log').length > 0, "configuration is showing");
+        assert.ok(howManyLogDivs() > 0, "configuration is showing");
     });
 
     QUnit.test("help", function(assert) {
         window._ticker.kill();
 
         // make sure no logging showing
-        assert.strictEqual(jQuery('._ticker_log').length, 0, "no log divs at start");
+        assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");
 
         // show configuration on screen
         jQuery('#helpButton').trigger("click");
 
         // make sure config shows
-        assert.ok(jQuery('._ticker_log').length > 0, "help is showing");
+        assert.ok(howManyLogDivs() > 0, "help is showing");
     });
 
     QUnit.test("pause", function(assert) {
