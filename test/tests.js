@@ -1,7 +1,20 @@
+//////////////////////////////////
+// utility functions
 function howManyLogDivs() {
     return jQuery('._ticker_log').length;
 }
 
+function getText(iLog) {
+    return jQuery('._ticker_log')[iLog].innerHTML;
+}
+
+function getTextarea() {
+    return jQuery('#_tickerTextarea').find('textarea');
+}
+
+
+//////////////////////////////////
+// tests
 window.ticker_runTests = function() {
     var iSafeDelay = 500;
 
@@ -52,26 +65,22 @@ window.ticker_runTests = function() {
     QUnit.test("output", function (assert) {
         window._ticker.kill();
 
-        function getTA() {
-            return jQuery('#_tickerTextarea').find('textarea');
-        }
-
         // at the start there is no output textarea
-        assert.strictEqual(getTA().length, 0, "no output textarea present");
+        assert.strictEqual(getTextarea().length, 0, "no output textarea present");
 
         // show a log div and output textarea
         jQuery('#testButton').trigger("click");
         window._ticker.output();
 
         // make sure the textarea shows with the correct content
-        assert.strictEqual(getTA().length, 1, "output textarea shows");
-        assert.strictEqual(getTA().val().indexOf("test: "), 0, "output textarea has correct content");
+        assert.strictEqual(getTextarea().length, 1, "output textarea shows");
+        assert.strictEqual(getTextarea().val().indexOf("test: "), 0, "output textarea has correct content");
 
         // now hide the textarea
         window._ticker.output();
 
         // make sure textarea is gone
-        assert.strictEqual(getTA().length, 0, "no output textarea present afterwards");
+        assert.strictEqual(getTextarea().length, 0, "no output textarea present afterwards");
     });
 
     QUnit.test("dump", function(assert) {
@@ -162,7 +171,7 @@ window.ticker_runTests = function() {
         });
         assert.strictEqual(howManyLogDivs(), 1, "one log divs to show registation message");
         ticker.kill();
-        ticker.runMacro(8)
+        ticker.runMacro(8);
         assert.strictEqual(howManyLogDivs(), 2, "two log divs after running macro");
     });
 
@@ -173,7 +182,22 @@ window.ticker_runTests = function() {
             assert.ok(false, "should never execute macro 9 when using registerMacro api");
         });
         assert.strictEqual(howManyLogDivs(), 1, "one log div which should be the warning message");
-        assert.ok(/macro 9 reserved/.test(jQuery('._ticker_log').text()), 'warning text should appear');
+        assert.ok(/macro 9 reserved/.test(getText(0)), 'warning text should appear');
+    });
+
+    QUnit.test("macro 9 (macroEdit)", function(assert) {
+        ticker.kill();
+        ticker.macroEdit();
+        getTextarea().text("console.log('`', 'lorum ipsum');");
+        ticker.macroEdit();
+        assert.strictEqual(howManyLogDivs(), 1, "macro 9 registration message");
+
+        ticker.kill();
+        ticker.runMacro(9);
+        assert.strictEqual(howManyLogDivs(), 2, "macro 9 shows 'running...' message and macro");
+
+        assert.ok(/running macro: 9/.test(getText(0)), "'running...' text shows");
+        assert.ok(/lorum ipsum/.test(getText(1)), 'console text shows');
     });
 
 
