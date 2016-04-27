@@ -156,14 +156,26 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("macro", function(assert) {
+        ticker.kill();
         ticker.registerMacro(8, function() {
             console.log('`', 'testing macro 8');
         });
+        assert.strictEqual(howManyLogDivs(), 1, "one log divs to show registation message");
         ticker.kill();
-        assert.strictEqual(howManyLogDivs(), 0, "zero log divs prior to running macro");
         ticker.runMacro(8)
         assert.strictEqual(howManyLogDivs(), 2, "two log divs after running macro");
     });
+
+    QUnit.test("macro 9 - don't allow registerMacro api", function(assert) {
+        ticker.kill();
+        ticker.registerMacro(9, function() {
+            // this should never happen
+            assert.ok(false, "should never execute macro 9 when using registerMacro api");
+        });
+        assert.strictEqual(howManyLogDivs(), 1, "one log div which should be the warning message");
+        assert.ok(/macro 9 reserved/.test(jQuery('._ticker_log').text()), 'warning text should appear');
+    });
+
 
     // keep this as the final test
     QUnit.test("final", function(assert) {
