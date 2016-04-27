@@ -736,7 +736,11 @@
     assignStyle(div, oConfig.logStyle);
     div.className += ' _ticker_log';
     div.innerHTML = sText;
-    div.style.top = _calculateTop() + 'px';
+    var iText = _calculateTop();
+    if (iText < (oConfig.logStartTop / 2)) {
+        iText = oConfig.logStartTop;
+    }
+    div.style.top = iText + 'px';
     document.body.appendChild(div);
   }
 
