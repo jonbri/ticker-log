@@ -12,7 +12,7 @@
     // default settings
     oDEFAULTS = {
       interval: 300,
-      logStartTop: 30,
+      logStartTop: 100,
       align: 'left',
       requireBackTick: true,
       channel: 'log'
