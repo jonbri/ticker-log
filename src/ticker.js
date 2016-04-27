@@ -503,7 +503,7 @@
     aMacros[iNumToRegister] = fn;
   }
 
-  // "pageDown" api function
+  // "m" api function
   // for macro slot 9
   // show a textarea where macro can be edited
   // "save" macro when textarea is dismissed
@@ -913,6 +913,7 @@
     _ticker.print = print;
     _ticker.registerMacro = registerMacro;
     _ticker.runMacro = runMacro;
+    _ticker.macroEdit = macroEdit;
 
     // private
     _ticker._oConfig = oConfig;
