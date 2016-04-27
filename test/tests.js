@@ -200,6 +200,21 @@ window.ticker_runTests = function() {
         assert.ok(/lorum ipsum/.test(getText(1)), 'console text shows');
     });
 
+    QUnit.test("channels", function(assert) {
+        ticker.kill();
+
+        assert.strictEqual('log', window._ticker._oConfig.channel, 'default channel is log');
+        window._ticker.nextChannel();
+        assert.strictEqual('debug', window._ticker._oConfig.channel, 'after change channel we are at debug');
+
+        window._ticker.config({
+            channel: 'warn'
+        });
+        assert.strictEqual('warn', window._ticker._oConfig.channel, 'explicitly set channel to warn');
+        window._ticker.nextChannel();
+        assert.strictEqual('error', window._ticker._oConfig.channel, 'after change channel we are at error');
+    });
+
 
     // keep this as the final test
     QUnit.test("final", function(assert) {
@@ -211,4 +226,4 @@ window.ticker_runTests = function() {
             done();
         }, 100);
     });
-}
+};
