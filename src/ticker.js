@@ -75,6 +75,9 @@
     // whether or not the "`" key is pressed
     keyIsDown = false,
 
+    // keep references to "addEventListener" functions for later removal
+    fnKeyDown, fnKeyUp,
+
     // help string
     aHelp = [
       '________________________________________________',
@@ -584,6 +587,8 @@
     window.clearInterval(render_interval);
     kill();
     killTextarea();
+    document.body.removeEventListener('keydown', fnKeyDown);
+    document.body.removeEventListener('keyup', fnKeyUp);
     window._ticker = undefined;
     delete window._ticker;
 
@@ -683,7 +688,7 @@
   // listen for when keys are pressed
   // use both keydown and keyup to enable chording
   function _setupListeners() {
-    document.body.addEventListener('keydown', function(e) {
+    fnKeyDown = function(e) {
       if (keyIsDown === false) {
         // catch the ` key
         if (e.keyCode === KEYS.BackTick) {
@@ -732,13 +737,16 @@
       if (typeof actionMap[e.keyCode] === 'function') {
         actionMap[e.keyCode]();
       }
-    });
+    };
 
-    document.body.addEventListener('keyup', function(e) {
+    fnKeyUp = function(e) {
       if (keyIsDown === true && aActionKeys.indexOf(e.keyCode) === -1) {
         keyIsDown=false;
       }
-    });
+    };
+
+    document.body.addEventListener('keydown', fnKeyDown);
+    document.body.addEventListener('keyup', fnKeyUp);
   }
 
   // determine "top" position of last log dom element
