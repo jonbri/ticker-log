@@ -1,6 +1,6 @@
 // ticker.js - on-screen, ticker-tape-style logging tool
 // Jonathan Brink <jonathandavidbrink@gmail.com>
-(function() {
+(function ticker_go() {
 
   //////////////////////////////////
   // variables global to ticker
@@ -567,6 +567,29 @@
     }
   }
 
+  // "end all ticker operations" api function
+  // stop ticker from doing anything
+  // reset url param
+  // reset console object
+  // only an api function...doesn't map to a key
+  function restoreAndExit() {
+    kill();
+    window._ticker = undefined;
+    delete window._ticker;
+
+    // reset console object
+    aChannels.forEach(function(sChannel) {
+      console[sChannel] = oChannels[sChannel].fnOriginal;
+    });
+  }
+
+  // reset settings
+  // only an api function...doesn't map to a key
+  function reset() {
+    restoreAndExit();
+    ticker_go();
+  }
+
   //////////////////////////////////
   // domain/private functions
 
@@ -910,6 +933,8 @@
     _ticker.registerMacro = registerMacro;
     _ticker.runMacro = runMacro;
     _ticker.macroEdit = macroEdit;
+    _ticker.restoreAndExit = restoreAndExit;
+    _ticker.reset = reset;
 
     // private
     _ticker._oConfig = oConfig;

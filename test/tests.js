@@ -210,6 +210,28 @@ window.ticker_runTests = function() {
         assert.ok(/lorum ipsum/.test(getText(1)), 'console text shows');
     });
 
+    QUnit.test("restoreAndExit", function(assert) {
+        console.log('`', 'one');
+        assert.strictEqual(howManyLogDivs(), 1, "one on-screen log shows");
+        ticker.restoreAndExit();
+        console.log('`', 'two');
+        assert.strictEqual(howManyLogDivs(), 0, "ticker has been disabled");
+    });
+
+    QUnit.test("reset", function(assert) {
+        ticker.reset();
+        console.log('`', 'lorum ipsum');
+        assert.strictEqual(howManyLogDivs(), 1, "log renders after reset");
+
+        ticker.restoreAndExit();
+        ticker.reset();
+        console.log('`', 'lorum ipsum');
+        assert.strictEqual(howManyLogDivs(), 1, "log renders after restoreAndExit followed by reset");
+    });
+
+
+
+    // TODO: keep this last until the data that channels alters can be reset
     QUnit.test("channels", function(assert) {
         assert.strictEqual('log', ticker._oConfig.channel, 'default channel is log');
         ticker.nextChannel();
@@ -222,7 +244,6 @@ window.ticker_runTests = function() {
         ticker.nextChannel();
         assert.strictEqual('error', ticker._oConfig.channel, 'after change channel we are at error');
     });
-
 
     // keep this as the final test
     QUnit.test("final", function(assert) {
