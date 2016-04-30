@@ -1,3 +1,6 @@
+// TODO: can I make my tests atomic so I don't need this?
+QUnit.config.reorder = false;
+
 //////////////////////////////////
 // utility functions
 function howManyLogDivs() {
