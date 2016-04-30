@@ -64,7 +64,6 @@ window.ticker_runTests = function() {
         assert.strictEqual('lorum ipsum', getText(0), 'correct text');
     });
 
-    /* TODO: need to reset "output" settings
     QUnit.test("print api with output textarea", function(assert) {
         window._ticker.print('lorum ipsum', {
             textarea: true
@@ -73,16 +72,6 @@ window.ticker_runTests = function() {
 
         // now hide the textarea
         window._ticker.output();
-    });
-    */
-
-    QUnit.test("namespace", function(assert) {
-        // at the start there are no log divs
-        assert.strictEqual(howManyLogDivs(), 0, "zero log divs are present");
-
-        // make sure log occurs when using console.log form
-        console.log('`', 'hello ');
-        assert.strictEqual(howManyLogDivs(), 1, "one log div is present");
     });
 
     QUnit.test("output", function (assert) {

@@ -583,6 +583,7 @@
   function restoreAndExit() {
     window.clearInterval(render_interval);
     kill();
+    killTextarea();
     window._ticker = undefined;
     delete window._ticker;
 
