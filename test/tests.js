@@ -25,7 +25,7 @@ window.ticker_runTests = function() {
             ticker.kill();
         },
         afterEach: function() {
-            ticker.reset();
+            // ticker.reset();
         }
     });
 

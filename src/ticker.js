@@ -567,16 +567,6 @@
     }
   }
 
-  // overwrite config with default settings
-  // only an api function...doesn't map to a key
-  function reset() {
-    // load default config
-    for (var sKey in oDEFAULTS) {
-      oConfig[sKey] = oDEFAULTS[sKey];
-    }
-  }
-
-
   //////////////////////////////////
   // domain/private functions
 
@@ -875,7 +865,10 @@
   });
 
   // init config
-  reset();
+  // load default config
+  for (var sKey in oDEFAULTS) {
+    oConfig[sKey] = oDEFAULTS[sKey];
+  }
   _loadConfigFromUrl();
   _postConfigApply();
 
@@ -913,7 +906,6 @@
     _ticker.increaseSpeed = increaseSpeed;
     _ticker.decreaseSpeed = decreaseSpeed;
     _ticker.nextChannel = nextChannel;
-    _ticker.reset = reset;
     _ticker.print = print;
     _ticker.registerMacro = registerMacro;
     _ticker.runMacro = runMacro;
