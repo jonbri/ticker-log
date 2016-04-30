@@ -1,5 +1,10 @@
 // ticker.js - on-screen, ticker-tape-style logging tool
 // Jonathan Brink <jonathandavidbrink@gmail.com>
+// Areas where ticker affects global state:
+//   - setTimout(?)/setInterval
+//   - url string (window.history.pushState and window.location.replace)
+//   - window._ticker
+//   - console globals
 (function ticker_go() {
 
   //////////////////////////////////
