@@ -45,6 +45,9 @@
     // buffer of logs still-to-be-rendered
     aRenderBuffer = [],
 
+    // number returned from setInterval responsible for on-screen movement
+    render_interval,
+
     // macros (0-8)
     // (9 stored in oConfig.sMacro9Code)
     aMacros = {},
@@ -573,6 +576,7 @@
   // reset console object
   // only an api function...doesn't map to a key
   function restoreAndExit() {
+    window.clearInterval(render_interval);
     kill();
     window._ticker = undefined;
     delete window._ticker;
@@ -606,8 +610,8 @@
   // for each iteration of the loop
   // update the on-screen position of each log dom element
   function _startInterval() {
-    var myFunction = function() {
-      clearInterval(l_interval);
+    var moveUpOne = function() {
+      window.clearInterval(render_interval);
 
       if (!oConfig.pauseMode) {
         var aLogNodes = document.querySelectorAll('._ticker_log');
@@ -624,9 +628,9 @@
         }
       }
 
-      l_interval = setInterval(myFunction, oConfig.interval);
+      render_interval = setInterval(moveUpOne, oConfig.interval);
     };
-    var l_interval = setInterval(myFunction, oConfig.interval);
+    render_interval = setInterval(moveUpOne, oConfig.interval);
   }
 
   // apply config properties
