@@ -1,5 +1,3 @@
-var ticker = window._ticker;
-
 var aButtons = [
     'test',
     'help',
@@ -23,15 +21,15 @@ var aButtons = [
 // most buttons match their api names...
 aButtons.forEach(function(sButton) {
     jQuery('#' + sButton + 'Button').click(function() {
-        ticker[sButton].apply(this, []);
+        window._ticker[sButton].apply(this, []);
     });
 });
 
 // macro
 jQuery('#registerMacroButton').click(function() {
-    ticker.registerMacro(1, function() {
+    window._ticker.registerMacro(1, function() {
         console.log('`', 'in the macro');
-        // ticker.print('hi', {textarea: true});
+        // window._ticker.print('hi', {textarea: true});
     });
 });
 

@@ -25,20 +25,20 @@ window.ticker_runTests = function() {
 
     QUnit.module("test ticker-log", {
         beforeEach: function() {
-            ticker.kill();
+            window._ticker.kill();
         },
         afterEach: function() {
-            // ticker.reset();
+            window._ticker.reset();
         }
     });
 
     QUnit.test("test config", function(assert) {
-        ticker.config({
+        window._ticker.config({
             'foo': 'bar',
             'interval': 999
         });
-        assert.strictEqual(ticker._oConfig.foo, 'bar', 'test non-official property');
-        assert.strictEqual(ticker._oConfig.interval, 999, 'test official property');
+        assert.strictEqual(window._ticker._oConfig.foo, 'bar', 'test non-official property');
+        assert.strictEqual(window._ticker._oConfig.interval, 999, 'test official property');
     });
 
     QUnit.test("does log appear", function(assert) {
@@ -50,7 +50,7 @@ window.ticker_runTests = function() {
         assert.strictEqual(howManyLogDivs(), 1, "one log div is present");
 
         // clear log divs
-        ticker.kill();
+        window._ticker.kill();
 
         // add two log divs
         jQuery('#testButton').trigger("click");
@@ -59,20 +59,20 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("print api", function(assert) {
-        ticker.print('lorum ipsum');
+        window._ticker.print('lorum ipsum');
         assert.strictEqual(howManyLogDivs(), 1, "print api works");
         assert.strictEqual('lorum ipsum', getText(0), 'correct text');
     });
 
     /* TODO: need to reset "output" settings
     QUnit.test("print api with output textarea", function(assert) {
-        ticker.print('lorum ipsum', {
+        window._ticker.print('lorum ipsum', {
             textarea: true
         });
         assert.strictEqual(getTextarea().length, 1, "output textarea present");
 
         // now hide the textarea
-        ticker.output();
+        window._ticker.output();
     });
     */
 
@@ -91,14 +91,14 @@ window.ticker_runTests = function() {
 
         // show a log div and output textarea
         jQuery('#testButton').trigger("click");
-        ticker.output();
+        window._ticker.output();
 
         // make sure the textarea shows with the correct content
         assert.strictEqual(getTextarea().length, 1, "output textarea shows");
         assert.strictEqual(getTextarea().val().indexOf("test: "), 0, "output textarea has correct content");
 
         // now hide the textarea
-        ticker.output();
+        window._ticker.output();
 
         // make sure textarea is gone
         assert.strictEqual(getTextarea().length, 0, "no output textarea present afterwards");
@@ -128,7 +128,7 @@ window.ticker_runTests = function() {
 
     QUnit.test("pause", function(assert) {
         jQuery('#pauseButton').trigger("click");
-        assert.strictEqual(ticker._oConfig.pauseMode, true, 'test pauseMode property');
+        assert.strictEqual(window._ticker._oConfig.pauseMode, true, 'test pauseMode property');
     });
 
     QUnit.test("moveRight", function(assert) {
@@ -140,7 +140,7 @@ window.ticker_runTests = function() {
         }
 
         // by default should be left
-        ticker.test();
+        window._ticker.test();
         isLeft();
 
         // should move to right
@@ -160,35 +160,35 @@ window.ticker_runTests = function() {
         console.log('`', 'lorum ipsum');
         assert.strictEqual(howManyLogDivs(), 1, "(back-tick used) one div present because back-tick used in console statement");
 
-        ticker.kill();
+        window._ticker.kill();
         console.log('lorum ipsum');
         assert.strictEqual(howManyLogDivs(), 0, "(no back-tick) no log shows because requireBackTick is true");
 
-        ticker.config({
+        window._ticker.config({
             requireBackTick: false
         });
 
-        ticker.kill();
+        window._ticker.kill();
         console.log('lorum ipsum');
         assert.strictEqual(howManyLogDivs(), 1, "(no back-tick) one div present because requireBackTick is false");
 
-        ticker.kill();
+        window._ticker.kill();
         console.log('`', 'lorum ipsum');
         assert.strictEqual(howManyLogDivs(), 1, "(back-tick used) using back-tick still works");
     });
 
     QUnit.test("macro", function(assert) {
-        ticker.registerMacro(8, function() {
+        window._ticker.registerMacro(8, function() {
             console.log('`', 'testing macro 8');
         });
         assert.strictEqual(howManyLogDivs(), 1, "one log divs to show registation message");
-        ticker.kill();
-        ticker.runMacro(8);
+        window._ticker.kill();
+        window._ticker.runMacro(8);
         assert.strictEqual(howManyLogDivs(), 2, "two log divs after running macro");
     });
 
     QUnit.test("macro 9 - don't allow registerMacro api", function(assert) {
-        ticker.registerMacro(9, function() {
+        window._ticker.registerMacro(9, function() {
             // this should never happen
             assert.ok(false, "should never execute macro 9 when using registerMacro api");
         });
@@ -197,61 +197,55 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("macro 9 (macroEdit)", function(assert) {
-        ticker.macroEdit();
+        window._ticker.macroEdit();
         getTextarea().text("console.log('`', 'lorum ipsum');");
-        ticker.macroEdit();
+        window._ticker.macroEdit();
         assert.strictEqual(howManyLogDivs(), 1, "macro 9 registration message");
 
-        ticker.kill();
-        ticker.runMacro(9);
+        window._ticker.kill();
+        window._ticker.runMacro(9);
         assert.strictEqual(howManyLogDivs(), 2, "macro 9 shows 'running...' message and macro");
 
         assert.ok(/running macro: 9/.test(getText(0)), "'running...' text shows");
         assert.ok(/lorum ipsum/.test(getText(1)), 'console text shows');
     });
 
+    QUnit.test("reset", function(assert) {
+        window._ticker.reset();
+        console.log('`', 'lorum ipsum');
+        assert.strictEqual(howManyLogDivs(), 1, "log renders after reset");
+    });
+
+    QUnit.test("channels", function(assert) {
+        assert.strictEqual('log', window._ticker._oConfig.channel, 'default channel is log');
+        window._ticker.nextChannel();
+        assert.strictEqual('debug', window._ticker._oConfig.channel, 'after change channel we are at debug');
+
+        window._ticker.config({
+            channel: 'warn'
+        });
+        assert.strictEqual('warn', window._ticker._oConfig.channel, 'explicitly set channel to warn');
+        window._ticker.nextChannel();
+        assert.strictEqual('error', window._ticker._oConfig.channel, 'after change channel we are at error');
+    });
+
+    // keep this as the final module
+    QUnit.module("restoreAndExit", {
+        beforeEach: function() {
+            window._ticker.kill();
+        },
+        afterEach: function() {
+            setTimeout(function() {
+                jQuery('#runTestsButton').prop("disabled", false);
+            }, 100);
+        }
+    });
+
     QUnit.test("restoreAndExit", function(assert) {
         console.log('`', 'one');
         assert.strictEqual(howManyLogDivs(), 1, "one on-screen log shows");
-        ticker.restoreAndExit();
+        window._ticker.restoreAndExit();
         console.log('`', 'two');
         assert.strictEqual(howManyLogDivs(), 0, "ticker has been disabled");
-    });
-
-    QUnit.test("reset", function(assert) {
-        ticker.reset();
-        console.log('`', 'lorum ipsum');
-        assert.strictEqual(howManyLogDivs(), 1, "log renders after reset");
-
-        ticker.restoreAndExit();
-        ticker.reset();
-        console.log('`', 'lorum ipsum');
-        assert.strictEqual(howManyLogDivs(), 1, "log renders after restoreAndExit followed by reset");
-    });
-
-
-
-    // TODO: keep this last until the data that channels alters can be reset
-    QUnit.test("channels", function(assert) {
-        assert.strictEqual('log', ticker._oConfig.channel, 'default channel is log');
-        ticker.nextChannel();
-        assert.strictEqual('debug', ticker._oConfig.channel, 'after change channel we are at debug');
-
-        ticker.config({
-            channel: 'warn'
-        });
-        assert.strictEqual('warn', ticker._oConfig.channel, 'explicitly set channel to warn');
-        ticker.nextChannel();
-        assert.strictEqual('error', ticker._oConfig.channel, 'after change channel we are at error');
-    });
-
-    // keep this as the final test
-    QUnit.test("final", function(assert) {
-        var done = assert.async();
-        assert.ok(true, "");
-        setTimeout(function() {
-            jQuery('#runTestsButton').prop("disabled", false);
-            done();
-        }, 100);
     });
 };
