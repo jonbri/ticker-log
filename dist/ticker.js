@@ -1,6 +1,12 @@
 // ticker.js - on-screen, ticker-tape-style logging tool
 // Jonathan Brink <jonathandavidbrink@gmail.com>
-(function() {
+// Areas where ticker affects global state:
+//   - setTimout(?)/setInterval
+//   - url string (window.history.pushState and window.location.replace)
+//   - window._ticker
+//   - console globals
+(function ticker_go() {
+
 
   //////////////////////////////////
   // variables global to ticker
@@ -12,7 +18,7 @@
     // default settings
     oDEFAULTS = {
       interval: 300,
-      logStartTop: 30,
+      logStartTop: 100,
       align: 'left',
       requireBackTick: true,
       channel: 'log'
@@ -45,6 +51,9 @@
     // buffer of logs still-to-be-rendered
     aRenderBuffer = [],
 
+    // number returned from setInterval responsible for on-screen movement
+    render_interval,
+
     // macros (0-8)
     // (9 stored in oConfig.sMacro9Code)
     aMacros = {},
@@ -66,6 +75,9 @@
 
     // whether or not the "`" key is pressed
     keyIsDown = false,
+
+    // keep references to "addEventListener" functions for later removal
+    fnKeyDown, fnKeyUp,
 
     // help string
     aHelp = [
@@ -174,33 +186,48 @@
       KEYS.T
     ];
 
+
   //////////////////////////////////
   // util functions
 
-  // used to iterate over querySelectorAll
-  // see: https://toddmotto.com/ditch-the-array-foreach-call-nodelist-hack/
+  /**
+   * used to iterate over querySelectorAll
+   * See link:
+   * {@link https://toddmotto.com/ditch-the-array-foreach-call-nodelist-hack}
+   * @param {array} array pseudo-array from querySelectorAll
+   * @param {function} callback invoke for each iteration
+   * @param {object} scope "this" scope for callback
+   */
   function pseudoForEach(array, callback, scope) {
     for (var i = 0; i < array.length; i++) {
       callback.call(scope, i, array[i]); // passes back stuff we need
     }
   }
 
-  // overlay div's domelement style object
-  function assignStyle(div, oStyle) {
+  /**
+   * overlay div's domelement style object
+   * @param {object} domNode dom element to apply style to
+   * @param {object} oStyle map of style declarations, e.g. color: 'green'
+   */
+  function assignStyle(domNode, oStyle) {
     for (var key in oStyle) {
       if (oStyle.hasOwnProperty(key)) {
-        div.style[key] = oStyle[key];
+        domNode.style[key] = oStyle[key];
       }
     }
   }
 
-  // return value of url parameter
+  /**
+   * return value of url parameter in window.location.href
+   * @param {string} name url param name
+   * @returns {string} value of named url parameter
+   */
   function getUrlParamValue(name) {
     name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
     var regexS = '[\\?&]'+name+'=([^&#]*)',
       regex = new RegExp( regexS ),
       results = regex.exec(window.location.href);
-    if( results === null ) {
+    if (results === null) {
       return null;
     } else {
       return results[1];
@@ -211,20 +238,26 @@
   //////////////////////////////////
   // api functions
 
-  // overlay object over configuration object
-  // only an api function...doesn't map to a key
-  // public+private way of setting configuration properties
+  /**
+   * overlay object over configuration object
+   * only an api function...doesn't map to a key
+   * public+private way of setting configuration properties
+   * @param {object} o property/value map to apply
+   */
   function config(o) {
     for (var sKey in o) {
       oConfig[sKey] = o[sKey];
     }
   }
 
-  // print log div to screen
-  // only an api function...doesn't map (directly) to a key
-  // param o ->
-  //   overrideSilentMode - still print, even if silent mode is on
-  //   internal - do not track in aBuffer
+  /**
+   * print log div to screen
+   * only an api function...doesn't map (directly) to a key
+   * @param {text} text text to put in log dom ref
+   * @param {object} o configuration object
+   *   overrideSilentMode - still print, even if silent mode is on
+   *   internal - do not track in aBuffer
+   */
   function print(text, o) {
     // TODO: move this so it's still in the buffer
     if (oConfig.silentMode === true && o && !o.overrideSilentMode) {
@@ -242,20 +275,24 @@
     _flushBuffer();
   }
 
-  // "t" api function
-  // print out test log (plus date)
+  /**
+   * "t" api function
+   * print out test log (plus date)
+   */
   function test() {
     if (oConfig.pauseMode === true) {
       _nonSavedPrint('pauseMode');
       return;
     }
     print('test: ' + new Date(), {
-        overrideSilentMode: true
+      overrideSilentMode: true
     });
   }
 
-  // "h" api function
-  // show help text on-screen as logs
+  /**
+   * "h" api function
+   * show help text on-screen as logs
+   */
   function help() {
     oConfig.pauseMode = false;
     kill();
@@ -267,13 +304,15 @@
       var text = aHelp[i];
       text = text.replace(/\_/g, '&nbsp;');
       print(text, {
-          overrideSilentMode: true
+        overrideSilentMode: true
       });
     }
   }
 
-  // "k" api function
-  // clear render buffer and remove all ticker log dom elements
+  /**
+   * "k" api function
+   * clear render buffer and remove all ticker log dom elements
+   */
   function kill() {
     oConfig.pauseMode = false;
     aRenderBuffer = [];
@@ -283,8 +322,10 @@
     });
   }
 
-  // "p" api function
-  // toggle pauseMode config prop boolean
+  /**
+   * "p" api function
+   * toggle pauseMode config prop boolean
+   */
   function pause() {
     if (oConfig.pauseMode) {
       print('pause off');
@@ -294,11 +335,13 @@
     oConfig.pauseMode = !oConfig.pauseMode;
   }
 
-  // "o" api function
-  // show log text in the "output textarea"
-  // param bAll -> whether to show all logs ever,
-  //         or just the current on-screen ones
-  //         default: false
+  /**
+   * "o" api function
+   * show log text in the "output textarea"
+   * @param {boolean} bAll whether to show all logs ever,
+   *   or just the current on-screen ones
+   *   default: false
+   */
   function output(bAll) {
     if (bAll === undefined) {
       bAll = false;
@@ -329,14 +372,18 @@
     });
   }
 
-  // "l" (for "log") api function
-  // api function to show all saved log messages
+  /**
+   * "l" (for "log") api function
+   * api function to show all saved log messages
+   */
   function outputAll() {
     output(true);
   }
 
-  // "d" api function
-  // show configuration properties in output textarea
+  /**
+   * "d" api function
+   * show configuration properties in output textarea
+   */
   function dump() {
     var s = '';
     aConfigurableKeys.forEach(function(sKey) {
@@ -349,8 +396,10 @@
     });
   }
 
-  // "s" api function
-  // toggle silentMode config prop boolean
+  /**
+   * "s" api function
+   * toggle silentMode config prop boolean
+   */
   function silent() {
     if (oConfig.silentMode === true) {
       oConfig.silentMode = false;
@@ -360,9 +409,11 @@
     }
   }
 
-  // "up" api function
-  // decrease delay interval by half the adjustmentInterval
-  function increaseSpeed(e) {
+  /**
+   * "up" api function
+   * decrease delay interval by half the adjustmentInterval
+   */
+  function increaseSpeed() {
     if (oConfig.pauseMode) {
       _nonSavedPrint('pauseMode');
       return;
@@ -371,9 +422,11 @@
     print('speed: ' + oConfig.interval);
   }
 
-  // "down" api function
-  // increase delay interval by adjustmentInterval
-  function decreaseSpeed(e) {
+  /**
+   * "down" api function
+   * increase delay interval by adjustmentInterval
+   */
+  function decreaseSpeed() {
     if (oConfig.pauseMode) {
       _nonSavedPrint('pauseMode');
       return;
@@ -382,9 +435,11 @@
     print('speed: ' + oConfig.interval);
   }
 
-  // "right" api function
-  // change log container position and alignment of log dom elements
-  function moveRight(e) {
+  /**
+   * "right" api function
+   * change log container position and alignment of log dom elements
+   */
+  function moveRight() {
     oConfig.align = 'right';
     _postConfigApply();
 
@@ -398,9 +453,11 @@
     test();
   }
 
-  // "left" api function
-  // change log container position and alignment of log dom elements
-  function moveLeft(e) {
+  /**
+   * "left" api function
+   * change log container position and alignment of log dom elements
+   */
+  function moveLeft() {
     oConfig.align = 'left';
     _postConfigApply();
 
@@ -414,15 +471,17 @@
     test();
   }
 
-  // "enter" api function
-  // update url (window.location) to "save state"
-  // only use config props that have changed
-  // geneate url-friendly, json string to use for "_ticker" param
+  /**
+   * "enter" api function
+   * update url (window.location) to "save state"
+   * only use config props that have changed
+   * geneate url-friendly, json string to use for "_ticker" param
+   */
   function saveConfig() {
     var url = window.location.href;
 
     function generateConfigString() {
-      var s =  '_ticker={';
+      var s = '_ticker={';
       aConfigurableKeys.forEach(function(sKey) {
         // don't include if default
         if (oDEFAULTS[sKey] !== undefined &&
@@ -465,9 +524,11 @@
     }
   }
 
-  // "pageUp" api function
-  // change starting vertical position (logStartTop) for on-screen logs
-  function moveUp(e) {
+  /**
+   * "pageUp" api function
+   * change starting vertical position (logStartTop) for on-screen logs
+   */
+  function moveUp() {
     if (oConfig.pauseMode) {
       _nonSavedPrint('pauseMode');
       return;
@@ -477,9 +538,11 @@
     print('start: ' + oConfig.logStartTop);
   }
 
-  // "pageDown" api function
-  // change starting vertical position (logStartTop) for on-screen logs
-  function moveDown(e) {
+  /**
+   * "pageDown" api function
+   * change starting vertical position (logStartTop) for on-screen logs
+   */
+  function moveDown() {
     if (oConfig.pauseMode) {
       _nonSavedPrint('pauseMode');
       return;
@@ -489,11 +552,13 @@
     print('start: ' + oConfig.logStartTop);
   }
 
-  // register (overwrite) macro
-  // for macros 0-8
-  // only an api function...doesn't map to a key
-  // param iNumToRegister key in aMacros object to write to
-  // param fn callback functionf
+  /**
+   * register (overwrite) macro
+   * for macros 0-8
+   * only an api function...doesn't map to a key
+   * @param {int} iNumToRegister key in aMacros object to write to
+   * @param {function} fn callback function
+   */
   function registerMacro(iNumToRegister, fn) {
     if (iNumToRegister === 9) {
       console.log('`', 'macro 9 reserved for interactive macro (`m)');
@@ -503,10 +568,12 @@
     aMacros[iNumToRegister] = fn;
   }
 
-  // "pageDown" api function
-  // for macro slot 9
-  // show a textarea where macro can be edited
-  // "save" macro when textarea is dismissed
+  /**
+   * "m" api function
+   * for macro slot 9
+   * show a textarea where macro can be edited
+   * "save" macro when textarea is dismissed
+   */
   function macroEdit() {
     var sDefaultText = oConfig.sMacro9Code;
 
@@ -523,16 +590,22 @@
         oConfig.sMacro9Code = sValue;
         console.log('`', 'registering macro: 9');
         aMacros[9] = function() {
+          /* eslint-disable no-eval */
           /* jshint ignore:start */
           eval(sValue);
           /* jshint ignore:end */
+          /* eslint-enable no-eval */
         };
       }
     });
   }
 
-  // "0-9" api function
-  // execute macro
+  /**
+   * "0-9" api function
+   * also can be called directly
+   * execute macro
+   * @param {int} iMacroSlot macro in aMacros object to execute
+   */
   function runMacro(iMacroSlot) {
     if (typeof aMacros[iMacroSlot] === 'function') {
       console.log('`', 'running macro: ' + iMacroSlot);
@@ -542,9 +615,11 @@
     }
   }
 
-  // "Tab" api function
-  // switch to listen to next console channel ("log", "warn", etc)
-  // order is determined by aChannels
+  /**
+   * "Tab" api function
+   * switch to listen to next console channel ("log", "warn", etc)
+   * order is determined by aChannels
+   */
   function nextChannel() {
     var i = 0,
       sCurrentChannel = oConfig.channel;
@@ -557,8 +632,10 @@
     print('listening to ' + oConfig.channel);
   }
 
-  // "Esc" api function
-  // remove textarea dom element
+  /**
+   * "Esc" api function
+   * remove textarea dom element
+   */
   function killTextarea() {
     var oTickerTextarea = document.getElementById(sTextareaId);
     if (oTickerTextarea) {
@@ -566,34 +643,61 @@
     }
   }
 
-  // overwrite config with default settings
-  // only an api function...doesn't map to a key
+  /**
+   * "end all ticker operations" api function
+   * stop ticker from doing anything
+   * reset url param
+   * reset console object
+   * only an api function...doesn't map to a key
+   */
+  function restoreAndExit() {
+    window.clearInterval(render_interval);
+    kill();
+    killTextarea();
+    document.body.removeEventListener('keydown', fnKeyDown);
+    document.body.removeEventListener('keyup', fnKeyUp);
+    window._ticker = undefined;
+    delete window._ticker;
+
+    // reset console object
+    aChannels.forEach(function(sChannel) {
+      console[sChannel] = oChannels[sChannel].fnOriginal;
+    });
+  }
+
+  /**
+   * reset settings
+   * only an api function...doesn't map to a key
+   */
   function reset() {
-    // load default config
-    for (var sKey in oDEFAULTS) {
-      oConfig[sKey] = oDEFAULTS[sKey];
-    }
+    restoreAndExit();
+    ticker_go();
   }
 
 
   //////////////////////////////////
   // domain/private functions
 
-  // print but don't save to aBuffer
-  // uses "print" function's o.internal parameter
+  /**
+   * print but don't save to aBuffer
+   * uses "print" function's o.internal parameter
+   * @param {string} text text text to put in log dom ref
+   */
   function _nonSavedPrint(text) {
     print(text, {
-        overrideSilentMode: false,
-        internal: true
+      overrideSilentMode: false,
+      internal: true
     });
   }
 
-  // start timeout loop
-  // for each iteration of the loop
-  // update the on-screen position of each log dom element
+  /**
+   * start timeout loop
+   * for each iteration of the loop
+   * update the on-screen position of each log dom element
+   */
   function _startInterval() {
-    var myFunction = function() {
-      clearInterval(l_interval);
+    var moveUpOne = function() {
+      window.clearInterval(render_interval);
 
       if (!oConfig.pauseMode) {
         var aLogNodes = document.querySelectorAll('._ticker_log');
@@ -610,13 +714,15 @@
         }
       }
 
-      l_interval = setInterval(myFunction, oConfig.interval);
+      render_interval = setInterval(moveUpOne, oConfig.interval);
     };
-    var l_interval = setInterval(myFunction, oConfig.interval);
+    render_interval = setInterval(moveUpOne, oConfig.interval);
   }
 
-  // apply config properties
-  // used after oConfig is updated
+  /**
+   * apply config properties
+   * used after oConfig is updated
+   */
   function _postConfigApply() {
     function applyAlign() {
       if (oConfig.align === 'right') {
@@ -633,7 +739,9 @@
     applyAlign();
   }
 
-  // parse url parameter and populate oConfig
+  /**
+   * parse url parameter and populate oConfig
+   */
   function _loadConfigFromUrl() {
     var value, o,
       sUrlParam = getUrlParamValue('_ticker');
@@ -645,7 +753,7 @@
     // read config from param
     try {
       o = JSON.parse(decodeURIComponent(sUrlParam));
-    } catch( e ) {
+    } catch (e) {
     }
 
     // overlay url config onto global config object
@@ -656,10 +764,12 @@
     }
   }
 
-  // listen for when keys are pressed
-  // use both keydown and keyup to enable chording
+  /**
+   * listen for when keys are pressed
+   * use both keydown and keyup to enable chording
+   */
   function _setupListeners() {
-    document.body.addEventListener('keydown', function(e) {
+    fnKeyDown = function(e) {
       if (keyIsDown === false) {
         // catch the ` key
         if (e.keyCode === KEYS.BackTick) {
@@ -708,16 +818,22 @@
       if (typeof actionMap[e.keyCode] === 'function') {
         actionMap[e.keyCode]();
       }
-    });
+    };
 
-    document.body.addEventListener('keyup', function(e) {
+    fnKeyUp = function(e) {
       if (keyIsDown === true && aActionKeys.indexOf(e.keyCode) === -1) {
         keyIsDown=false;
       }
-    });
+    };
+
+    document.body.addEventListener('keydown', fnKeyDown);
+    document.body.addEventListener('keyup', fnKeyUp);
   }
 
-  // determine "top" position of last log dom element
+  /**
+   * determine "top" position of last log dom element
+   * @returns {int} top position value of dom ref
+   */
   function _calculateTop() {
     var oLastNode = document.querySelector('._ticker_log:last-child');
     if (!oLastNode) {
@@ -727,33 +843,44 @@
     }
   }
 
-  // create log dom element
-  // param sText -> the log text
+  /**
+   * create log dom element
+   * @param {string} sText the log text
+   */
   function _renderText(sText) {
     var div = document.createElement('div');
     div.className = '_ticker';
     assignStyle(div, oConfig.logStyle);
     div.className += ' _ticker_log';
     div.innerHTML = sText;
-    div.style.top = _calculateTop() + 'px';
+    var iText = _calculateTop();
+    if (iText < (oConfig.logStartTop / 2)) {
+      iText = oConfig.logStartTop;
+    }
+    div.style.top = iText + 'px';
     document.body.appendChild(div);
   }
 
-  // if there is on-screen space available
-  // render as many log dom elements as possible from aRenderBuffer
+  /**
+   * if there is on-screen space available
+   * render as many log dom elements as possible from aRenderBuffer
+   */
   function _flushBuffer() {
-    while(aRenderBuffer.length > 0 && _calculateTop() < iAllowedHeight) {
+    while (aRenderBuffer.length > 0 && _calculateTop() < iAllowedHeight) {
       _renderText(aRenderBuffer.pop());
     }
   }
 
-  // change config to use sChannel (log, warn, etc)
+  /**
+   * change config to use sChannel (log, warn, etc)
+   * @param {string} sChannel the channel to listen to
+   */
   function _listenToChannel(sChannel) {
     var sCurrentChannel = oConfig.channel;
 
     // revert current channel
     if (sCurrentChannel &&
-            typeof oChannels[sCurrentChannel].fnOriginal === 'function') {
+        typeof oChannels[sCurrentChannel].fnOriginal === 'function') {
       console[sCurrentChannel] = oChannels[sCurrentChannel].fnOriginal;
     }
 
@@ -776,12 +903,15 @@
     };
   }
 
-  // create textarea container div and textarea
-  // position, fill with sText, and render
+  /**
+   * create textarea container div and textarea
+   * position, fill with sText, and render
+   * @param {string} sText text to place in textarea
+   */
   function _renderTextarea(sText) {
-    var heightOfPage = window.innerHeight;
-    var widthOfPage = window.innerWidth;
-    var textareaDiv = document.createElement('div');
+    var heightOfPage = window.innerHeight,
+      widthOfPage = window.innerWidth,
+      textareaDiv = document.createElement('div');
     textareaDiv.id = sTextareaId;
     textareaDiv.style.position = 'fixed';
     textareaDiv.style.left = 0;
@@ -799,14 +929,16 @@
     document.body.appendChild(textareaDiv);
   }
 
-  // manage showing/hiding textarea div container
-  // param o -> customize the textarea div
-  //   keys:
-  //   - text:  (string) the text to show in the textarea
-  //   - source:  (string) id that identifies the invoking keyboard key
-  //   - buttons: (object) map of buttons, with their labels as keys
-  //   - exit:  (fn)   callback function when textarea is closed,
-  //             the text inside of the textarea is passed along
+  /**
+   * manage showing/hiding textarea div container
+   * @param {object} o customize the textarea div
+   *   keys:
+   *   - text:  (string) the text to show in the textarea
+   *   - source:  (string) id that identifies the invoking keyboard key
+   *   - buttons: (object) map of buttons, with their labels as keys
+   *   - exit:  (fn)   callback function when textarea is closed,
+   *             the text inside of the textarea is passed along
+   */
   function _toggleTextarea(o) {
     // if it's a new action, clear slate and render
     if (oConfig.lastTextareaAction !== o.source) {
@@ -870,7 +1002,10 @@
   });
 
   // init config
-  reset();
+  // load default config
+  for (var sKey in oDEFAULTS) {
+    oConfig[sKey] = oDEFAULTS[sKey];
+  }
   _loadConfigFromUrl();
   _postConfigApply();
 
@@ -908,9 +1043,12 @@
     _ticker.increaseSpeed = increaseSpeed;
     _ticker.decreaseSpeed = decreaseSpeed;
     _ticker.nextChannel = nextChannel;
-    _ticker.reset = reset;
     _ticker.print = print;
     _ticker.registerMacro = registerMacro;
+    _ticker.runMacro = runMacro;
+    _ticker.macroEdit = macroEdit;
+    _ticker.restoreAndExit = restoreAndExit;
+    _ticker.reset = reset;
 
     // private
     _ticker._oConfig = oConfig;
