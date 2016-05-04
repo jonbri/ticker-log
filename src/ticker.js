@@ -1,10 +1,19 @@
-// ticker.js - on-screen, ticker-tape-style logging tool
-// Jonathan Brink <jonathandavidbrink@gmail.com>
-// Areas where ticker affects global state:
-//   - setTimout(?)/setInterval
-//   - url string (window.history.pushState and window.location.replace)
-//   - window._ticker
-//   - console globals
+/**
+ * ticker-log<br>
+ * On-screen, ticker-tape-style logging tool<br><br>
+ *
+ * {@link https://github.com/jonbri/ticker-log}<br>
+ * {@link https://www.npmjs.com/package/ticker-log}<br><br>
+ *
+ * Areas where ticker-log affects global state:
+ * <li>setTimout(?)/setInterval
+ * <li>url string (window.history.pushState and window.location.replace)
+ * <li>window._ticker
+ * <li>console globals
+ *
+ * @module ticker-log
+ * @author Jonathan Brink <jonathandavidbrink@gmail.com>
+ */
 (function ticker_go() {
 
 
@@ -239,10 +248,16 @@
   // api functions
 
   /**
-   * overlay object over configuration object
-   * only an api function...doesn't map to a key
-   * public+private way of setting configuration properties
+   * Overlay object over configuration object.<br>
+   * Only an api function...doesn't map to a key.<br>
+   * Public+private way of setting configuration properties.
+   *
    * @param {object} o property/value map to apply
+   *
+   * @exports ticker-log
+   * @name config
+   * @public
+   * @function
    */
   function config(o) {
     for (var sKey in o) {
@@ -251,12 +266,18 @@
   }
 
   /**
-   * print log div to screen
-   * only an api function...doesn't map (directly) to a key
+   * Print log div to screen.<br>
+   * Only an api function...doesn't map (directly) to a key.
+   *
    * @param {text} text text to put in log dom ref
    * @param {object} o configuration object
    *   overrideSilentMode - still print, even if silent mode is on
    *   internal - do not track in aBuffer
+   *
+   * @exports ticker-log
+   * @name print
+   * @public
+   * @function
    */
   function print(text, o) {
     // TODO: move this so it's still in the buffer
@@ -276,8 +297,13 @@
   }
 
   /**
-   * "t" api function
-   * print out test log (plus date)
+   * "t" api function.<br>
+   * Print out test log (plus date).
+   *
+   * @exports ticker-log
+   * @name test
+   * @public
+   * @function
    */
   function test() {
     if (oConfig.pauseMode === true) {
@@ -290,8 +316,13 @@
   }
 
   /**
-   * "h" api function
-   * show help text on-screen as logs
+   * "h" api function.<br>
+   * Show help text on-screen as logs.
+   *
+   * @exports ticker-log
+   * @name help
+   * @public
+   * @function
    */
   function help() {
     oConfig.pauseMode = false;
@@ -310,8 +341,13 @@
   }
 
   /**
-   * "k" api function
-   * clear render buffer and remove all ticker log dom elements
+   * "k" api function.<br>
+   * Clear render buffer and remove all ticker log dom elements.
+   *
+   * @exports ticker-log
+   * @name kill
+   * @public
+   * @function
    */
   function kill() {
     oConfig.pauseMode = false;
@@ -323,8 +359,13 @@
   }
 
   /**
-   * "p" api function
-   * toggle pauseMode config prop boolean
+   * "p" api function.<br>
+   * Toggle pauseMode config prop boolean.
+   *
+   * @exports ticker-log
+   * @name pause
+   * @public
+   * @function
    */
   function pause() {
     if (oConfig.pauseMode) {
@@ -336,11 +377,17 @@
   }
 
   /**
-   * "o" api function
-   * show log text in the "output textarea"
+   * "o" api function.<br>
+   * Show log text in the "output textarea".
+   *
    * @param {boolean} bAll whether to show all logs ever,
    *   or just the current on-screen ones
    *   default: false
+   *
+   * @exports ticker-log
+   * @name output
+   * @public
+   * @function
    */
   function output(bAll) {
     if (bAll === undefined) {
@@ -373,16 +420,26 @@
   }
 
   /**
-   * "l" (for "log") api function
-   * api function to show all saved log messages
+   * "l" (for "log") api function.<br>
+   * Api function to show all saved log messages.
+   *
+   * @exports ticker-log
+   * @name outputAll
+   * @public
+   * @function
    */
   function outputAll() {
     output(true);
   }
 
   /**
-   * "d" api function
-   * show configuration properties in output textarea
+   * "d" api function.<br>
+   * Show configuration properties in output textarea.
+   *
+   * @exports ticker-log
+   * @name dump
+   * @public
+   * @function
    */
   function dump() {
     var s = '';
@@ -397,8 +454,13 @@
   }
 
   /**
-   * "s" api function
-   * toggle silentMode config prop boolean
+   * "s" api function.<br>
+   * Toggle silentMode config prop boolean.
+   *
+   * @exports ticker-log
+   * @name silent
+   * @public
+   * @function
    */
   function silent() {
     if (oConfig.silentMode === true) {
@@ -410,8 +472,13 @@
   }
 
   /**
-   * "up" api function
-   * decrease delay interval by half the adjustmentInterval
+   * "up" api function.<br>
+   * Decrease delay interval by half the adjustmentInterval.
+   *
+   * @exports ticker-log
+   * @name increaseSpeed
+   * @public
+   * @function
    */
   function increaseSpeed() {
     if (oConfig.pauseMode) {
@@ -423,8 +490,13 @@
   }
 
   /**
-   * "down" api function
-   * increase delay interval by adjustmentInterval
+   * "down" api function.<br>
+   * Increase delay interval by adjustmentInterval.
+   *
+   * @exports ticker-log
+   * @name decreaseSpeed
+   * @public
+   * @function
    */
   function decreaseSpeed() {
     if (oConfig.pauseMode) {
@@ -436,8 +508,13 @@
   }
 
   /**
-   * "right" api function
-   * change log container position and alignment of log dom elements
+   * "right" api function.<br>
+   * Change log container position and alignment of log dom elements.
+   *
+   * @exports ticker-log
+   * @name moveRight
+   * @public
+   * @function
    */
   function moveRight() {
     oConfig.align = 'right';
@@ -454,8 +531,13 @@
   }
 
   /**
-   * "left" api function
-   * change log container position and alignment of log dom elements
+   * "left" api function.<br>
+   * Change log container position and alignment of log dom elements.
+   *
+   * @exports ticker-log
+   * @name moveLeft
+   * @public
+   * @function
    */
   function moveLeft() {
     oConfig.align = 'left';
@@ -472,10 +554,15 @@
   }
 
   /**
-   * "enter" api function
-   * update url (window.location) to "save state"
-   * only use config props that have changed
-   * geneate url-friendly, json string to use for "_ticker" param
+   * "enter" api function.<br>
+   * Update url (window.location) to "save state".<br>
+   * Only use config props that have changed.<br>
+   * Generate url-friendly, json string to use for "_ticker" param.
+   *
+   * @exports ticker-log
+   * @name saveConfig
+   * @public
+   * @function
    */
   function saveConfig() {
     var url = window.location.href;
@@ -525,8 +612,13 @@
   }
 
   /**
-   * "pageUp" api function
-   * change starting vertical position (logStartTop) for on-screen logs
+   * "pageUp" api function.<br>
+   * Change starting vertical position (logStartTop) for on-screen logs.
+   *
+   * @exports ticker-log
+   * @name moveUp
+   * @public
+   * @function
    */
   function moveUp() {
     if (oConfig.pauseMode) {
@@ -539,8 +631,13 @@
   }
 
   /**
-   * "pageDown" api function
-   * change starting vertical position (logStartTop) for on-screen logs
+   * "pageDown" api function.<br>
+   * Change starting vertical position (logStartTop) for on-screen logs.
+   *
+   * @exports ticker-log
+   * @name moveDown
+   * @public
+   * @function
    */
   function moveDown() {
     if (oConfig.pauseMode) {
@@ -553,11 +650,17 @@
   }
 
   /**
-   * register (overwrite) macro
-   * for macros 0-8
-   * only an api function...doesn't map to a key
+   * Register (overwrite) macro.<br>
+   * For macros 0-8.<br>
+   * Only an api function...doesn't map to a key.
+   *
    * @param {int} iNumToRegister key in aMacros object to write to
    * @param {function} fn callback function
+   *
+   * @exports ticker-log
+   * @name registerMacro
+   * @public
+   * @function
    */
   function registerMacro(iNumToRegister, fn) {
     if (iNumToRegister === 9) {
@@ -569,10 +672,15 @@
   }
 
   /**
-   * "m" api function
-   * for macro slot 9
-   * show a textarea where macro can be edited
-   * "save" macro when textarea is dismissed
+   * "m" api function.<br>
+   * For macro slot 9.<br>
+   * Show a textarea where macro can be edited.<br>
+   * "save" macro when textarea is dismissed.
+   *
+   * @exports ticker-log
+   * @name macroEdit
+   * @public
+   * @function
    */
   function macroEdit() {
     var sDefaultText = oConfig.sMacro9Code;
@@ -601,10 +709,16 @@
   }
 
   /**
-   * "0-9" api function
-   * also can be called directly
-   * execute macro
+   * "0-9" api function.<br>
+   * Also can be called directly.<br>
+   * Execute macro.
+   *
    * @param {int} iMacroSlot macro in aMacros object to execute
+   *
+   * @exports ticker-log
+   * @name runMacro
+   * @public
+   * @function
    */
   function runMacro(iMacroSlot) {
     if (typeof aMacros[iMacroSlot] === 'function') {
@@ -616,9 +730,14 @@
   }
 
   /**
-   * "Tab" api function
-   * switch to listen to next console channel ("log", "warn", etc)
-   * order is determined by aChannels
+   * "Tab" api function.<br>
+   * Switch to listen to next console channel ("log", "warn", etc).<br>
+   * Order is determined by aChannels.
+   *
+   * @exports ticker-log
+   * @name nextChannel
+   * @public
+   * @function
    */
   function nextChannel() {
     var i = 0,
@@ -633,8 +752,13 @@
   }
 
   /**
-   * "Esc" api function
-   * remove textarea dom element
+   * "Esc" api function.<br>
+   * Remove textarea dom element.
+   *
+   * @exports ticker-log
+   * @name killTextarea
+   * @public
+   * @function
    */
   function killTextarea() {
     var oTickerTextarea = document.getElementById(sTextareaId);
@@ -644,11 +768,16 @@
   }
 
   /**
-   * "end all ticker operations" api function
-   * stop ticker from doing anything
-   * reset url param
-   * reset console object
-   * only an api function...doesn't map to a key
+   * "end all ticker operations" api function.<br>
+   * Stop ticker from doing anything.<br>
+   * Reset url param.<br>
+   * Reset console object.<br>
+   * Only an api function...doesn't map to a key.
+   *
+   * @exports ticker-log
+   * @name restoreAndExit
+   * @public
+   * @function
    */
   function restoreAndExit() {
     window.clearInterval(render_interval);
@@ -666,8 +795,13 @@
   }
 
   /**
-   * reset settings
-   * only an api function...doesn't map to a key
+   * Reset settings.<br>
+   * Only an api function...doesn't map to a key.
+   *
+   * @exports ticker-log
+   * @name reset
+   * @public
+   * @function
    */
   function reset() {
     restoreAndExit();
@@ -1046,6 +1180,7 @@
     _ticker.print = print;
     _ticker.registerMacro = registerMacro;
     _ticker.runMacro = runMacro;
+
     _ticker.macroEdit = macroEdit;
     _ticker.restoreAndExit = restoreAndExit;
     _ticker.reset = reset;
