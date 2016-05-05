@@ -877,7 +877,7 @@
    * parse url parameter and populate oConfig
    */
   function _loadConfigFromUrl() {
-    var value, o,
+    var o,
       sUrlParam = getUrlParamValue('_ticker');
 
     if (sUrlParam === null) {
