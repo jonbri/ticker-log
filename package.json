@@ -4,7 +4,7 @@
   "description": "On-screen VanillaJS logging utility.",
   "main": "ticker.js",
   "scripts": {
-    "serve": "http-server",
+    "serve": "http-server -p 9000",
     "lint": "eslint src/ticker.js",
     "test": "node-qunit-phantomjs index.html",
     "package": "bin/package.sh"
