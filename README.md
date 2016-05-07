@@ -169,7 +169,7 @@ Build:
 ```shell
 npm install
 npm test        # run test suite (qunit, phantomjs)
-npm lint        # eslint
+npm run lint    # eslint
 npm run serve   # http://localhost:9000/index.html
 npm run package # build and populate dist
 ```
