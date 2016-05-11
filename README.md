@@ -18,6 +18,8 @@ These commands facilitate *interaction-style* testing which entails:
 TODO: screen-shot
 ```
 
+Play with ticker-log: http://jonbri.github.io/ticker-log/
+
 ## Example Usage
 
 Load `dist/ticker.min.js` and press ``` ` ``` `t` to see a ticker log.
