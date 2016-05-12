@@ -56,13 +56,6 @@ function foobar() {
 }
 ```
 
-## Features
-
-* Configurable via API and URL parameters
-* Swap log view with textarea for easy copy/pasting
-* Lightweight, no dependencies
-* Macro system for run-time, on-demand, static function execution
-
 ## Motivation
 
 Seeing a targeted sub-set of log output on-screen can reduce reliance on web debuggers such as dev-tools and firefox while you are playing with your app.
@@ -71,6 +64,13 @@ Sometimes it is not convenient to look at your browser's console log:
 * when developing on a tablet or phone
 * debugging timing issues that involve user interaction
 * having casual, easy-to-read "special-event" declarations
+
+## Features
+
+* Configurable via API and URL parameters
+* Swap log view with textarea for easy copy/pasting
+* Lightweight, no dependencies
+* Macro system for run-time, on-demand, static function execution
 
 ## Installation
 
