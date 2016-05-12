@@ -16,6 +16,12 @@
  */
 (function ticker_go() {
 
+  // exit if dom not found
+  if (!document.body) {
+      console.warn('ticker-log: no dom found, exiting');
+      return;
+  }
+
 
   //////////////////////////////////
   // variables global to ticker
