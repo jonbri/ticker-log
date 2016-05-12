@@ -165,6 +165,13 @@ ticker.registerMacro(0, function() {
 
 Macro 9 is reserved for an on-screen editing option. Press `` `m `` and a textarea will appear. Enter JavaScript code to be `eval`ed and press `` `m `` again to "register" the macro.
 
+## Global-state Impact
+
+* `window.history.pushState` and `window.location.replace`
+* `window._ticker`
+* `console` functions (log, debug, etc)
+
+
 ## Technical
 Build:
 

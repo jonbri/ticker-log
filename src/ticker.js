@@ -5,12 +5,6 @@
  * {@link https://github.com/jonbri/ticker-log}<br>
  * {@link https://www.npmjs.com/package/ticker-log}<br><br>
  *
- * Areas where ticker-log affects global state:
- * <li>setTimout(?)/setInterval
- * <li>url string (window.history.pushState and window.location.replace)
- * <li>window._ticker
- * <li>console globals
- *
  * @module ticker-log
  * @author Jonathan Brink <jonathandavidbrink@gmail.com>
  */
