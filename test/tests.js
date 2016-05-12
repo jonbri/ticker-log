@@ -93,6 +93,21 @@ window.ticker_runTests = function() {
         assert.strictEqual(getTextarea().length, 0, "no output textarea present afterwards");
     });
 
+    QUnit.test("output all", function (assert) {
+        // at the start there is no output textarea
+        assert.strictEqual(getTextarea().length, 0, "no output textarea present");
+
+        // show a log div and output textarea
+        console.log('`', 'outputAll 0');
+        window._ticker.print('outputAll 1')
+        window._ticker.outputAll();
+
+        // make sure the textarea shows with the correct content
+        assert.strictEqual(getTextarea().length, 1, "output textarea shows");
+        assert.ok(getTextarea().val().indexOf("outputAll 0") !== -1, "console.log text shows");
+        assert.ok(getTextarea().val().indexOf("outputAll 1") !== -1, "print api text shows");
+    });
+
     QUnit.test("dump", function(assert) {
         // make sure no logging showing
         assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");

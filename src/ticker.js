@@ -274,7 +274,6 @@
    *
    * @param {text} text text to put in log dom ref
    * @param {object} o configuration object
-   *   overrideSilentMode - still print, even if silent mode is on
    *   internal - do not track in aBuffer
    *
    * @exports ticker-log
@@ -283,16 +282,17 @@
    * @function
    */
   function print(text, o) {
-    // TODO: move this so it's still in the buffer
-    if (oConfig.silentMode === true && o && !o.overrideSilentMode) {
+    o = o || {};
+
+    if (oConfig.silentMode === true) {
       return;
     }
 
-    if (o && o.textarea) {
+    if (o.textarea) {
       _renderTextarea(text);
     }
 
-    if (o && o.internal !== true) {
+    if (o.internal !== true) {
       aBuffer.unshift(text);
     }
     aRenderBuffer.unshift(text);
@@ -313,9 +313,7 @@
       _nonSavedPrint('pauseMode');
       return;
     }
-    print('test: ' + new Date(), {
-      overrideSilentMode: true
-    });
+    print('test: ' + new Date());
   }
 
   /**
@@ -337,9 +335,7 @@
     for (var i = 0; i < aHelp.length; i++) {
       var text = aHelp[i];
       text = text.replace(/\_/g, '&nbsp;');
-      print(text, {
-        overrideSilentMode: true
-      });
+      print(text);
     }
   }
 
@@ -822,7 +818,6 @@
    */
   function _nonSavedPrint(text) {
     print(text, {
-      overrideSilentMode: false,
       internal: true
     });
   }

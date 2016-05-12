@@ -98,7 +98,7 @@ Change the vertical starting position with `` `<pageUp> `` and `` `<pageDown> ``
 
 Pause the ticker with `` `p `` and remove all ticker lines with `` `k ``.
 
-Show the current ticker log in a textarea (useful for copy/pasting) with `` `o ``.
+Show the current ticker log in a textarea (useful for copy/pasting) with `` `o ``. Show _all_ the accrued log output with `` `l ``.
 
 Embed the current configuration settings in the browser-window's url with `` `<enter> `` and clear those settings with `` `<enter> ``.
 
