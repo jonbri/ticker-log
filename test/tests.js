@@ -46,15 +46,15 @@ window.ticker_runTests = function() {
         assert.strictEqual(howManyLogDivs(), 0, "zero log divs are present");
 
         // add one log div
-        jQuery('#testButton').trigger("click");
+        console.log('`', 'log 0');
         assert.strictEqual(howManyLogDivs(), 1, "one log div is present");
 
         // clear log divs
         window._ticker.kill();
 
         // add two log divs
-        jQuery('#testButton').trigger("click");
-        jQuery('#testButton').trigger("click");
+        console.log('`', 'log 0');
+        console.log('`', 'log 1');
         assert.strictEqual(howManyLogDivs(), 2, "two log divs are present");
     });
 
@@ -79,12 +79,12 @@ window.ticker_runTests = function() {
         assert.strictEqual(getTextarea().length, 0, "no output textarea present");
 
         // show a log div and output textarea
-        jQuery('#testButton').trigger("click");
+        console.log('`', 'lorum ipsum');
         window._ticker.output();
 
         // make sure the textarea shows with the correct content
         assert.strictEqual(getTextarea().length, 1, "output textarea shows");
-        assert.strictEqual(getTextarea().val().indexOf("test: "), 0, "output textarea has correct content");
+        assert.strictEqual(getTextarea().val().indexOf("lorum ipsum"), 0, "output textarea has correct content");
 
         // now hide the textarea
         window._ticker.output();
@@ -113,10 +113,10 @@ window.ticker_runTests = function() {
         assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");
 
         // show configuration on screen
-        jQuery('#testButton').trigger("click");
+        window._ticker.dump();
 
         // make sure config shows
-        assert.ok(howManyLogDivs() > 0, "configuration is showing");
+        assert.strictEqual(getTextarea().length, 1, "output textarea shows");
     });
 
     QUnit.test("help", function(assert) {
@@ -124,14 +124,14 @@ window.ticker_runTests = function() {
         assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");
 
         // show configuration on screen
-        jQuery('#helpButton').trigger("click");
+        window._ticker.help();
 
         // make sure config shows
         assert.ok(howManyLogDivs() > 0, "help is showing");
     });
 
     QUnit.test("pause", function(assert) {
-        jQuery('#pauseButton').trigger("click");
+        window._ticker.pause();
         assert.strictEqual(window._ticker._oConfig.pauseMode, true, 'test pauseMode property');
     });
 
@@ -148,15 +148,15 @@ window.ticker_runTests = function() {
         isLeft();
 
         // should move to right
-        jQuery('#moveRightButton').trigger("click");
+        window._ticker.moveRight();
         isRight();
 
         // move back to left
-        jQuery('#moveLeftButton').trigger("click");
+        window._ticker.moveLeft();
         isLeft();
 
         // should still be left
-        jQuery('#moveLeftButton').trigger("click");
+        window._ticker.moveLeft();
         isLeft();
     });
 

@@ -1,38 +1,3 @@
-var aButtons = [
-    'test',
-    'help',
-    'pause',
-    'kill',
-    'output',
-    'outputAll',
-    'dump',
-    'moveUp',
-    'moveDown',
-    'moveRight',
-    'moveLeft',
-    'increaseSpeed',
-    'decreaseSpeed'
-];
-
-// initialize test page
-// setup button listeners
-// setup qunit auto-run
-
-// most buttons match their api names...
-aButtons.forEach(function(sButton) {
-    jQuery('#' + sButton + 'Button').click(function() {
-        window._ticker[sButton].apply(this, []);
-    });
-});
-
-// macro
-jQuery('#registerMacroButton').click(function() {
-    window._ticker.registerMacro(1, function() {
-        console.log('`', 'in the macro');
-        // window._ticker.print('hi', {textarea: true});
-    });
-});
-
 jQuery('#runTestsButton').click(function() {
     window.ticker_runTests();
 });
