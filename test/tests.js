@@ -233,6 +233,25 @@ window.ticker_runTests = function() {
         assert.strictEqual('error', window._ticker._oConfig.channel, 'after change channel we are at error');
     });
 
+    QUnit.test("filtering - regex", function(assert) {
+        window._ticker.filter(/^hello/);
+        console.log('`', 'hello foo');
+        console.log('`', 'bye foo');
+        console.log('`', 'bye hello foo');
+        assert.strictEqual(howManyLogDivs(), 1, "only match rendered");
+        assert.ok(/hello foo/.test(getText(0)), "correct text");
+    });
+
+    QUnit.test("filtering - string", function(assert) {
+        window._ticker.filter("hello");
+        console.log('`', 'hello foo');
+        console.log('`', 'bye foo');
+        console.log('`', 'bye hello foo');
+        assert.strictEqual(howManyLogDivs(), 2, "two matches since string can't have anchor");
+        assert.ok(/hello foo/.test(getText(0)), "correct text 0");
+        assert.ok(/bye hello foo/.test(getText(1)), "correct text 1");
+    });
+
     QUnit.test("exit", function(assert) {
         assert.ok('true');
         setTimeout(function() {

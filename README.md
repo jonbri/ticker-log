@@ -71,6 +71,7 @@ Sometimes it is not convenient to look at your browser's console log:
 * Swap log view with textarea for easy copy/pasting
 * Lightweight, no dependencies
 * Macro system for run-time, on-demand, static function execution
+* Regex log filtering
 
 ## Installation
 
@@ -123,18 +124,22 @@ http://localhost/index.html?_ticker={"interval":275,"channel":"debug"}
 ```
 
 ### API
-Most on-screen actions can be scripted by using the global `_ticker` object. For example:
+Most on-screen actions can be scripted by using the global `_ticker` object.
 
-    window._ticker.help();          # show help screen
-    window._ticker.increaseSpeed(); # increase speed
-    window._ticker.decreaseSpeed(); # decrease speed
-    window._ticker.moveUp();        # change starting position a little higher
-    window._ticker.moveDown();      # change starting position a little lower
-    window._ticker.moveLeft();      # move logs to the left of the screen (the default)
-    window._ticker.moveRight();     # move logs to the right of the screen
-    window._ticker.pause();         # pause ticker tape
-    window._ticker.kill();          # remove all ticker logs from screen
-    window._ticker.dump();          # show all configuration
+```
+window._ticker.help();          # show help screen
+window._ticker.increaseSpeed(); # increase speed
+window._ticker.decreaseSpeed(); # decrease speed
+window._ticker.moveUp();        # change starting position a little higher
+window._ticker.moveDown();      # change starting position a little lower
+window._ticker.moveLeft();      # move logs to the left of the screen (the default)
+window._ticker.moveRight();     # move logs to the right of the screen
+window._ticker.pause();         # pause ticker tape
+window._ticker.kill();          # remove all ticker logs from screen
+window._ticker.dump();          # show all configuration
+```
+
+Additional API is covered in the following sections.
 
 ### Channels
 The *channels* that feed ticker's on-screen rendering are:
@@ -155,7 +160,7 @@ Macros 0-8 are reserved for api-driven macros:
 
 ```js
 var variableToTrack;
-ticker.registerMacro(0, function() {
+window._ticker.registerMacro(0, function() {
     // output values of variables in closure scope
     console.log('`', 'variableToTrack: ' + variableToTrack);
 });
@@ -164,6 +169,19 @@ ticker.registerMacro(0, function() {
 ```
 
 Macro 9 is reserved for an on-screen editing option. Press `` `m `` and a textarea will appear. Enter JavaScript code to be `eval`ed and press `` `m `` again to "register" the macro.
+
+### Filtering
+Filter all log output by string:
+
+```js
+window._ticker.filter('string subset match');
+```
+
+or regex:
+
+```js
+window._ticker.filter(/^startsWith/);
+```
 
 ## Global-state Impact
 

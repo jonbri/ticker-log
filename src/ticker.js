@@ -88,6 +88,9 @@
     // keep references to "addEventListener" functions for later removal
     fnKeyDown, fnKeyUp,
 
+    // filter logging, populated via "filter" api
+    fnFilterFunction,
+
     // help string
     aHelp = [
       '___________________________________',
@@ -282,7 +285,15 @@
   function print(text, o) {
     o = o || {};
 
+    if (text === undefined || text === null) {
+      return;
+    }
+
     if (oConfig.silentMode === true) {
+      return;
+    }
+
+    if (typeof fnFilterFunction === 'function' && fnFilterFunction(text) !== true) {
       return;
     }
 
@@ -805,6 +816,33 @@
     ticker_go();
   }
 
+  /**
+   * "filter" api function.<br>
+   * Only an api function...doesn't map to a key.
+   *
+   * @param {regex|string} matcher either a string or regex to filter log by
+   *
+   * @exports ticker-log
+   * @name filter
+   * @public
+   * @function
+   */
+  function filter(matcher) {
+    if (!matcher) {
+        return;
+    }
+
+    if (typeof matcher === 'string') {
+      fnFilterFunction = function(s) {
+          return s.indexOf(matcher) !== -1;
+      };
+    } else if (matcher instanceof RegExp) {
+      fnFilterFunction = function(s) {
+          return matcher.test(s);
+      };
+    }
+  }
+
 
   //////////////////////////////////
   // domain/private functions
@@ -1176,6 +1214,7 @@
     _ticker.print = print;
     _ticker.registerMacro = registerMacro;
     _ticker.runMacro = runMacro;
+    _ticker.filter = filter;
 
     _ticker.macroEdit = macroEdit;
     _ticker.restoreAndExit = restoreAndExit;
