@@ -221,16 +221,28 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("channels", function(assert) {
-        assert.strictEqual('log', window._ticker._oConfig.channel, 'default channel is log');
+        assert.strictEqual('log', window._ticker._oConfig.channels[0], 'default channel is log');
         window._ticker.nextChannel();
-        assert.strictEqual('debug', window._ticker._oConfig.channel, 'after change channel we are at debug');
+        assert.strictEqual('debug', window._ticker._oConfig.channels[0], 'after change channel we are at debug');
 
         window._ticker.config({
-            channel: 'warn'
+            channels: ['warn']
         });
-        assert.strictEqual('warn', window._ticker._oConfig.channel, 'explicitly set channel to warn');
+        assert.strictEqual('warn', window._ticker._oConfig.channels[0], 'explicitly set channel to warn');
         window._ticker.nextChannel();
-        assert.strictEqual('error', window._ticker._oConfig.channel, 'after change channel we are at error');
+        assert.strictEqual('error', window._ticker._oConfig.channels[0], 'after change channel we are at error');
+    });
+
+    QUnit.test("channels - multiple", function(assert) {
+        window._ticker.config({
+            channels: ['warn', 'error']
+        });
+
+        console.warn('`', 'warn');
+        console.log('`', 'log');
+        console.error('`', 'error');
+
+        assert.strictEqual(howManyLogDivs(), 2, "only warn and error logs show");
     });
 
     QUnit.test("filtering - regex", function(assert) {

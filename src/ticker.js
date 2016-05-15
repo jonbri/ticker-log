@@ -30,7 +30,7 @@
       logStartTop: 100,
       align: 'left',
       requireBackTick: true,
-      channel: 'log'
+      channels: ['log']
     },
 
     // global (to ticker) config
@@ -75,8 +75,8 @@
       'interval',
       'logStartTop',
       'align',
-      'requireBackTick',
-      'channel'
+      'requireBackTick'
+      // channels has special handling
     ],
 
     // dom id of the "output" textarea
@@ -247,6 +247,15 @@
     }
   }
 
+  /**
+   * determine whether passed-in object is an array
+   * @param {object} o potential array
+   * @returns {boolean} whether object is of type array
+   */
+  function isArray(o) {
+    return Object.prototype.toString.call(o) === '[object Array]';
+  }
+
 
   //////////////////////////////////
   // api functions
@@ -264,8 +273,18 @@
    * @function
    */
   function config(o) {
+    var bChannels = isArray(o.channels);
+
+    if (bChannels) {
+      o.previousChannels = oConfig.channels;
+    }
+
     for (var sKey in o) {
       oConfig[sKey] = o[sKey];
+    }
+
+    if (bChannels) {
+      _listenToChannels();
     }
   }
 
@@ -293,7 +312,8 @@
       return;
     }
 
-    if (typeof fnFilterFunction === 'function' && fnFilterFunction(text) !== true) {
+    if (typeof fnFilterFunction === 'function' &&
+            fnFilterFunction(text) !== true) {
       return;
     }
 
@@ -454,7 +474,8 @@
     aConfigurableKeys.forEach(function(sKey) {
       s += (sKey + ': ' + oConfig[sKey]) + '\n';
     });
-    s += 'listening to console.' + oConfig.channel + '\n';
+    s += 'listening to console: ' + oConfig.channels + '\n';
+
     _toggleTextarea({
       text: s,
       source: KEYS.D
@@ -591,6 +612,13 @@
         }
         s += ',';
       });
+
+      // save channels
+      if (oConfig.channels.length !== 1 && oConfig.channels[0] !== 'log') {
+        s += '%22channels%22:';
+        s += '%22' + oConfig.channels + '%22';
+      }
+
       s += '}';
       s = s.replace(/,}/, '}');
       return s;
@@ -749,14 +777,27 @@
    */
   function nextChannel() {
     var i = 0,
-      sCurrentChannel = oConfig.channel;
+      sCurrentChannel = oConfig.channels[0];
+
+    // if there are multiple channels being used
+    // just set it up so "log" becomes the next channel
+    if (oConfig.channels.length > 1) {
+      sCurrentChannel = 'trace'; // trace + 1 => log
+    }
+
+    // set "i" to be the index of the array
     for (; i < aChannels.length; i++) {
       if (aChannels[i] === sCurrentChannel) {
         break;
       }
     }
-    _listenToChannel(aChannels[(i + 1) % aChannels.length]);
-    print('listening to ' + oConfig.channel);
+
+    oConfig.previousChannels = oConfig.channels;
+    oConfig.channels = [aChannels[(i + 1) % aChannels.length]];
+    _listenToChannels();
+
+    // there will only be one channel at this point
+    print('listening to ' + oConfig.channels[0]);
   }
 
   /**
@@ -927,7 +968,11 @@
     // overlay url config onto global config object
     if (typeof o === 'object') {
       for (var key in o) {
-        oConfig[key] = o[key];
+        if (key === 'channels') {
+          oConfig.channels = o[key].split(',');
+        } else {
+          oConfig[key] = o[key];
+        }
       }
     }
   }
@@ -1040,35 +1085,38 @@
   }
 
   /**
-   * change config to use sChannel (log, warn, etc)
-   * @param {string} sChannel the channel to listen to
+   * "tune in" to the channel defined by configuration
+   * perform "console" overrides (log, warn, etc)
+   * cleanup previously listened to channel(s)
+   * overwrite "channels" config
    */
-  function _listenToChannel(sChannel) {
-    var sCurrentChannel = oConfig.channel;
-
-    // revert current channel
-    if (sCurrentChannel &&
-        typeof oChannels[sCurrentChannel].fnOriginal === 'function') {
-      console[sCurrentChannel] = oChannels[sCurrentChannel].fnOriginal;
+  function _listenToChannels() {
+    // revert previous channels
+    if (isArray(oConfig.previousChannels)) {
+      oConfig.previousChannels.forEach(function(sChannel) {
+        if (typeof oChannels[sChannel].fnOriginal === 'function') {
+          console[sChannel] = oChannels[sChannel].fnOriginal;
+        }
+      });
     }
 
-    oConfig.channel = sChannel;
+    oConfig.channels.forEach(function(sChannel) {
+      // monkey-patch and chain console function
+      console[sChannel] = function(firstArg, secondArg) {
+        var sText = firstArg;
+        if (firstArg === '`') {
+          sText = secondArg;
+        }
 
-    // monkey-patch and chain console function
-    console[sChannel] = function(firstArg, secondArg) {
-      var sText = firstArg;
-      if (firstArg === '`') {
-        sText = secondArg;
-      }
-
-      if (oConfig.requireBackTick === false) {
-        print(sText);
-      } else if (oConfig.requireBackTick === true && firstArg === '`') {
-        print(sText);
-      } else {
-        oChannels[sChannel].fnOriginal.apply(this, [arguments]);
-      }
-    };
+        if (oConfig.requireBackTick === false) {
+          print(sText);
+        } else if (oConfig.requireBackTick === true && firstArg === '`') {
+          print(sText);
+        } else {
+          oChannels[sChannel].fnOriginal.apply(this, [arguments]);
+        }
+      };
+    });
   }
 
   /**
@@ -1177,8 +1225,8 @@
   _loadConfigFromUrl();
   _postConfigApply();
 
-  // start listening to default channel
-  _listenToChannel(oConfig.channel);
+  // manage proxying of console
+  _listenToChannels();
 
   // keep polling to see if flushing the
   // log buffer to screen is possible
