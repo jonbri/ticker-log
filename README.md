@@ -153,6 +153,8 @@ Use a ``` ` ``` as the first argument to the current channel's console function.
 
 To allow *all* of the information passed to that console function to funnel to ticker set the `requireBacktick` configuration property to `false`.
 
+To show all console logging using the `listenToEverything` api function.
+
 ### Macros
 Macros are bits of code you want to run at ad-hoc times. There are 10 "slots" available and stored in keys 0-9.
 

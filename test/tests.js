@@ -264,6 +264,23 @@ window.ticker_runTests = function() {
         assert.ok(/bye hello foo/.test(getText(1)), "correct text 1");
     });
 
+    QUnit.test("listen to everything", function(assert) {
+        window._ticker.listenToEverything();
+
+        console.log('`', 'hello log with backtick');
+        console.debug('`', 'hello debug with backtick');
+        console.warn('`', 'helllo warn with backtick');
+        console.error('`', 'hello error with backtick');
+        console.trace('`', 'hello trace with backtick');
+        console.log('hello log no backtick');
+        console.debug('hello debug no backtick');
+        console.warn('helllo warn no backtick');
+        console.error('hello error no backtick');
+        console.trace('hello trace no backtick');
+
+        assert.strictEqual(howManyLogDivs(), 10, "all logs show");
+    });
+
     QUnit.test("exit", function(assert) {
         assert.ok('true');
         setTimeout(function() {

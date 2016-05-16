@@ -884,6 +884,27 @@
     }
   }
 
+  /**
+   * "listenToEverything" api function.<br>
+   * Only an api function...doesn't map to a key.
+   *
+   * Listen all console invocations:
+   *   - all channels
+   *   - regardless if backtick provided
+   *
+   * @exports ticker-log
+   * @name listenToEverything
+   * @public
+   * @function
+   */
+  function listenToEverything() {
+    config({
+      requireBackTick: false,
+      channels: aChannels
+    });
+    _listenToChannels();
+  }
+
 
   //////////////////////////////////
   // domain/private functions
@@ -1263,6 +1284,7 @@
     _ticker.registerMacro = registerMacro;
     _ticker.runMacro = runMacro;
     _ticker.filter = filter;
+    _ticker.listenToEverything = listenToEverything;
 
     _ticker.macroEdit = macroEdit;
     _ticker.restoreAndExit = restoreAndExit;
