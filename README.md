@@ -185,6 +185,14 @@ or regex:
 window._ticker.filter(/^startsWith/);
 ```
 
+or function:
+
+```js
+window._ticker.filter(function(s) {
+    // do something with log text
+});
+```
+
 ## Global-state Impact
 
 * `window.history.pushState` and `window.location.replace`

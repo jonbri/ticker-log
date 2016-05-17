@@ -264,6 +264,18 @@ window.ticker_runTests = function() {
         assert.ok(/bye hello foo/.test(getText(1)), "correct text 1");
     });
 
+    QUnit.test("filtering - function", function(assert) {
+        var iMatches = 0;
+        window._ticker.filter(function(s) {
+            if (s === 'hello') {
+                iMatches++;
+            }
+        });
+        console.log('`', 'hello');
+        console.log('`', 'goodbye');
+        assert.strictEqual(iMatches, 1, "only hello matched");
+    });
+
     QUnit.test("listen to everything", function(assert) {
         window._ticker.listenToEverything();
 

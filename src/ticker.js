@@ -881,6 +881,8 @@
       fnFilterFunction = function(s) {
           return matcher.test(s);
       };
+    } else if (typeof matcher === 'function') {
+      fnFilterFunction = matcher;
     }
   }
 
