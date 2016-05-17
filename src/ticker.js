@@ -380,7 +380,7 @@
   function kill() {
     oConfig.pauseMode = false;
     aRenderBuffer = [];
-    var aLogNodes = document.querySelectorAll('._ticker');
+    var aLogNodes = document.querySelectorAll('._ticker_log');
     pseudoForEach(aLogNodes, function(i, oLogNode) {
       oLogNode.parentNode.removeChild(oLogNode);
     });
@@ -1087,7 +1087,6 @@
    */
   function _renderText(sText) {
     var div = document.createElement('div');
-    div.className = '_ticker';
     assignStyle(div, oConfig.logStyle);
     div.className += ' _ticker_log';
     div.innerHTML = sText;
