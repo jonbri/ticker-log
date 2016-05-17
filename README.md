@@ -97,7 +97,7 @@ Move the horizontal position of the logs with `` `<left> `` and `` `<right> ``.
 
 Change the vertical starting position with `` `<pageUp> `` and `` `<pageDown> ``.
 
-Pause the ticker with `` `p `` and remove all ticker lines with `` `k ``.
+Pause the ticker with `` `p `` (or click on a log) and remove all ticker lines with `` `k ``.
 
 Show the current ticker log in a textarea (useful for copy/pasting) with `` `o ``. Show _all_ the accrued log output with `` `l ``.
 

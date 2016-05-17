@@ -938,6 +938,8 @@
             var iCurrentTop = parseInt(getComputedStyle(oLogNode).top, 10);
             if (iCurrentTop <= 0) {
               oLogNode.parentNode.removeChild(oLogNode);
+              oLogNode = null;
+              delete oLogNode;
             } else {
               var sTop = (iCurrentTop - oLogNode.offsetHeight) + 'px';
               oLogNode.style.top = sTop;
@@ -1080,7 +1082,7 @@
   }
 
   /**
-   * create log dom element
+   * create and append to body a log dom element
    * @param {string} sText the log text
    */
   function _renderText(sText) {
@@ -1089,11 +1091,19 @@
     assignStyle(div, oConfig.logStyle);
     div.className += ' _ticker_log';
     div.innerHTML = sText;
-    var iText = _calculateTop();
-    if (iText < (oConfig.logStartTop / 2)) {
-      iText = oConfig.logStartTop;
+    var iTop = _calculateTop();
+    if (iTop < (oConfig.logStartTop / 2)) {
+      iTop = oConfig.logStartTop;
     }
-    div.style.top = iText + 'px';
+    div.style.top = iTop + 'px';
+
+    // pause log on click
+    // div will be destroyed when it reaches off-screen
+    // which will release the event listener
+    div.addEventListener('click', function() {
+      pause();
+    });
+
     document.body.appendChild(div);
   }
 
