@@ -358,7 +358,6 @@
     oConfig.pauseMode = false;
     kill();
 
-    oConfig.interval = oDEFAULTS.interval;
     oConfig.logStartTop = oDEFAULTS.logStartTop;
 
     for (var i = 0; i < aHelp.length; i++) {
