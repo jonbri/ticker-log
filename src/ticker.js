@@ -939,7 +939,6 @@
             if (iCurrentTop <= 0) {
               oLogNode.parentNode.removeChild(oLogNode);
               oLogNode = null;
-              delete oLogNode;
             } else {
               var sTop = (iCurrentTop - oLogNode.offsetHeight) + 'px';
               oLogNode.style.top = sTop;
