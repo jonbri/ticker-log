@@ -7,6 +7,10 @@ function howManyLogDivs() {
     return jQuery('._ticker_log').length;
 }
 
+function howManyTextareas() {
+    return document.querySelectorAll('#_tickerTextarea').length;
+}
+
 function getText(iLog) {
     return jQuery('._ticker_log')[iLog].innerHTML;
 }
@@ -72,6 +76,16 @@ window.ticker_runTests = function() {
 
         // now hide the textarea
         window._ticker.output();
+    });
+
+    QUnit.test("print api -> make sure textarea's are cleaned up", function(assert) {
+        window._ticker.print('one', {
+            textarea: true
+        });
+        window._ticker.print('two', {
+            textarea: true
+        });
+        assert.strictEqual(howManyTextareas(), 1, "only 1 textarea");
     });
 
     QUnit.test("output", function (assert) {

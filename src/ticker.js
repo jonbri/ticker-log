@@ -1160,7 +1160,13 @@
   function _renderTextarea(sText) {
     var heightOfPage = window.innerHeight,
       widthOfPage = window.innerWidth,
-      textareaDiv = document.createElement('div');
+      textareaDiv;
+
+    if (document.getElementById(sTextareaId)) {
+      killTextarea();
+    }
+
+    textareaDiv = document.createElement('div');
     textareaDiv.id = sTextareaId;
     textareaDiv.style.position = 'fixed';
     textareaDiv.style.left = 0;
