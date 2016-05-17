@@ -71,19 +71,19 @@ setInterval(function() {
 }, 250);
 
 // show "watched" variable
-window._ticker.registerMacro('1', function() {
+window._ticker.registerMacro(1, function() {
   console.log('`', "sWatchedVariable's value: " + sWatchedVariable);
 });
 
 // show text in textarea
-window._ticker.registerMacro('2', function() {
+window._ticker.registerMacro(2, function() {
   window._ticker.print('hello textarea.\rPress `<esc> to remove', {
     textarea: true
   });
 });
 
 // flood ticker (buffering occurs)
-window._ticker.registerMacro('3', function() {
+window._ticker.registerMacro(3, function() {
   function generateStars(i) {
     return (i === 0) ? '' : "*" + generateStars(i - 1);
   }
