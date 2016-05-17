@@ -193,6 +193,13 @@ window._ticker.filter(function(s) {
 });
 ```
 
+Pair filtering with `listenToEverything` to broadly filter:
+
+```js
+window._ticker.listenToEverything();
+window._ticker.filter(someErrorCode);
+```
+
 ## Global-state Impact
 
 * `window.history.pushState` and `window.location.replace`
