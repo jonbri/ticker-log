@@ -200,6 +200,14 @@ window._ticker.listenToEverything();
 window._ticker.filter(someErrorCode);
 ```
 
+### Custom action key
+Use a custom key rather than the default ``` `` ``` key for keyboard commands:
+```js
+window._ticker.config({
+    defaultBacktickKeys: [192, 90] // ` and Z
+});
+```
+
 ## Global-state Impact
 
 * `window.history.pushState` and `window.location.replace`

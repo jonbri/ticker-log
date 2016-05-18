@@ -1008,8 +1008,8 @@
     fnKeyDown = function(e) {
       if (keyIsDown === false) {
         // catch the ` key
-        if (e.keyCode === KEYS.BackTick) {
-          keyIsDown=true;
+        if (oConfig.defaultBacktickKeys.indexOf(e.keyCode) !== -1) {
+          keyIsDown = true;
         }
       }
       if (keyIsDown !== true) {
@@ -1245,6 +1245,11 @@
   // execution starts
   // until this time, everything in this file
   // has just been variable and function declarations
+
+  // additional settings tweaks
+  // user can override using '`'
+  // as the main keyboard interface key
+  oDEFAULTS.defaultBacktickKeys = [KEYS.BackTick];
 
   // fill oChannels object
   aChannels.forEach(function(sChannel) {
