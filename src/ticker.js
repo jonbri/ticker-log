@@ -647,15 +647,15 @@
   }
 
   /**
-   * "pageUp" api function.<br>
+   * "pageDown" api function.<br>
    * Change starting vertical position (logStartTop) for on-screen logs.
    *
    * @exports ticker-log
-   * @name moveUp
+   * @name increaseLogStartTop
    * @public
    * @function
    */
-  function moveUp() {
+  function increaseLogStartTop() {
     if (oConfig.pauseMode) {
       _nonSavedPrint('pauseMode');
       return;
@@ -666,15 +666,15 @@
   }
 
   /**
-   * "pageDown" api function.<br>
+   * "pageUp" api function.<br>
    * Change starting vertical position (logStartTop) for on-screen logs.
    *
    * @exports ticker-log
-   * @name moveDown
+   * @name decreaseLogStartTop
    * @public
    * @function
    */
-  function moveDown() {
+  function decreaseLogStartTop() {
     if (oConfig.pauseMode) {
       _nonSavedPrint('pauseMode');
       return;
@@ -1039,8 +1039,8 @@
       actionMap[KEYS.Down] = decreaseSpeed;
       actionMap[KEYS.Right] = moveRight;
       actionMap[KEYS.Left] = moveLeft;
-      actionMap[KEYS.PageDown] = moveDown;
-      actionMap[KEYS.PageUp] = moveUp;
+      actionMap[KEYS.PageDown] = decreaseLogStartTop;
+      actionMap[KEYS.PageUp] = increaseLogStartTop;
       actionMap[KEYS.Enter] = saveConfig;
       actionMap[KEYS.Tab] = nextChannel;
       actionMap[KEYS.Esc] = killTextarea;
@@ -1293,8 +1293,8 @@
     _ticker.output = output;
     _ticker.outputAll = outputAll;
     _ticker.dump = dump;
-    _ticker.moveDown = moveDown;
-    _ticker.moveUp = moveUp;
+    _ticker.moveDown = increaseLogStartTop;
+    _ticker.moveUp = decreaseLogStartTop;
     _ticker.moveLeft = moveLeft;
     _ticker.moveRight = moveRight;
     _ticker.increaseSpeed = increaseSpeed;
