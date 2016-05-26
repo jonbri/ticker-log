@@ -77,6 +77,7 @@
       'align',
       'requireBackTick'
       // channels has special handling
+      // defaultBacktickKeys has special handling
     ],
 
     // dom id of the "output" textarea
@@ -618,6 +619,13 @@
         s += '%22' + oConfig.channels + '%22';
       }
 
+      // save defaultBacktickKeys
+      if (!(oConfig.defaultBacktickKeys.length === 1 &&
+              oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
+        s += '%22defaultBacktickKeys%22:';
+        s += '%22' + oConfig.defaultBacktickKeys + '%22';
+      }
+
       s += '}';
       s = s.replace(/,}/, '}');
       return s;
@@ -993,6 +1001,10 @@
       for (var key in o) {
         if (key === 'channels') {
           oConfig.channels = o[key].split(',');
+        } else if (key === 'defaultBacktickKeys') {
+          oConfig.defaultBacktickKeys = o[key].split(',').map(function(s) {
+            return parseInt(s);
+          });
         } else {
           oConfig[key] = o[key];
         }
@@ -1007,7 +1019,7 @@
   function _setupListeners() {
     fnKeyDown = function(e) {
       if (keyIsDown === false) {
-        // catch the ` key
+        // catch the ` (and potentially other modifier) key(s)
         if (oConfig.defaultBacktickKeys.indexOf(e.keyCode) !== -1) {
           keyIsDown = true;
         }
