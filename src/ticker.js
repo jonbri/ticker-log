@@ -264,7 +264,15 @@
   /**
    * Overlay object over configuration object.<br>
    * Only an api function...doesn't map to a key.<br>
-   * Public+private way of setting configuration properties.
+   * Public+private way of setting configuration properties.<br><br>
+   *
+   * Example:<br>
+   * <pre>
+   * // change log speed to 400
+   * window._ticker.config({
+   *   interval: 400
+   * });
+   * </pre>
    *
    * @param {object} o property/value map to apply
    *
@@ -291,11 +299,28 @@
 
   /**
    * Print log div to screen.<br>
-   * Only an api function...doesn't map (directly) to a key.
+   * Only an api function...doesn't map (directly) to a key.<br><br>
    *
-   * @param {text} text text to put in log dom ref
+   * A configuration object can be passed as the second argument:
+   * <table>
+   * <tr>
+   * <th>key<th>value
+   * <tr>
+   * <th>overrideSilentMode</th><td>still print, even if silent mode is on
+   * <tr>
+   * <th>internal<td>do not track in aBuffer
+   * </table>
+   * <br>
+   *
+   * Example:<br>
+   * <pre>
+   * // show log on-screen
+   * window._ticker.print('lorum ipsum');
+   * </pre>
+   * <br>
+   *
+   * @param {string} text innerHTML for log dom ref
    * @param {object} o configuration object
-   *   internal - do not track in aBuffer
    *
    * @exports ticker-log
    * @name print
@@ -409,8 +434,7 @@
    * Show log text in the "output textarea".
    *
    * @param {boolean} bAll whether to show all logs ever,
-   *   or just the current on-screen ones
-   *   default: false
+   *   OR just the current on-screen ones (default: false)
    *
    * @exports ticker-log
    * @name output
@@ -716,7 +740,7 @@
 
   /**
    * "m" api function.<br>
-   * For macro slot 9.<br>
+   * For macro 9.<br>
    * Show a textarea where macro can be edited.<br>
    * "save" macro when textarea is dismissed.
    *
@@ -851,7 +875,8 @@
   }
 
   /**
-   * Reset settings.<br>
+   * Reset all settings.<br>
+   * Reverts everything ticker has modified and re-installs from scratch.<br>
    * Only an api function...doesn't map to a key.
    *
    * @exports ticker-log
@@ -895,11 +920,13 @@
 
   /**
    * "listenToEverything" api function.<br>
-   * Only an api function...doesn't map to a key.
+   * Only an api function...doesn't map to a key.<br><br>
    *
-   * Listen all console invocations:
-   *   - all channels
-   *   - regardless if backtick provided
+   * Listen to all console invocations:
+   * <ul>
+   * <li>all channels
+   * <li>regardless if backtick provided
+   * </ul>
    *
    * @exports ticker-log
    * @name listenToEverything
