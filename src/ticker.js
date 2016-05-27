@@ -2,6 +2,7 @@
  * ticker-log<br>
  * On-screen, ticker-tape-style logging tool<br><br>
  *
+ * {@link http://jonbri.github.io/ticker-log}<br>
  * {@link https://github.com/jonbri/ticker-log}<br>
  * {@link https://www.npmjs.com/package/ticker-log}<br><br>
  *
