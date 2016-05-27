@@ -1,21 +1,41 @@
 #!/bin/sh
 
-mkdir -p tmp
-# git clone https://github.com/jonbri/ticker-log.git tmp/ticker-log
+# make staging area
+# clone ticker-log so I can get:
+# * dist/ticker.min.js
+# * dist/jsdoc
+rm -Rf tmp
+mkdir tmp
+git clone https://github.com/jonbri/ticker-log.git tmp/ticker-log
 
-perl -nl -e 'my $var = "hi";
+# interate through index.html
+# replace the embedded ticker-log lib with the version in ./tmp
+perl -i -nl -e '
+  # if the ticker lib header, just skip line
   if (/^\/\* http.*\*\//) {
-    # skip line
-  } elsif (/function ticker_go/) {
-    # print out ticker lib
-    open my $fh, "<", "./tmp/ticker-log/dist/ticker.min.js";
-    my $lib = do { local $/; <$fh> };
+    next;
+  }
+
+  # if ticker-lib, replace with new version
+  elsif (/function ticker_go/) {
+    open FH, "<", "./tmp/ticker-log/dist/ticker.min.js";
+    my $lib = do { local $/; <FH> };
+    close FH;
+    chomp $lib;
     print $lib;
-  } else {
-    # print line
+  }
+
+  # otherwise, print line
+  else {
     print $_;
   }
-    ' index.html
+' index.html
 
+# make jsdoc available
+cp -R ./tmp/ticker-log/dist/jsdoc .
 
-# rm -Rf tmp
+# print out the current version
+grep version ./tmp/ticker-log/package.json | \
+    awk -F "\"" '{ print "Current version:",$4 }'
+
+rm -Rf tmp
