@@ -1,12 +1,40 @@
-/**
- * ticker-log<br>
- * On-screen, ticker-tape-style logging tool<br><br>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ticker.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ticker.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * ticker-log&lt;br>
+ * On-screen, ticker-tape-style logging tool&lt;br>&lt;br>
  *
- * {@link https://github.com/jonbri/ticker-log}<br>
- * {@link https://www.npmjs.com/package/ticker-log}<br><br>
+ * {@link https://github.com/jonbri/ticker-log}&lt;br>
+ * {@link https://www.npmjs.com/package/ticker-log}&lt;br>&lt;br>
  *
  * @module ticker-log
- * @author Jonathan Brink <jonathandavidbrink@gmail.com>
+ * @author Jonathan Brink &lt;jonathandavidbrink@gmail.com>
  */
 (function ticker_go() {
 
@@ -213,7 +241,7 @@
    * @param {object} scope "this" scope for callback
    */
   function pseudoForEach(array, callback, scope) {
-    for (var i = 0; i < array.length; i++) {
+    for (var i = 0; i &lt; array.length; i++) {
       callback.call(scope, i, array[i]); // passes back stuff we need
     }
   }
@@ -238,7 +266,7 @@
    */
   function getUrlParamValue(name) {
     name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
-    var regexS = '[\\?&]'+name+'=([^&#]*)',
+    var regexS = '[\\?&amp;]'+name+'=([^&amp;#]*)',
       regex = new RegExp( regexS ),
       results = regex.exec(window.location.href);
     if (results === null) {
@@ -262,17 +290,17 @@
   // api functions
 
   /**
-   * Overlay object over configuration object.<br>
-   * Only an api function...doesn't map to a key.<br>
-   * Public+private way of setting configuration properties.<br><br>
+   * Overlay object over configuration object.&lt;br>
+   * Only an api function...doesn't map to a key.&lt;br>
+   * Public+private way of setting configuration properties.&lt;br>&lt;br>
    *
-   * Example:<br>
-   * <pre>
+   * Example:&lt;br>
+   * &lt;pre>
    * // change log speed to 400
    * window._ticker.config({
    *   interval: 400
    * });
-   * </pre>
+   * &lt;/pre>
    *
    * @param {object} o property/value map to apply
    *
@@ -298,26 +326,26 @@
   }
 
   /**
-   * Print log div to screen.<br>
-   * Only an api function...doesn't map (directly) to a key.<br><br>
+   * Print log div to screen.&lt;br>
+   * Only an api function...doesn't map (directly) to a key.&lt;br>&lt;br>
    *
    * A configuration object can be passed as the second argument:
-   * <table>
-   * <tr>
-   * <th>key<th>value
-   * <tr>
-   * <th>overrideSilentMode</th><td>still print, even if silent mode is on
-   * <tr>
-   * <th>internal<td>do not track in aBuffer
-   * </table>
-   * <br>
+   * &lt;table>
+   * &lt;tr>
+   * &lt;th>key&lt;th>value
+   * &lt;tr>
+   * &lt;th>overrideSilentMode&lt;/th>&lt;td>still print, even if silent mode is on
+   * &lt;tr>
+   * &lt;th>internal&lt;td>do not track in aBuffer
+   * &lt;/table>
+   * &lt;br>
    *
-   * Example:<br>
-   * <pre>
+   * Example:&lt;br>
+   * &lt;pre>
    * // show log on-screen
    * window._ticker.print('lorum ipsum');
-   * </pre>
-   * <br>
+   * &lt;/pre>
+   * &lt;br>
    *
    * @param {string} text innerHTML for log dom ref
    * @param {object} o configuration object
@@ -338,7 +366,7 @@
       return;
     }
 
-    if (typeof fnFilterFunction === 'function' &&
+    if (typeof fnFilterFunction === 'function' &amp;&amp;
             fnFilterFunction(text) !== true) {
       return;
     }
@@ -355,7 +383,7 @@
   }
 
   /**
-   * "t" api function.<br>
+   * "t" api function.&lt;br>
    * Print out test log (plus date).
    *
    * @exports ticker-log
@@ -372,7 +400,7 @@
   }
 
   /**
-   * "h" api function.<br>
+   * "h" api function.&lt;br>
    * Show help text on-screen as logs.
    *
    * @exports ticker-log
@@ -386,15 +414,15 @@
 
     oConfig.logStartTop = oDEFAULTS.logStartTop;
 
-    for (var i = 0; i < aHelp.length; i++) {
+    for (var i = 0; i &lt; aHelp.length; i++) {
       var text = aHelp[i];
-      text = text.replace(/\_/g, '&nbsp;');
+      text = text.replace(/\_/g, '&amp;nbsp;');
       print(text);
     }
   }
 
   /**
-   * "k" api function.<br>
+   * "k" api function.&lt;br>
    * Clear render buffer and remove all ticker log dom elements.
    *
    * @exports ticker-log
@@ -412,7 +440,7 @@
   }
 
   /**
-   * "p" api function.<br>
+   * "p" api function.&lt;br>
    * Toggle pauseMode config prop boolean.
    *
    * @exports ticker-log
@@ -430,7 +458,7 @@
   }
 
   /**
-   * "o" api function.<br>
+   * "o" api function.&lt;br>
    * Show log text in the "output textarea".
    *
    * @param {boolean} bAll whether to show all logs ever,
@@ -459,7 +487,7 @@
       if (aLogNodes.length > 0) {
         pseudoForEach(aLogNodes, function(i, oLogNode) {
           var string = oLogNode.innerHTML.trim();
-          string = string.replace(/&nbsp;/g, '');
+          string = string.replace(/&amp;nbsp;/g, '');
           sAllOutput += string + '\n';
         });
       }
@@ -472,7 +500,7 @@
   }
 
   /**
-   * "l" (for "log") api function.<br>
+   * "l" (for "log") api function.&lt;br>
    * Api function to show all saved log messages.
    *
    * @exports ticker-log
@@ -485,7 +513,7 @@
   }
 
   /**
-   * "d" api function.<br>
+   * "d" api function.&lt;br>
    * Show configuration properties in output textarea.
    *
    * @exports ticker-log
@@ -507,7 +535,7 @@
   }
 
   /**
-   * "s" api function.<br>
+   * "s" api function.&lt;br>
    * Toggle silentMode config prop boolean.
    *
    * @exports ticker-log
@@ -525,7 +553,7 @@
   }
 
   /**
-   * "up" api function.<br>
+   * "up" api function.&lt;br>
    * Decrease delay interval by half the adjustmentInterval.
    *
    * @exports ticker-log
@@ -543,7 +571,7 @@
   }
 
   /**
-   * "down" api function.<br>
+   * "down" api function.&lt;br>
    * Increase delay interval by adjustmentInterval.
    *
    * @exports ticker-log
@@ -561,7 +589,7 @@
   }
 
   /**
-   * "right" api function.<br>
+   * "right" api function.&lt;br>
    * Change log container position and alignment of log dom elements.
    *
    * @exports ticker-log
@@ -584,7 +612,7 @@
   }
 
   /**
-   * "left" api function.<br>
+   * "left" api function.&lt;br>
    * Change log container position and alignment of log dom elements.
    *
    * @exports ticker-log
@@ -607,9 +635,9 @@
   }
 
   /**
-   * "enter" api function.<br>
-   * Update url (window.location) to "save state".<br>
-   * Only use config props that have changed.<br>
+   * "enter" api function.&lt;br>
+   * Update url (window.location) to "save state".&lt;br>
+   * Only use config props that have changed.&lt;br>
    * Generate url-friendly, json string to use for "_ticker" param.
    *
    * @exports ticker-log
@@ -624,7 +652,7 @@
       var s = '_ticker={';
       aConfigurableKeys.forEach(function(sKey) {
         // don't include if default
-        if (oDEFAULTS[sKey] !== undefined &&
+        if (oDEFAULTS[sKey] !== undefined &amp;&amp;
             oDEFAULTS[sKey] === oConfig[sKey]) {
           return;
         }
@@ -638,13 +666,13 @@
       });
 
       // save channels
-      if (oConfig.channels.length !== 1 && oConfig.channels[0] !== 'log') {
+      if (oConfig.channels.length !== 1 &amp;&amp; oConfig.channels[0] !== 'log') {
         s += '%22channels%22:';
         s += '%22' + oConfig.channels + '%22';
       }
 
       // save defaultBacktickKeys
-      if (!(oConfig.defaultBacktickKeys.length === 1 &&
+      if (!(oConfig.defaultBacktickKeys.length === 1 &amp;&amp;
               oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
         s += '%22defaultBacktickKeys%22:';
         s += '%22' + oConfig.defaultBacktickKeys + '%22';
@@ -656,7 +684,7 @@
     }
 
     // first, remove the present ticker url param if present
-    url = url.replace(/_ticker=({.*})?&?/, '');
+    url = url.replace(/_ticker=({.*})?&amp;?/, '');
 
     // add opening "?" if no url params are present
     if (url.indexOf('?') === -1) {
@@ -664,12 +692,12 @@
     }
 
     // add ticker url param
-    url = url + '&' + generateConfigString();
+    url = url + '&amp;' + generateConfigString();
 
     // cleanup
-    url = url.replace(/\?1=1&/, '?');
-    url = url.replace(/\?&/, '?');
-    url = url.replace(/(&&)+/, '&');
+    url = url.replace(/\?1=1&amp;/, '?');
+    url = url.replace(/\?&amp;/, '?');
+    url = url.replace(/(&amp;&amp;)+/, '&amp;');
 
     if (history.pushState) {
       window.history.pushState({path:url},'',url);
@@ -679,7 +707,7 @@
   }
 
   /**
-   * "pageDown" api function.<br>
+   * "pageDown" api function.&lt;br>
    * Change starting vertical position (logStartTop) for on-screen logs.
    *
    * @exports ticker-log
@@ -698,7 +726,7 @@
   }
 
   /**
-   * "pageUp" api function.<br>
+   * "pageUp" api function.&lt;br>
    * Change starting vertical position (logStartTop) for on-screen logs.
    *
    * @exports ticker-log
@@ -717,8 +745,8 @@
   }
 
   /**
-   * Register (overwrite) macro.<br>
-   * For macros 0-8.<br>
+   * Register (overwrite) macro.&lt;br>
+   * For macros 0-8.&lt;br>
    * Only an api function...doesn't map to a key.
    *
    * @param {int} iNumToRegister key in aMacros object to write to
@@ -739,9 +767,9 @@
   }
 
   /**
-   * "m" api function.<br>
-   * For macro 9.<br>
-   * Show a textarea where macro can be edited.<br>
+   * "m" api function.&lt;br>
+   * For macro 9.&lt;br>
+   * Show a textarea where macro can be edited.&lt;br>
    * "save" macro when textarea is dismissed.
    *
    * @exports ticker-log
@@ -776,8 +804,8 @@
   }
 
   /**
-   * "0-9" api function.<br>
-   * Also can be called directly.<br>
+   * "0-9" api function.&lt;br>
+   * Also can be called directly.&lt;br>
    * Execute macro.
    *
    * @param {int} iMacroSlot macro in aMacros object to execute
@@ -797,8 +825,8 @@
   }
 
   /**
-   * "Tab" api function.<br>
-   * Switch to listen to next console channel ("log", "warn", etc).<br>
+   * "Tab" api function.&lt;br>
+   * Switch to listen to next console channel ("log", "warn", etc).&lt;br>
    * Order is determined by aChannels.
    *
    * @exports ticker-log
@@ -817,7 +845,7 @@
     }
 
     // set "i" to be the index of the array
-    for (; i < aChannels.length; i++) {
+    for (; i &lt; aChannels.length; i++) {
       if (aChannels[i] === sCurrentChannel) {
         break;
       }
@@ -832,7 +860,7 @@
   }
 
   /**
-   * "Esc" api function.<br>
+   * "Esc" api function.&lt;br>
    * Remove textarea dom element.
    *
    * @exports ticker-log
@@ -848,10 +876,10 @@
   }
 
   /**
-   * "end all ticker operations" api function.<br>
-   * Stop ticker from doing anything.<br>
-   * Reset url param.<br>
-   * Reset console object.<br>
+   * "end all ticker operations" api function.&lt;br>
+   * Stop ticker from doing anything.&lt;br>
+   * Reset url param.&lt;br>
+   * Reset console object.&lt;br>
    * Only an api function...doesn't map to a key.
    *
    * @exports ticker-log
@@ -875,8 +903,8 @@
   }
 
   /**
-   * Reset all settings.<br>
-   * Reverts everything ticker has modified and re-installs from scratch.<br>
+   * Reset all settings.&lt;br>
+   * Reverts everything ticker has modified and re-installs from scratch.&lt;br>
    * Only an api function...doesn't map to a key.
    *
    * @exports ticker-log
@@ -890,7 +918,7 @@
   }
 
   /**
-   * "filter" api function.<br>
+   * "filter" api function.&lt;br>
    * Only an api function...doesn't map to a key.
    *
    * @param {regex|string} matcher either a string or regex to filter log by
@@ -919,14 +947,14 @@
   }
 
   /**
-   * "listenToEverything" api function.<br>
-   * Only an api function...doesn't map to a key.<br><br>
+   * "listenToEverything" api function.&lt;br>
+   * Only an api function...doesn't map to a key.&lt;br>&lt;br>
    *
    * Listen to all console invocations:
-   * <ul>
-   * <li>all channels
-   * <li>regardless if backtick provided
-   * </ul>
+   * &lt;ul>
+   * &lt;li>all channels
+   * &lt;li>regardless if backtick provided
+   * &lt;/ul>
    *
    * @exports ticker-log
    * @name listenToEverything
@@ -970,7 +998,7 @@
         if (aLogNodes.length > 0) {
           pseudoForEach(aLogNodes, function(iIndex, oLogNode) {
             var iCurrentTop = parseInt(getComputedStyle(oLogNode).top, 10);
-            if (iCurrentTop <= 0) {
+            if (iCurrentTop &lt;= 0) {
               oLogNode.parentNode.removeChild(oLogNode);
               oLogNode = null;
             } else {
@@ -1096,7 +1124,7 @@
     };
 
     fnKeyUp = function(e) {
-      if (keyIsDown === true && aActionKeys.indexOf(e.keyCode) === -1) {
+      if (keyIsDown === true &amp;&amp; aActionKeys.indexOf(e.keyCode) === -1) {
         keyIsDown=false;
       }
     };
@@ -1128,7 +1156,7 @@
     div.className += ' _ticker_log';
     div.innerHTML = sText;
     var iTop = _calculateTop();
-    if (iTop < (oConfig.logStartTop / 2)) {
+    if (iTop &lt; (oConfig.logStartTop / 2)) {
       iTop = oConfig.logStartTop;
     }
     div.style.top = iTop + 'px';
@@ -1148,7 +1176,7 @@
    * render as many log dom elements as possible from aRenderBuffer
    */
   function _flushBuffer() {
-    while (aRenderBuffer.length > 0 && _calculateTop() < iAllowedHeight) {
+    while (aRenderBuffer.length > 0 &amp;&amp; _calculateTop() &lt; iAllowedHeight) {
       _renderText(aRenderBuffer.pop());
     }
   }
@@ -1179,7 +1207,7 @@
 
         if (oConfig.requireBackTick === false) {
           print(sText);
-        } else if (oConfig.requireBackTick === true && firstArg === '`') {
+        } else if (oConfig.requireBackTick === true &amp;&amp; firstArg === '`') {
           print(sText);
         } else {
           oChannels[sChannel].fnOriginal.apply(this, [arguments]);
@@ -1355,3 +1383,26 @@
     window._ticker = _ticker;
   }());
 }());
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-ticker-log.html">ticker-log</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Thu May 26 2016 20:55:26 GMT-0400 (EDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
