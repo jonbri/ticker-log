@@ -10,7 +10,7 @@ Functionality is driven by `console` statements, `window._ticker`, and keyboard 
 
 This module facilitates an *interactive-style* of development/non-production logging.
 
-![screenshot of ticker-log](./screenshot.jpg?raw=true)
+![demo](./ticker-log.gif)
 
 Play with ticker-log: http://jonbri.github.io/ticker-log/
 
