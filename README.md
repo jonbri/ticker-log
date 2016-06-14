@@ -27,14 +27,14 @@ console.log('`', 'hello ticker-log');
 By default, `console`'s `log` function accepts ticker-log invocations (passing in the `` ` `` character as the first argument).
 
 ### Switch console "channel"
-Rather than `log`, you could listen to the `warn` channel.
+Rather than `log` you could listen to the `warn` channel.
 
 Press `` ` ``-`<tab>` a few times until you see "listening to warn..." and now only invocations of ``console.warn('`', '...')`` will be printed.
 
-"save" your settings with `` ` ``-`<enter>` (look at your url address bar).
+To show *all* output to the current channel press `` ` ``-`b`, and to show all output from all channels use `window._ticker.listenToEverything()`.
 
-### Run ad-hoc testing code as keyboard "macros"
-*watch* a variable:
+### Execute ad-hoc testing code with keyboard "macros"
+Ex: *watch* a variable:
 
 ```js
 var a = 0;
@@ -44,7 +44,7 @@ setInterval(function() {
 // do complicated things with "a"...
 ```
 
-Usage of ticker-log is best suited for one-off, quick debugging situations, and then removed before pushing to production.
+Usage of ticker-log is best suited for one-off, quick debugging situations, with any api code remnants removed before pushing to production.
 
 ## Motivation
 Displaying on-screen logging output reduces browser debugger juggling (dev-tools, Firebug, etc) while you exercise your application.
@@ -53,9 +53,9 @@ It can also be valuable to target a specific sub-set of logs both statically (in
 
 Typical use-cases:
 * a better approach to "throw an `alert` in there"
-* developing on non-desktop devices
+* developing on non-desktop devices (difficult to access console)
 * debugging timing issues that involve user interaction
-* "special-event" declarations (event fired...)
+* "special-event" emitting (listening and firing)
 
 ## Features
 * Configurable via API and URL parameters
@@ -117,8 +117,8 @@ Most on-screen actions can be scripted by using the global `_ticker` object:
 window._ticker.help();          # show help screen
 window._ticker.increaseSpeed(); # increase speed
 window._ticker.decreaseSpeed(); # decrease speed
-window._ticker.moveUp();        # change starting position a little higher
-window._ticker.moveDown();      # change starting position a little lower
+window._ticker.moveUp();        # make starting position a little higher
+window._ticker.moveDown();      # make starting position a little lower
 window._ticker.moveLeft();      # move logs to the left of the screen (the default)
 window._ticker.moveRight();     # move logs to the right of the screen
 window._ticker.pause();         # pause ticker log movement
@@ -138,12 +138,12 @@ Additional API is covered in the following sections.
 
 By default, within the current channel, `console` invocations that are given `` ` `` as the first argument are printed.
 
-To print all calls to the current channel set the `requireBacktick` configuration property to `false`.
+To print all calls to the current channel set the `requireBacktick` configuration property to `false` (`` ` ``-`b`).
 
 To show *all* `console` logging (regardless of channel) using the `listenToEverything` api function.
 
 ### Macros
-Macros are bits of code you want to run at ad-hoc times. There are 10 "slots" available and stored in keys 0-9.
+Macros are bits of code you want to run at ad-hoc times. There are 10 "slots" stored in keys 0-9.
 
 Macros 0-8 are reserved for api-driven macros:
 
@@ -165,12 +165,12 @@ Filter all log output by *string*:
 window._ticker.filter('string subset match');
 ```
 
-or *regex*:
+*regex*:
 ```js
 window._ticker.filter(/^startsWith/);
 ```
 
-or *function*:
+*function*:
 ```js
 window._ticker.filter(function(s) {
     // do something with log text
@@ -184,10 +184,9 @@ window._ticker.filter(someErrorCode);
 ```
 
 ### Custom action key
-Use a custom key rather than the default `` ` `` key for keyboard commands:
+Use a custom key rather than the default `` ` `` key for keyboard chords:
 ```js
 // additionally use the 'z' key as a modifier
-// http://www.asciitable.com
 window._ticker.config({
     defaultBacktickKeys: [192, 90] // `, Z
 });
@@ -201,13 +200,12 @@ window._ticker.config({
 * `console` functions (`log`, `debug`, etc)
   * `console` overrides are reverted when applicable (such as when changing channels)
 
-Reset ticker to default state:
+Reset to default state:
 ```js
 window._ticker.reset();
 ```
 
-## Technical
-Build:
+## Build
 ```shell
 npm install
 npm test        # run test suite (qunit, phantomjs)
