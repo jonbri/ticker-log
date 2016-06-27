@@ -34,7 +34,7 @@ Press `` ` ``-`<tab>` a few times until you see "listening to warn..." and now o
 To show *all* output to the current channel press `` ` ``-`b`, and to show all output from all channels use `window._ticker.listenToEverything()`.
 
 ### Execute ad-hoc testing code with keyboard "macros"
-Ex: *watch* a variable:
+*watch* a variable:
 
 ```js
 var a = 0;
@@ -213,3 +213,6 @@ npm run lint    # eslint
 npm run serve   # http://localhost:9000/index.html
 npm run package # build and populate dist
 ```
+
+## License
+[BSD-2-Clause](http://spdx.org/licenses/BSD-2-Clause)
