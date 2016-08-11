@@ -196,13 +196,28 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("macro", function(assert) {
+        window._ticker.kill();
         window._ticker.registerMacro(8, function() {
             console.log('`', 'testing macro 8');
         });
-        assert.strictEqual(howManyLogDivs(), 1, "one log divs to show registation message");
+        assert.strictEqual(howManyLogDivs(), 0, "macro is registered, no logs showing");
+        window._ticker.runMacro(8);
+        assert.strictEqual(howManyLogDivs(), 1, "one log div after running macro");
+    });
+
+    QUnit.test("announceMacros property", function(assert) {
+        window._ticker.kill();
+        window._ticker.config({
+            announceMacros: true
+        });
+        window._ticker.registerMacro(8, function() {
+            console.log('`', 'testing macro 8');
+        });
+        assert.strictEqual(howManyLogDivs(), 1, "registation message");
         window._ticker.kill();
         window._ticker.runMacro(8);
         assert.strictEqual(howManyLogDivs(), 2, "two log divs after running macro");
+        assert.ok(/running macro: 8/.test(getText(0)), "'running...' text shows");
     });
 
     QUnit.test("macro 9 - don't allow registerMacro api", function(assert) {
@@ -218,14 +233,11 @@ window.ticker_runTests = function() {
         window._ticker.macroEdit();
         getTextarea().text("console.log('`', 'lorum ipsum');");
         window._ticker.macroEdit();
-        assert.strictEqual(howManyLogDivs(), 1, "macro 9 registration message");
 
-        window._ticker.kill();
         window._ticker.runMacro(9);
-        assert.strictEqual(howManyLogDivs(), 2, "macro 9 shows 'running...' message and macro");
+        assert.strictEqual(howManyLogDivs(), 1, "macro 9 message shows");
 
-        assert.ok(/running macro: 9/.test(getText(0)), "'running...' text shows");
-        assert.ok(/lorum ipsum/.test(getText(1)), 'console text shows');
+        assert.ok(/lorum ipsum/.test(getText(0)), 'console text shows');
     });
 
     QUnit.test("reset", function(assert) {

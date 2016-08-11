@@ -31,6 +31,7 @@
       logStartTop: 100,
       align: 'left',
       requireBackTick: true,
+      announceMacros: false,
       channels: ['log']
     },
 
@@ -735,7 +736,9 @@
       console.log('`', 'macro 9 reserved for interactive macro (`m)');
       return;
     }
-    console.log('`', 'registering macro: ' + iNumToRegister);
+    if (oConfig.announceMacros === true) {
+      console.log('`', 'registering macro: ' + iNumToRegister);
+    }
     aMacros[iNumToRegister] = fn;
   }
 
@@ -764,7 +767,9 @@
       },
       exit: function(sValue) {
         oConfig.sMacro9Code = sValue;
-        console.log('`', 'registering macro: 9');
+        if (oConfig.announceMacros === true) {
+          console.log('`', 'registering macro: 9');
+        }
         aMacros[9] = function() {
           /* eslint-disable no-eval */
           /* jshint ignore:start */
@@ -790,7 +795,9 @@
    */
   function runMacro(iMacroSlot) {
     if (typeof aMacros[iMacroSlot] === 'function') {
-      console.log('`', 'running macro: ' + iMacroSlot);
+      if (oConfig.announceMacros === true) {
+        console.log('`', 'running macro: ' + iMacroSlot);
+      }
       aMacros[iMacroSlot]();
     } else {
       console.log('`', 'macro empty');
