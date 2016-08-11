@@ -25,6 +25,12 @@ function getTextarea() {
 window.ticker_runTests = function() {
     var iSafeDelay = 500;
 
+    var sPrefix = window.location.href;
+    if (/_ticker=/.test(sPrefix)) {
+        alert('cannot run if settings set in url');
+        return;
+    }
+
     jQuery('#runTestsButton').prop("disabled", true);
 
     QUnit.module("test ticker-log", {
@@ -317,6 +323,19 @@ window.ticker_runTests = function() {
         console.trace('hello trace no backtick');
 
         assert.strictEqual(howManyLogDivs(), 10, "all logs show");
+    });
+
+    QUnit.test("generateConfigString default", function(assert) {
+        var sPrefix = window.location.href;
+        assert.strictEqual(window._ticker._generateConfigString(), sPrefix + "?_ticker={}", "correct default url");
+    });
+
+    QUnit.test("generateConfigString reflect speed change", function(assert) {
+        window._ticker.config({
+            interval: 280
+        });
+        var sPrefix = window.location.href;
+        assert.strictEqual(window._ticker._generateConfigString(), sPrefix + "?_ticker={%22interval%22:280}", "correct url");
     });
 
     QUnit.test("exit", function(assert) {

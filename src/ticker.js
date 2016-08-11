@@ -620,59 +620,7 @@
    * @function
    */
   function saveConfig() {
-    var url = window.location.href;
-
-    function generateConfigString() {
-      var s = '_ticker={';
-      aConfigurableKeys.forEach(function(sKey) {
-        // don't include if default
-        if (oDEFAULTS[sKey] !== undefined &&
-            oDEFAULTS[sKey] === oConfig[sKey]) {
-          return;
-        }
-        s += '%22' + sKey + '%22:';
-        if (typeof oConfig[sKey] === 'string') {
-          s += '%22' + oConfig[sKey] + '%22';
-        } else {
-          s += oConfig[sKey];
-        }
-        s += ',';
-      });
-
-      // save channels
-      if (oConfig.channels.length !== 1 && oConfig.channels[0] !== 'log') {
-        s += '%22channels%22:';
-        s += '%22' + oConfig.channels + '%22';
-      }
-
-      // save defaultBacktickKeys
-      if (!(oConfig.defaultBacktickKeys.length === 1 &&
-              oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
-        s += '%22defaultBacktickKeys%22:';
-        s += '%22' + oConfig.defaultBacktickKeys + '%22';
-      }
-
-      s += '}';
-      s = s.replace(/,}/, '}');
-      return s;
-    }
-
-    // first, remove the present ticker url param if present
-    url = url.replace(/_ticker=({.*})?&?/, '');
-
-    // add opening "?" if no url params are present
-    if (url.indexOf('?') === -1) {
-      url = url + '?1=1';
-    }
-
-    // add ticker url param
-    url = url + '&' + generateConfigString();
-
-    // cleanup
-    url = url.replace(/\?1=1&/, '?');
-    url = url.replace(/\?&/, '?');
-    url = url.replace(/(&&)+/, '&');
-
+    var url = _generateSaveUrl();
     if (history.pushState) {
       window.history.pushState({path:url},'',url);
     } else {
@@ -1287,6 +1235,76 @@
     }
   }
 
+  /**
+   * Determine the url string for saving configuration state.<br />
+   * Doesn't alter window.location
+   * @returns {string} url string representing current state
+   */
+  function _generateSaveUrl() {
+    // returns a serialized json map representing
+    // the relevant property values to express
+    function generateConfigSerialization() {
+      var s = '_ticker={';
+      aConfigurableKeys.forEach(function(sKey) {
+        // don't include if default
+        if (oDEFAULTS[sKey] !== undefined &&
+            oDEFAULTS[sKey] === oConfig[sKey]) {
+          return;
+        }
+        s += '%22' + sKey + '%22:';
+        if (typeof oConfig[sKey] === 'string') {
+          s += '%22' + oConfig[sKey] + '%22';
+        } else {
+          s += oConfig[sKey];
+        }
+        s += ',';
+      });
+
+      // channels
+      if (oConfig.channels.length !== 1 && oConfig.channels[0] !== 'log') {
+        s += '%22channels%22:';
+        s += '%22' + oConfig.channels + '%22';
+      }
+
+      // defaultBacktickKeys
+      if (!(oConfig.defaultBacktickKeys.length === 1 &&
+              oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
+        s += '%22defaultBacktickKeys%22:';
+        s += '%22' + oConfig.defaultBacktickKeys + '%22';
+      }
+
+      s += '}';
+      s = s.replace(/,}/, '}');
+      return s;
+    }
+
+    // apply config string to url
+    // account for any past url state
+    function determineConfigSerializationAppliedToUrl() {
+      var url = window.location.href || '';
+
+      // first, remove the present ticker url param if present
+      url = url.replace(/_ticker=({.*})?&?/, '');
+
+      // add opening "?" if no url params are present
+      if (url.indexOf('?') === -1) {
+        url = url + '?1=1';
+      }
+
+      // add ticker url param
+      url = url + '&' + generateConfigSerialization();
+
+      // cleanup
+      url = url.replace(/\?1=1&/, '?');
+      url = url.replace(/\?&/, '?');
+      url = url.replace(/(&&)+/, '&');
+
+      return url;
+    }
+
+    return determineConfigSerializationAppliedToUrl();
+  }
+
 
   //////////////////////////////////
   // execution starts
@@ -1359,6 +1377,7 @@
 
     // private
     _ticker._oConfig = oConfig;
+    _ticker._generateConfigString = _generateSaveUrl;
 
     window._ticker = _ticker;
   }());
