@@ -1289,11 +1289,21 @@
 
       // add opening "?" if no url params are present
       if (url.indexOf('?') === -1) {
-        url = url + '?1=1';
+        if (sPrefix.indexOf("#") > 1) {
+          // if hash present
+          url = url.replace(/^(.*)(#.*)$/, '$1?1=1$2');
+        } else {
+          url = url + '?1=1';
+        }
       }
 
       // add ticker url param
-      url = url + '&' + generateConfigSerialization();
+      if (sPrefix.indexOf("#") > 1) {
+          // if hash present
+          url = url.replace(/^(.*)(#.*)$/, '$1&' + generateConfigSerialization() + '$2');
+      } else {
+          url = url + '&' + generateConfigSerialization();
+      }
 
       // cleanup
       url = url.replace(/\?1=1&/, '?');

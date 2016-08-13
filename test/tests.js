@@ -366,6 +366,42 @@ window.ticker_runTests = function() {
         });
     });
 
+    QUnit.test("generateConfigString reflect speed change with hash", function(assert) {
+        window._ticker.config({
+            interval: 280
+        });
+
+        testUrlSave(assert, {
+            start: defaultStartUrl + "#foo",
+            expected: defaultStartUrl + "?_ticker={%22interval%22:280}#foo",
+            message: "correct url with speed change with hash present"
+        });
+    });
+
+    QUnit.test("generateConfigString reflect speed change with hash and already-existing param", function(assert) {
+        window._ticker.config({
+            interval: 280
+        });
+
+        testUrlSave(assert, {
+            start: defaultStartUrl + "?bar=baz#foo",
+            expected: defaultStartUrl + "?bar=baz&_ticker={%22interval%22:280}#foo",
+            message: "correct url with speed change with hash present and already-existing param"
+        });
+    });
+
+    QUnit.test("generateConfigString reflect speed change with hash and multiple already-existing params", function(assert) {
+        window._ticker.config({
+            interval: 280
+        });
+
+        testUrlSave(assert, {
+            start: defaultStartUrl + "?bar=baz&sun=moon#foo",
+            expected: defaultStartUrl + "?bar=baz&sun=moon&_ticker={%22interval%22:280}#foo",
+            message: "correct url with speed change with hash present and multiple already-existing params"
+        });
+    });
+
     QUnit.test("exit", function(assert) {
         assert.ok('true');
         setTimeout(function() {
