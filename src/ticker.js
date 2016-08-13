@@ -620,7 +620,7 @@
    * @function
    */
   function saveConfig() {
-    var url = _generateSaveUrl();
+    var url = _generateSaveUrl(window.location.href);
     if (history.pushState) {
       window.history.pushState({path:url},'',url);
     } else {
@@ -1238,9 +1238,10 @@
   /**
    * Determine the url string for saving configuration state.<br />
    * Doesn't alter window.location
+   * @param {string} sPrefix the starting url
    * @returns {string} url string representing current state
    */
-  function _generateSaveUrl() {
+  function _generateSaveUrl(sPrefix) {
     // returns a serialized json map representing
     // the relevant property values to express
     function generateConfigSerialization() {
@@ -1281,7 +1282,7 @@
     // apply config string to url
     // account for any past url state
     function determineConfigSerializationAppliedToUrl() {
-      var url = window.location.href || '';
+      var url = sPrefix || '';
 
       // first, remove the present ticker url param if present
       url = url.replace(/_ticker=({.*})?&?/, '');
@@ -1377,7 +1378,7 @@
 
     // private
     _ticker._oConfig = oConfig;
-    _ticker._generateConfigString = _generateSaveUrl;
+    _ticker._generateSaveUrl = _generateSaveUrl;
 
     window._ticker = _ticker;
   }());

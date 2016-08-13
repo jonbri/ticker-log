@@ -1,6 +1,9 @@
 // TODO: can I make my tests atomic so I don't need this?
 QUnit.config.reorder = false;
 
+var defaultStartUrl = "http://localhost:9000/index.html";
+
+
 //////////////////////////////////
 // utility functions
 function howManyLogDivs() {
@@ -18,6 +21,11 @@ function getText(iLog) {
 function getTextarea() {
     return jQuery('#_tickerTextarea').find('textarea');
 }
+
+function testUrlSave(assert, o) {
+    assert.strictEqual(window._ticker._generateSaveUrl(o.start), o.expected, o.message);
+}
+
 
 
 //////////////////////////////////
@@ -326,16 +334,36 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("generateConfigString default", function(assert) {
-        var sPrefix = window.location.href;
-        assert.strictEqual(window._ticker._generateConfigString(), sPrefix + "?_ticker={}", "correct default url");
+        testUrlSave(assert, {
+            start: defaultStartUrl,
+            expected: defaultStartUrl + "?_ticker={}",
+            message: "correct default url"
+        });
     });
 
     QUnit.test("generateConfigString reflect speed change", function(assert) {
         window._ticker.config({
             interval: 280
         });
-        var sPrefix = window.location.href;
-        assert.strictEqual(window._ticker._generateConfigString(), sPrefix + "?_ticker={%22interval%22:280}", "correct url");
+
+        testUrlSave(assert, {
+            start: defaultStartUrl,
+            expected: defaultStartUrl + "?_ticker={%22interval%22:280}",
+            message: "correct url with speed change"
+        });
+    });
+
+    QUnit.test("generateConfigString reflect speed and starting position change", function(assert) {
+        window._ticker.config({
+            interval: 280,
+            logStartTop: 105
+        });
+
+        testUrlSave(assert, {
+            start: defaultStartUrl,
+            expected: defaultStartUrl + "?_ticker={%22interval%22:280,%22logStartTop%22:105}",
+            message: "correct url with speed and position change"
+        });
     });
 
     QUnit.test("exit", function(assert) {
