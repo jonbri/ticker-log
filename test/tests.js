@@ -342,10 +342,7 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("generateConfigString reflect speed change", function(assert) {
-        window._ticker.config({
-            interval: 280
-        });
-
+        window._ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl,
             expected: defaultStartUrl + "?_ticker={%22interval%22:280}",
@@ -353,12 +350,26 @@ window.ticker_runTests = function() {
         });
     });
 
-    QUnit.test("generateConfigString reflect speed and starting position change", function(assert) {
-        window._ticker.config({
-            interval: 280,
-            logStartTop: 105
+    QUnit.test("generateConfigString reflect speed change with already-existing param", function(assert) {
+        window._ticker.config({ interval: 280 });
+        testUrlSave(assert, {
+            start: defaultStartUrl + "?bar=baz",
+            expected: defaultStartUrl + "?bar=baz&_ticker={%22interval%22:280}",
+            message: "correct url with speed change with already-existing param"
         });
+    });
 
+    QUnit.test("generateConfigString reflect speed change with already-existing params", function(assert) {
+        window._ticker.config({ interval: 280 });
+        testUrlSave(assert, {
+            start: defaultStartUrl + "?bar=baz&sun=moon",
+            expected: defaultStartUrl + "?bar=baz&sun=moon&_ticker={%22interval%22:280}",
+            message: "correct url with speed change with already-existing params"
+        });
+    });
+
+    QUnit.test("generateConfigString reflect speed and starting position change", function(assert) {
+        window._ticker.config({ interval: 280, logStartTop: 105 });
         testUrlSave(assert, {
             start: defaultStartUrl,
             expected: defaultStartUrl + "?_ticker={%22interval%22:280,%22logStartTop%22:105}",
@@ -367,10 +378,7 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("generateConfigString reflect speed change with hash", function(assert) {
-        window._ticker.config({
-            interval: 280
-        });
-
+        window._ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "#foo",
             expected: defaultStartUrl + "?_ticker={%22interval%22:280}#foo",
@@ -379,10 +387,7 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("generateConfigString reflect speed change with hash and already-existing param", function(assert) {
-        window._ticker.config({
-            interval: 280
-        });
-
+        window._ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz#foo",
             expected: defaultStartUrl + "?bar=baz&_ticker={%22interval%22:280}#foo",
@@ -391,10 +396,7 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("generateConfigString reflect speed change with hash and multiple already-existing params", function(assert) {
-        window._ticker.config({
-            interval: 280
-        });
-
+        window._ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz&sun=moon#foo",
             expected: defaultStartUrl + "?bar=baz&sun=moon&_ticker={%22interval%22:280}#foo",

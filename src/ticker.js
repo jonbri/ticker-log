@@ -1236,84 +1236,78 @@
   }
 
   /**
-   * Determine the url string for saving configuration state.<br />
-   * Doesn't alter window.location
+   * Returns a serialized json map representing
+   * certain property values that have changed state
+   * @returns {string} serialized config object
+   */
+  function _generateConfigSerialization() {
+    var s = '{';
+    aConfigurableKeys.forEach(function(sKey) {
+      // don't include if default
+      if (oDEFAULTS[sKey] !== undefined &&
+          oDEFAULTS[sKey] === oConfig[sKey]) {
+        return;
+      }
+      s += '%22' + sKey + '%22:';
+      if (typeof oConfig[sKey] === 'string') {
+        s += '%22' + oConfig[sKey] + '%22';
+      } else {
+        s += oConfig[sKey];
+      }
+      s += ',';
+    });
+
+    // channels
+    if (oConfig.channels.length !== 1 && oConfig.channels[0] !== 'log') {
+      s += '%22channels%22:';
+      s += '%22' + oConfig.channels + '%22';
+    }
+
+    // defaultBacktickKeys
+    if (!(oConfig.defaultBacktickKeys.length === 1 &&
+            oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
+      s += '%22defaultBacktickKeys%22:';
+      s += '%22' + oConfig.defaultBacktickKeys + '%22';
+    }
+
+    s += '}';
+    s = s.replace(/,}/, '}');
+    return s;
+  }
+
+  /**
+   * Return a url string for saving configuration state.<br />
+   * Apply config string to url and account for any past url state
    * @param {string} sPrefix the starting url
    * @returns {string} url string representing current state
    */
   function _generateSaveUrl(sPrefix) {
-    // returns a serialized json map representing
-    // the relevant property values to express
-    function generateConfigSerialization() {
-      var s = '_ticker={';
-      aConfigurableKeys.forEach(function(sKey) {
-        // don't include if default
-        if (oDEFAULTS[sKey] !== undefined &&
-            oDEFAULTS[sKey] === oConfig[sKey]) {
-          return;
-        }
-        s += '%22' + sKey + '%22:';
-        if (typeof oConfig[sKey] === 'string') {
-          s += '%22' + oConfig[sKey] + '%22';
-        } else {
-          s += oConfig[sKey];
-        }
-        s += ',';
-      });
+    var sUrl = sPrefix || '',
+      bHasHash = sPrefix.indexOf("#") > 1,
+      sTickerUrlParam = '_ticker=' + _generateConfigSerialization();
 
-      // channels
-      if (oConfig.channels.length !== 1 && oConfig.channels[0] !== 'log') {
-        s += '%22channels%22:';
-        s += '%22' + oConfig.channels + '%22';
-      }
+    // remove any present ticker url params
+    sUrl = sUrl.replace(/_ticker=({.*})?&?/, '');
 
-      // defaultBacktickKeys
-      if (!(oConfig.defaultBacktickKeys.length === 1 &&
-              oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
-        s += '%22defaultBacktickKeys%22:';
-        s += '%22' + oConfig.defaultBacktickKeys + '%22';
-      }
-
-      s += '}';
-      s = s.replace(/,}/, '}');
-      return s;
+    // add opening "?" if no url params are currently present
+    if (sUrl.indexOf('?') === -1) {
+      sUrl = bHasHash ?
+        sUrl.replace(/^(.*)(#.*)$/, '$1?1=1$2') :
+        sUrl + '?1=1';
     }
 
-    // apply config string to url
-    // account for any past url state
-    function determineConfigSerializationAppliedToUrl() {
-      var url = sPrefix || '';
+    // add ticker url param
+    sUrl = bHasHash ?
+      sUrl.replace(/^(.*)(#.*)$/, '$1&' + sTickerUrlParam + '$2') :
+      sUrl + '&' + sTickerUrlParam;
 
-      // first, remove the present ticker url param if present
-      url = url.replace(/_ticker=({.*})?&?/, '');
+    // cleanup
+    sUrl = sUrl
+      .replace(/\?1=1&/, '?')
+      .replace(/\?&/, '?')
+      .replace(/(&&)+/, '&');
 
-      // add opening "?" if no url params are present
-      if (url.indexOf('?') === -1) {
-        if (sPrefix.indexOf("#") > 1) {
-          // if hash present
-          url = url.replace(/^(.*)(#.*)$/, '$1?1=1$2');
-        } else {
-          url = url + '?1=1';
-        }
-      }
-
-      // add ticker url param
-      if (sPrefix.indexOf("#") > 1) {
-          // if hash present
-          url = url.replace(/^(.*)(#.*)$/, '$1&' + generateConfigSerialization() + '$2');
-      } else {
-          url = url + '&' + generateConfigSerialization();
-      }
-
-      // cleanup
-      url = url.replace(/\?1=1&/, '?');
-      url = url.replace(/\?&/, '?');
-      url = url.replace(/(&&)+/, '&');
-
-      return url;
-    }
-
-    return determineConfigSerializationAppliedToUrl();
+    return sUrl;
   }
 
 
