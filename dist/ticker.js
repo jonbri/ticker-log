@@ -31,6 +31,7 @@
       logStartTop: 100,
       align: 'left',
       requireBackTick: true,
+      announceMacros: false,
       channels: ['log']
     },
 
@@ -619,59 +620,7 @@
    * @function
    */
   function saveConfig() {
-    var url = window.location.href;
-
-    function generateConfigString() {
-      var s = '_ticker={';
-      aConfigurableKeys.forEach(function(sKey) {
-        // don't include if default
-        if (oDEFAULTS[sKey] !== undefined &&
-            oDEFAULTS[sKey] === oConfig[sKey]) {
-          return;
-        }
-        s += '%22' + sKey + '%22:';
-        if (typeof oConfig[sKey] === 'string') {
-          s += '%22' + oConfig[sKey] + '%22';
-        } else {
-          s += oConfig[sKey];
-        }
-        s += ',';
-      });
-
-      // save channels
-      if (oConfig.channels.length !== 1 && oConfig.channels[0] !== 'log') {
-        s += '%22channels%22:';
-        s += '%22' + oConfig.channels + '%22';
-      }
-
-      // save defaultBacktickKeys
-      if (!(oConfig.defaultBacktickKeys.length === 1 &&
-              oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
-        s += '%22defaultBacktickKeys%22:';
-        s += '%22' + oConfig.defaultBacktickKeys + '%22';
-      }
-
-      s += '}';
-      s = s.replace(/,}/, '}');
-      return s;
-    }
-
-    // first, remove the present ticker url param if present
-    url = url.replace(/_ticker=({.*})?&?/, '');
-
-    // add opening "?" if no url params are present
-    if (url.indexOf('?') === -1) {
-      url = url + '?1=1';
-    }
-
-    // add ticker url param
-    url = url + '&' + generateConfigString();
-
-    // cleanup
-    url = url.replace(/\?1=1&/, '?');
-    url = url.replace(/\?&/, '?');
-    url = url.replace(/(&&)+/, '&');
-
+    var url = _generateSaveUrl(window.location.href);
     if (history.pushState) {
       window.history.pushState({path:url},'',url);
     } else {
@@ -735,7 +684,9 @@
       console.log('`', 'macro 9 reserved for interactive macro (`m)');
       return;
     }
-    console.log('`', 'registering macro: ' + iNumToRegister);
+    if (oConfig.announceMacros === true) {
+      console.log('`', 'registering macro: ' + iNumToRegister);
+    }
     aMacros[iNumToRegister] = fn;
   }
 
@@ -764,7 +715,9 @@
       },
       exit: function(sValue) {
         oConfig.sMacro9Code = sValue;
-        console.log('`', 'registering macro: 9');
+        if (oConfig.announceMacros === true) {
+          console.log('`', 'registering macro: 9');
+        }
         aMacros[9] = function() {
           /* eslint-disable no-eval */
           /* jshint ignore:start */
@@ -790,7 +743,9 @@
    */
   function runMacro(iMacroSlot) {
     if (typeof aMacros[iMacroSlot] === 'function') {
-      console.log('`', 'running macro: ' + iMacroSlot);
+      if (oConfig.announceMacros === true) {
+        console.log('`', 'running macro: ' + iMacroSlot);
+      }
       aMacros[iMacroSlot]();
     } else {
       console.log('`', 'macro empty');
@@ -1280,6 +1235,81 @@
     }
   }
 
+  /**
+   * Returns a serialized json map representing
+   * certain property values that have changed state
+   * @returns {string} serialized config object
+   */
+  function _generateConfigSerialization() {
+    var s = '{';
+    aConfigurableKeys.forEach(function(sKey) {
+      // don't include if default
+      if (oDEFAULTS[sKey] !== undefined &&
+          oDEFAULTS[sKey] === oConfig[sKey]) {
+        return;
+      }
+      s += '%22' + sKey + '%22:';
+      if (typeof oConfig[sKey] === 'string') {
+        s += '%22' + oConfig[sKey] + '%22';
+      } else {
+        s += oConfig[sKey];
+      }
+      s += ',';
+    });
+
+    // channels
+    if (oConfig.channels.length !== 1 && oConfig.channels[0] !== 'log') {
+      s += '%22channels%22:';
+      s += '%22' + oConfig.channels + '%22';
+    }
+
+    // defaultBacktickKeys
+    if (!(oConfig.defaultBacktickKeys.length === 1 &&
+            oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
+      s += '%22defaultBacktickKeys%22:';
+      s += '%22' + oConfig.defaultBacktickKeys + '%22';
+    }
+
+    s += '}';
+    s = s.replace(/,}/, '}');
+    return s;
+  }
+
+  /**
+   * Return a url string for saving configuration state.<br />
+   * Apply config string to url and account for any past url state
+   * @param {string} sPrefix the starting url
+   * @returns {string} url string representing current state
+   */
+  function _generateSaveUrl(sPrefix) {
+    var sUrl = sPrefix || '',
+      bHasHash = sPrefix.indexOf("#") > 1,
+      sTickerUrlParam = '_ticker=' + _generateConfigSerialization();
+
+    // remove any present ticker url params
+    sUrl = sUrl.replace(/_ticker=({.*})?&?/, '');
+
+    // add opening "?" if no url params are currently present
+    if (sUrl.indexOf('?') === -1) {
+      sUrl = bHasHash ?
+        sUrl.replace(/^(.*)(#.*)$/, '$1?1=1$2') :
+        sUrl + '?1=1';
+    }
+
+    // add ticker url param
+    sUrl = bHasHash ?
+      sUrl.replace(/^(.*)(#.*)$/, '$1&' + sTickerUrlParam + '$2') :
+      sUrl + '&' + sTickerUrlParam;
+
+    // cleanup
+    sUrl = sUrl
+      .replace(/\?1=1&/, '?')
+      .replace(/\?&/, '?')
+      .replace(/(&&)+/, '&');
+
+    return sUrl;
+  }
+
 
   //////////////////////////////////
   // execution starts
@@ -1352,6 +1382,7 @@
 
     // private
     _ticker._oConfig = oConfig;
+    _ticker._generateSaveUrl = _generateSaveUrl;
 
     window._ticker = _ticker;
   }());
