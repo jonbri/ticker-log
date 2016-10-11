@@ -353,7 +353,9 @@
       aBuffer.unshift(text);
     }
     aRenderBuffer.unshift(text);
-    _flushBuffer();
+    setTimeout(function() {
+      _flushBuffer();
+    }, 0);
   }
 
   /**
@@ -444,6 +446,7 @@
    * @function
    */
   function output(bAll) {
+    _flushBuffer();
     if (bAll === undefined) {
       bAll = false;
     }
@@ -1379,6 +1382,7 @@
     _ticker.macroEdit = macroEdit;
     _ticker.restoreAndExit = restoreAndExit;
     _ticker.reset = reset;
+    _ticker.flush = _flushBuffer;
 
     // private
     _ticker._oConfig = oConfig;
