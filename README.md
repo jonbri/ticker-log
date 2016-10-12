@@ -6,7 +6,7 @@ On-screen logging utility.
 
 Monkey-patches and chains the browser's `console` object.
 
-Functionality is driven by `console` statements, `window._ticker`, and keyboard chords starting with `` ` `` (back-*tick*).
+Functionality is driven by `console` statements, `window.ticker`, and keyboard chords starting with `` ` `` (back-*tick*).
 
 This module facilitates an *interactive-style* of development/non-production logging.
 
@@ -31,7 +31,7 @@ Rather than `log` you could listen to the `warn` channel.
 
 Press `` ` ``-`<tab>` a few times until you see "listening to warn..." and now only invocations of ``console.warn('`', '...')`` will be printed.
 
-To show *all* output to the current channel press `` ` ``-`b`, and to show all output from all channels use `window._ticker.listenToEverything()`.
+To show *all* output to the current channel press `` ` ``-`b`, and to show all output from all channels use `window.ticker.listenToEverything()`.
 
 ### Execute ad-hoc testing code with keyboard "macros"
 *watch* a variable:
@@ -108,22 +108,22 @@ Property examples:
 
 Configuration settings take this format when embedded as a url parameter:
 ```
-http://localhost/index.html?_ticker={"interval":275,"channel":"debug"}
+http://localhost/index.html?ticker={"interval":275,"channel":"debug"}
 ```
 
 ### API
-Most on-screen actions can be scripted by using the global `_ticker` object:
+Most on-screen actions can be scripted by using the global `ticker` object:
 ```
-window._ticker.help();          # show help screen
-window._ticker.increaseSpeed(); # increase speed
-window._ticker.decreaseSpeed(); # decrease speed
-window._ticker.moveUp();        # make starting position a little higher
-window._ticker.moveDown();      # make starting position a little lower
-window._ticker.moveLeft();      # move logs to the left of the screen (the default)
-window._ticker.moveRight();     # move logs to the right of the screen
-window._ticker.pause();         # pause ticker log movement
-window._ticker.kill();          # remove all ticker logs from screen
-window._ticker.dump();          # show all configuration
+window.ticker.help();          # show help screen
+window.ticker.increaseSpeed(); # increase speed
+window.ticker.decreaseSpeed(); # decrease speed
+window.ticker.moveUp();        # make starting position a little higher
+window.ticker.moveDown();      # make starting position a little lower
+window.ticker.moveLeft();      # move logs to the left of the screen (the default)
+window.ticker.moveRight();     # move logs to the right of the screen
+window.ticker.pause();         # pause ticker log movement
+window.ticker.kill();          # remove all ticker logs from screen
+window.ticker.dump();          # show all configuration
 ```
 
 Additional API is covered in the following sections.
@@ -149,7 +149,7 @@ Macros 0-8 are reserved for api-driven macros:
 
 ```js
 var variableToTrack;
-window._ticker.registerMacro(0, function() {
+window.ticker.registerMacro(0, function() {
     // output values of variables in closure scope
     console.log('`', 'variableToTrack: ' + variableToTrack);
 });
@@ -162,32 +162,32 @@ Macro 9 is reserved for an on-screen editing option. Press `` ` ``-`m` and a tex
 ### Filtering
 Filter all log output by *string*:
 ```js
-window._ticker.filter('string subset match');
+window.ticker.filter('string subset match');
 ```
 
 *regex*:
 ```js
-window._ticker.filter(/^startsWith/);
+window.ticker.filter(/^startsWith/);
 ```
 
 *function*:
 ```js
-window._ticker.filter(function(s) {
+window.ticker.filter(function(s) {
     // do something with log text
 });
 ```
 
 Pair filtering with `listenToEverything` to broadly filter:
 ```js
-window._ticker.listenToEverything();
-window._ticker.filter(someErrorCode);
+window.ticker.listenToEverything();
+window.ticker.filter(someErrorCode);
 ```
 
 ### Custom action key
 Use a custom key rather than the default `` ` `` key for keyboard chords:
 ```js
 // additionally use the 'z' key as a modifier
-window._ticker.config({
+window.ticker.config({
     defaultBacktickKeys: [192, 90] // `, Z
 });
 ```
@@ -195,14 +195,14 @@ window._ticker.config({
 ## Global-state Impact
 * `window.history.pushState` and `window.location.replace`
   * "save" action (`` ` ``-`<enter>`)
-* `window._ticker`
+* `window.ticker`
   * api namespace
 * `console` functions (`log`, `debug`, etc)
   * `console` overrides are reverted when applicable (such as when changing channels)
 
 Reset to default state:
 ```js
-window._ticker.reset();
+window.ticker.reset();
 ```
 
 ## Build
