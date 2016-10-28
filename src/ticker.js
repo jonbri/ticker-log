@@ -11,10 +11,14 @@
  */
 (function ticker_go() {
 
-  // exit if dom not found
+  // make sure dom is ready
   if (!document.body) {
-      console.warn('ticker-log: no dom found, exiting');
-      return;
+    if (document.readyState !== 'loading') {
+      ticker_go();
+    } else {
+      document.addEventListener('DOMContentLoaded', ticker_go);
+    }
+    return;
   }
 
 
