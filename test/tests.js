@@ -7,23 +7,23 @@ var defaultStartUrl = "http://localhost:9000/index.html";
 //////////////////////////////////
 // utility functions
 function howManyLogDivs() {
-    return jQuery('._ticker_log').length;
+    return jQuery('.ticker_log').length;
 }
 
 function howManyTextareas() {
-    return document.querySelectorAll('#_tickerTextarea').length;
+    return document.querySelectorAll('#tickerTextarea').length;
 }
 
 function getText(iLog) {
-    return jQuery('._ticker_log')[iLog].innerHTML;
+    return jQuery('.ticker_log')[iLog].innerHTML;
 }
 
 function getTextarea() {
-    return jQuery('#_tickerTextarea').find('textarea');
+    return jQuery('#tickerTextarea').find('textarea');
 }
 
 function testUrlSave(assert, o) {
-    assert.strictEqual(window._ticker._generateSaveUrl(o.start), o.expected, o.message);
+    assert.strictEqual(window.ticker._generateSaveUrl(o.start), o.expected, o.message);
 }
 
 
@@ -34,7 +34,7 @@ window.ticker_runTests = function() {
     var iSafeDelay = 500;
 
     var sPrefix = window.location.href;
-    if (/_ticker=/.test(sPrefix)) {
+    if (/ticker=/.test(sPrefix)) {
         alert('cannot run if settings set in url');
         return;
     }
@@ -43,20 +43,20 @@ window.ticker_runTests = function() {
 
     QUnit.module("test ticker-log", {
         beforeEach: function() {
-            window._ticker.kill();
+            window.ticker.kill();
         },
         afterEach: function() {
-            window._ticker.reset();
+            window.ticker.reset();
         }
     });
 
     QUnit.test("test config", function(assert) {
-        window._ticker.config({
+        window.ticker.config({
             'foo': 'bar',
             'interval': 999
         });
-        assert.strictEqual(window._ticker._oConfig.foo, 'bar', 'test non-official property');
-        assert.strictEqual(window._ticker._oConfig.interval, 999, 'test official property');
+        assert.strictEqual(window.ticker._oConfig.foo, 'bar', 'test non-official property');
+        assert.strictEqual(window.ticker._oConfig.interval, 999, 'test official property');
     });
 
     QUnit.test("does log appear", function(assert) {
@@ -66,42 +66,42 @@ window.ticker_runTests = function() {
         // add one log div
         console.log('`', 'log 0');
 
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "one log div is present");
 
         // clear log divs
-        window._ticker.kill();
+        window.ticker.kill();
 
         // add two log divs
         console.log('`', 'log 0');
         console.log('`', 'log 1');
 
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 2, "two log divs are present");
     });
 
     QUnit.test("print api", function(assert) {
-        window._ticker.print('lorum ipsum');
-        window._ticker.flush();
+        window.ticker.print('lorum ipsum');
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "print api works");
         assert.strictEqual('lorum ipsum', getText(0), 'correct text');
     });
 
     QUnit.test("print api with output textarea", function(assert) {
-        window._ticker.print('lorum ipsum', {
+        window.ticker.print('lorum ipsum', {
             textarea: true
         });
         assert.strictEqual(getTextarea().length, 1, "output textarea present");
 
         // now hide the textarea
-        window._ticker.output();
+        window.ticker.output();
     });
 
     QUnit.test("print api -> make sure textarea's are cleaned up", function(assert) {
-        window._ticker.print('one', {
+        window.ticker.print('one', {
             textarea: true
         });
-        window._ticker.print('two', {
+        window.ticker.print('two', {
             textarea: true
         });
         assert.strictEqual(howManyTextareas(), 1, "only 1 textarea");
@@ -114,14 +114,14 @@ window.ticker_runTests = function() {
         // show a log div and output textarea
         console.log('`', 'lorum ipsum');
 
-        window._ticker.output();
+        window.ticker.output();
 
         // make sure the textarea shows with the correct content
         assert.strictEqual(getTextarea().length, 1, "output textarea shows");
         assert.strictEqual(getTextarea().val().indexOf("lorum ipsum"), 0, "output textarea has correct content");
 
         // now hide the textarea
-        window._ticker.output();
+        window.ticker.output();
 
         // make sure textarea is gone
         assert.strictEqual(getTextarea().length, 0, "no output textarea present afterwards");
@@ -133,8 +133,8 @@ window.ticker_runTests = function() {
 
         // show a log div and output textarea
         console.log('`', 'outputAll 0');
-        window._ticker.print('outputAll 1')
-        window._ticker.outputAll();
+        window.ticker.print('outputAll 1')
+        window.ticker.outputAll();
 
         // make sure the textarea shows with the correct content
         assert.strictEqual(getTextarea().length, 1, "output textarea shows");
@@ -147,7 +147,7 @@ window.ticker_runTests = function() {
         assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");
 
         // show configuration on screen
-        window._ticker.dump();
+        window.ticker.dump();
 
         // make sure config shows
         assert.strictEqual(getTextarea().length, 1, "output textarea shows");
@@ -158,143 +158,143 @@ window.ticker_runTests = function() {
         assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");
 
         // show configuration on screen
-        window._ticker.help();
+        window.ticker.help();
 
         // make sure config shows
-        window._ticker.flush();
+        window.ticker.flush();
         assert.ok(howManyLogDivs() > 0, "help is showing");
     });
 
     QUnit.test("pause", function(assert) {
-        window._ticker.pause();
-        assert.strictEqual(window._ticker._oConfig.pauseMode, true, 'test pauseMode property');
+        window.ticker.pause();
+        assert.strictEqual(window.ticker._oConfig.pauseMode, true, 'test pauseMode property');
     });
 
     QUnit.test("moveRight", function(assert) {
         function isLeft() {
-            window._ticker.flush();
-            assert.strictEqual(jQuery('._ticker_log').offset().left, 0, "logs are to the left of the screen");
+            window.ticker.flush();
+            assert.strictEqual(jQuery('.ticker_log').offset().left, 0, "logs are to the left of the screen");
         }
         function isRight() {
-            window._ticker.flush();
-            assert.ok(jQuery('._ticker_log').offset().left > 0, "logs are to the right of the screen");
+            window.ticker.flush();
+            assert.ok(jQuery('.ticker_log').offset().left > 0, "logs are to the right of the screen");
         }
 
         // by default should be left
-        window._ticker.test();
+        window.ticker.test();
         isLeft();
 
         // should move to right
-        window._ticker.moveRight();
+        window.ticker.moveRight();
         isRight();
 
         // move back to left
-        window._ticker.moveLeft();
+        window.ticker.moveLeft();
         isLeft();
 
         // should still be left
-        window._ticker.moveLeft();
+        window.ticker.moveLeft();
         isLeft();
     });
 
     QUnit.test("backtick and requireBackTick", function(assert) {
         console.log('`', 'lorum ipsum');
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "(back-tick used) one div present because back-tick used in console statement");
 
-        window._ticker.kill();
+        window.ticker.kill();
         console.log('lorum ipsum');
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 0, "(no back-tick) no log shows because requireBackTick is true");
 
-        window._ticker.config({
+        window.ticker.config({
             requireBackTick: false
         });
 
-        window._ticker.kill();
+        window.ticker.kill();
         console.log('lorum ipsum');
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "(no back-tick) one div present because requireBackTick is false");
 
-        window._ticker.kill();
+        window.ticker.kill();
         console.log('`', 'lorum ipsum');
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "(back-tick used) using back-tick still works");
     });
 
     QUnit.test("macro", function(assert) {
-        window._ticker.kill();
-        window._ticker.registerMacro(8, function() {
+        window.ticker.kill();
+        window.ticker.registerMacro(8, function() {
             console.log('`', 'testing macro 8');
         });
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 0, "macro is registered, no logs showing");
-        window._ticker.runMacro(8);
-        window._ticker.flush();
+        window.ticker.runMacro(8);
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "one log div after running macro");
     });
 
     QUnit.test("announceMacros property", function(assert) {
-        window._ticker.kill();
-        window._ticker.config({
+        window.ticker.kill();
+        window.ticker.config({
             announceMacros: true
         });
-        window._ticker.registerMacro(8, function() {
+        window.ticker.registerMacro(8, function() {
             console.log('`', 'testing macro 8');
         });
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "registation message");
-        window._ticker.kill();
-        window._ticker.runMacro(8);
-        window._ticker.flush();
+        window.ticker.kill();
+        window.ticker.runMacro(8);
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 2, "two log divs after running macro");
         assert.ok(/running macro: 8/.test(getText(0)), "'running...' text shows");
     });
 
     QUnit.test("macro 9 - don't allow registerMacro api", function(assert) {
-        window._ticker.registerMacro(9, function() {
+        window.ticker.registerMacro(9, function() {
             // this should never happen
             assert.ok(false, "should never execute macro 9 when using registerMacro api");
         });
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "one log div which should be the warning message");
         assert.ok(/macro 9 reserved/.test(getText(0)), 'warning text should appear');
     });
 
     QUnit.test("macro 9 (macroEdit)", function(assert) {
-        window._ticker.macroEdit();
+        window.ticker.macroEdit();
         getTextarea().text("console.log('`', 'lorum ipsum');");
-        window._ticker.macroEdit();
+        window.ticker.macroEdit();
 
-        window._ticker.runMacro(9);
-        window._ticker.flush();
+        window.ticker.runMacro(9);
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "macro 9 message shows");
 
         assert.ok(/lorum ipsum/.test(getText(0)), 'console text shows');
     });
 
     QUnit.test("reset", function(assert) {
-        window._ticker.reset();
+        window.ticker.reset();
         console.log('`', 'lorum ipsum');
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "log renders after reset");
     });
 
     QUnit.test("channels", function(assert) {
-        assert.strictEqual('log', window._ticker._oConfig.channels[0], 'default channel is log');
-        window._ticker.nextChannel();
-        assert.strictEqual('debug', window._ticker._oConfig.channels[0], 'after change channel we are at debug');
+        assert.strictEqual('log', window.ticker._oConfig.channels[0], 'default channel is log');
+        window.ticker.nextChannel();
+        assert.strictEqual('debug', window.ticker._oConfig.channels[0], 'after change channel we are at debug');
 
-        window._ticker.config({
+        window.ticker.config({
             channels: ['warn']
         });
-        assert.strictEqual('warn', window._ticker._oConfig.channels[0], 'explicitly set channel to warn');
-        window._ticker.nextChannel();
-        assert.strictEqual('error', window._ticker._oConfig.channels[0], 'after change channel we are at error');
+        assert.strictEqual('warn', window.ticker._oConfig.channels[0], 'explicitly set channel to warn');
+        window.ticker.nextChannel();
+        assert.strictEqual('error', window.ticker._oConfig.channels[0], 'after change channel we are at error');
     });
 
     QUnit.test("channels - multiple", function(assert) {
-        window._ticker.config({
+        window.ticker.config({
             channels: ['warn', 'error']
         });
 
@@ -302,26 +302,26 @@ window.ticker_runTests = function() {
         console.log('`', 'log');
         console.error('`', 'error');
 
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 2, "only warn and error logs show");
     });
 
     QUnit.test("filtering - regex", function(assert) {
-        window._ticker.filter(/^hello/);
+        window.ticker.filter(/^hello/);
         console.log('`', 'hello foo');
         console.log('`', 'bye foo');
         console.log('`', 'bye hello foo');
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "only match rendered");
         assert.ok(/hello foo/.test(getText(0)), "correct text");
     });
 
     QUnit.test("filtering - string", function(assert) {
-        window._ticker.filter("hello");
+        window.ticker.filter("hello");
         console.log('`', 'hello foo');
         console.log('`', 'bye foo');
         console.log('`', 'bye hello foo');
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 2, "two matches since string can't have anchor");
         assert.ok(/hello foo/.test(getText(0)), "correct text 0");
         assert.ok(/bye hello foo/.test(getText(1)), "correct text 1");
@@ -329,7 +329,7 @@ window.ticker_runTests = function() {
 
     QUnit.test("filtering - function", function(assert) {
         var iMatches = 0;
-        window._ticker.filter(function(s) {
+        window.ticker.filter(function(s) {
             if (s === 'hello') {
                 iMatches++;
             }
@@ -340,7 +340,7 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("listen to everything", function(assert) {
-        window._ticker.listenToEverything();
+        window.ticker.listenToEverything();
 
         console.log('`', 'hello log with backtick');
         console.debug('`', 'hello debug with backtick');
@@ -353,77 +353,77 @@ window.ticker_runTests = function() {
         console.error('hello error no backtick');
         console.trace('hello trace no backtick');
 
-        window._ticker.flush();
+        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 10, "all logs show");
     });
 
     QUnit.test("generateConfigString default", function(assert) {
         testUrlSave(assert, {
             start: defaultStartUrl,
-            expected: defaultStartUrl + "?_ticker={}",
+            expected: defaultStartUrl + "?ticker={}",
             message: "correct default url"
         });
     });
 
     QUnit.test("generateConfigString reflect speed change", function(assert) {
-        window._ticker.config({ interval: 280 });
+        window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl,
-            expected: defaultStartUrl + "?_ticker={%22interval%22:280}",
+            expected: defaultStartUrl + "?ticker={%22interval%22:280}",
             message: "correct url with speed change"
         });
     });
 
     QUnit.test("generateConfigString reflect speed change with already-existing param", function(assert) {
-        window._ticker.config({ interval: 280 });
+        window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz",
-            expected: defaultStartUrl + "?bar=baz&_ticker={%22interval%22:280}",
+            expected: defaultStartUrl + "?bar=baz&ticker={%22interval%22:280}",
             message: "correct url with speed change with already-existing param"
         });
     });
 
     QUnit.test("generateConfigString reflect speed change with already-existing params", function(assert) {
-        window._ticker.config({ interval: 280 });
+        window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz&sun=moon",
-            expected: defaultStartUrl + "?bar=baz&sun=moon&_ticker={%22interval%22:280}",
+            expected: defaultStartUrl + "?bar=baz&sun=moon&ticker={%22interval%22:280}",
             message: "correct url with speed change with already-existing params"
         });
     });
 
     QUnit.test("generateConfigString reflect speed and starting position change", function(assert) {
-        window._ticker.config({ interval: 280, logStartTop: 105 });
+        window.ticker.config({ interval: 280, logStartTop: 105 });
         testUrlSave(assert, {
             start: defaultStartUrl,
-            expected: defaultStartUrl + "?_ticker={%22interval%22:280,%22logStartTop%22:105}",
+            expected: defaultStartUrl + "?ticker={%22interval%22:280,%22logStartTop%22:105}",
             message: "correct url with speed and position change"
         });
     });
 
     QUnit.test("generateConfigString reflect speed change with hash", function(assert) {
-        window._ticker.config({ interval: 280 });
+        window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "#foo",
-            expected: defaultStartUrl + "?_ticker={%22interval%22:280}#foo",
+            expected: defaultStartUrl + "?ticker={%22interval%22:280}#foo",
             message: "correct url with speed change with hash present"
         });
     });
 
     QUnit.test("generateConfigString reflect speed change with hash and already-existing param", function(assert) {
-        window._ticker.config({ interval: 280 });
+        window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz#foo",
-            expected: defaultStartUrl + "?bar=baz&_ticker={%22interval%22:280}#foo",
+            expected: defaultStartUrl + "?bar=baz&ticker={%22interval%22:280}#foo",
             message: "correct url with speed change with hash present and already-existing param"
         });
     });
 
     QUnit.test("generateConfigString reflect speed change with hash and multiple already-existing params", function(assert) {
-        window._ticker.config({ interval: 280 });
+        window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz&sun=moon#foo",
-            expected: defaultStartUrl + "?bar=baz&sun=moon&_ticker={%22interval%22:280}#foo",
+            expected: defaultStartUrl + "?bar=baz&sun=moon&ticker={%22interval%22:280}#foo",
             message: "correct url with speed change with hash present and multiple already-existing params"
         });
     });

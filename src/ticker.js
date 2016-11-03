@@ -87,7 +87,7 @@
     ],
 
     // dom id of the "output" textarea
-    sTextareaId = '_tickerTextarea',
+    sTextareaId = 'tickerTextarea',
 
     // whether or not the "`" key is pressed
     keyIsDown = false,
@@ -275,7 +275,7 @@
    * Example:<br>
    * <pre>
    * // change log speed to 400
-   * window._ticker.config({
+   * window.ticker.config({
    *   interval: 400
    * });
    * </pre>
@@ -321,7 +321,7 @@
    * Example:<br>
    * <pre>
    * // show log on-screen
-   * window._ticker.print('lorum ipsum');
+   * window.ticker.print('lorum ipsum');
    * </pre>
    * <br>
    *
@@ -413,7 +413,7 @@
   function kill() {
     oConfig.pauseMode = false;
     aRenderBuffer = [];
-    var aLogNodes = document.querySelectorAll('._ticker_log');
+    var aLogNodes = document.querySelectorAll('.ticker_log');
     pseudoForEach(aLogNodes, function(i, oLogNode) {
       oLogNode.parentNode.removeChild(oLogNode);
     });
@@ -464,7 +464,7 @@
       });
     } else {
       // just show items on screen
-      var aLogNodes = document.querySelectorAll('._ticker_log');
+      var aLogNodes = document.querySelectorAll('.ticker_log');
       if (aLogNodes.length > 0) {
         pseudoForEach(aLogNodes, function(i, oLogNode) {
           var string = oLogNode.innerHTML.trim();
@@ -583,7 +583,7 @@
     _postConfigApply();
 
     // move existing logs
-    var aLogNodes = document.querySelectorAll('._ticker_log');
+    var aLogNodes = document.querySelectorAll('.ticker_log');
     pseudoForEach(aLogNodes, function(i, oLogNode) {
       oLogNode.style.right = 0;
       oLogNode.style.left = 'inherit';
@@ -606,7 +606,7 @@
     _postConfigApply();
 
     // move existing logs
-    var aLogNodes = document.querySelectorAll('._ticker_log');
+    var aLogNodes = document.querySelectorAll('.ticker_log');
     pseudoForEach(aLogNodes, function(i, oLogNode) {
       oLogNode.style.left = 0;
       oLogNode.style.right = 'inherit';
@@ -619,7 +619,7 @@
    * "enter" api function.<br>
    * Update url (window.location) to "save state".<br>
    * Only use config props that have changed.<br>
-   * Generate url-friendly, json string to use for "_ticker" param.
+   * Generate url-friendly, json string to use for "ticker" param.
    *
    * @exports ticker-log
    * @name saveConfig
@@ -828,8 +828,8 @@
     killTextarea();
     document.body.removeEventListener('keydown', fnKeyDown);
     document.body.removeEventListener('keyup', fnKeyUp);
-    window._ticker = undefined;
-    delete window._ticker;
+    window.ticker = undefined;
+    delete window.ticker;
 
     // reset console object
     aChannels.forEach(function(sChannel) {
@@ -929,7 +929,7 @@
       window.clearInterval(render_interval);
 
       if (!oConfig.pauseMode) {
-        var aLogNodes = document.querySelectorAll('._ticker_log');
+        var aLogNodes = document.querySelectorAll('.ticker_log');
         if (aLogNodes.length > 0) {
           pseudoForEach(aLogNodes, function(iIndex, oLogNode) {
             var iCurrentTop = parseInt(getComputedStyle(oLogNode).top, 10);
@@ -974,7 +974,7 @@
    */
   function _loadConfigFromUrl() {
     var o,
-      sUrlParam = getUrlParamValue('_ticker');
+      sUrlParam = getUrlParamValue('ticker');
 
     if (sUrlParam === null) {
       return;
@@ -1073,7 +1073,7 @@
    * @returns {int} top position value of dom ref
    */
   function _calculateTop() {
-    var oLastNode = document.querySelector('._ticker_log:last-child');
+    var oLastNode = document.querySelector('.ticker_log:last-child');
     if (!oLastNode) {
       return oConfig.logStartTop;
     } else {
@@ -1088,7 +1088,7 @@
   function _renderText(sText) {
     var div = document.createElement('div');
     assignStyle(div, oConfig.logStyle);
-    div.className += ' _ticker_log';
+    div.className += ' ticker_log';
     div.innerHTML = sText;
     var iTop = _calculateTop();
     if (iTop < (oConfig.logStartTop / 2)) {
@@ -1291,10 +1291,10 @@
   function _generateSaveUrl(sPrefix) {
     var sUrl = sPrefix || '',
       bHasHash = sPrefix.indexOf("#") > 1,
-      sTickerUrlParam = '_ticker=' + _generateConfigSerialization();
+      sTickerUrlParam = 'ticker=' + _generateConfigSerialization();
 
     // remove any present ticker url params
-    sUrl = sUrl.replace(/_ticker=({.*})?&?/, '');
+    sUrl = sUrl.replace(/ticker=({.*})?&?/, '');
 
     // add opening "?" if no url params are currently present
     if (sUrl.indexOf('?') === -1) {
@@ -1360,38 +1360,38 @@
 
   // expose api to global namespace
   (function() {
-    var _ticker = {};
-    _ticker.config = config;
-    _ticker.test = test;
-    _ticker.help = help;
-    _ticker.kill = kill;
-    _ticker.silent = silent;
-    _ticker.pause = pause;
-    _ticker.output = output;
-    _ticker.outputAll = outputAll;
-    _ticker.dump = dump;
-    _ticker.moveDown = increaseLogStartTop;
-    _ticker.moveUp = decreaseLogStartTop;
-    _ticker.moveLeft = moveLeft;
-    _ticker.moveRight = moveRight;
-    _ticker.increaseSpeed = increaseSpeed;
-    _ticker.decreaseSpeed = decreaseSpeed;
-    _ticker.nextChannel = nextChannel;
-    _ticker.print = print;
-    _ticker.registerMacro = registerMacro;
-    _ticker.runMacro = runMacro;
-    _ticker.filter = filter;
-    _ticker.listenToEverything = listenToEverything;
+    var ticker = {};
+    ticker.config = config;
+    ticker.test = test;
+    ticker.help = help;
+    ticker.kill = kill;
+    ticker.silent = silent;
+    ticker.pause = pause;
+    ticker.output = output;
+    ticker.outputAll = outputAll;
+    ticker.dump = dump;
+    ticker.moveDown = increaseLogStartTop;
+    ticker.moveUp = decreaseLogStartTop;
+    ticker.moveLeft = moveLeft;
+    ticker.moveRight = moveRight;
+    ticker.increaseSpeed = increaseSpeed;
+    ticker.decreaseSpeed = decreaseSpeed;
+    ticker.nextChannel = nextChannel;
+    ticker.print = print;
+    ticker.registerMacro = registerMacro;
+    ticker.runMacro = runMacro;
+    ticker.filter = filter;
+    ticker.listenToEverything = listenToEverything;
 
-    _ticker.macroEdit = macroEdit;
-    _ticker.restoreAndExit = restoreAndExit;
-    _ticker.reset = reset;
-    _ticker.flush = _flushBuffer;
+    ticker.macroEdit = macroEdit;
+    ticker.restoreAndExit = restoreAndExit;
+    ticker.reset = reset;
+    ticker.flush = _flushBuffer;
 
     // private
-    _ticker._oConfig = oConfig;
-    _ticker._generateSaveUrl = _generateSaveUrl;
+    ticker._oConfig = oConfig;
+    ticker._generateSaveUrl = _generateSaveUrl;
 
-    window._ticker = _ticker;
+    window.ticker = ticker;
   }());
 }());
