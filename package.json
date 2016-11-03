@@ -1,6 +1,6 @@
 {
   "name": "ticker-log",
-  "version": "0.2.3",
+  "version": "1.0.0",
   "description": "On-screen VanillaJS logging utility.",
   "main": "ticker.js",
   "scripts": {
