@@ -39,12 +39,19 @@
  */
 (function ticker_go() {
 
-  // exit if dom not found
+  // make sure dom is ready
   if (!document.body) {
-      console.warn('ticker-log: no dom found, exiting');
-      return;
+    if (document.readyState !== 'loading') {
+      ticker_go();
+    } else {
+      document.addEventListener('DOMContentLoaded', ticker_go);
+    }
+    return;
   }
 
+  // embed starparam
+  /* https://github.com/jonbri/starparam v1.0.0 Thu Dec 8 19:38:02 EST 2016 */
+  !function(){function n(n){return null===n||void 0===n}function r(r){var a;if(!n(r))return a=new RegExp("(^[^?&amp;#]+)\\??([^#]*)#?(.*)$").exec(r),n(a)?{params:[]}:{prefix:a[1],params:a[2].split("&amp;").filter(function(n){return""!==n}).map(function(n){return function(n){return{name:n[0],value:n[1]}}(n.split("="))}),hash:""===a[3]?void 0:a[3]}}function a(r){var a="";if(!n(r))return n(r.prefix)===!1&amp;&amp;(a+=r.prefix),n(r.params)===!1&amp;&amp;r.params.forEach(function(n,r){a+=0===r?"?":"&amp;",a+=n.name+"="+n.value}),n(r.hash)===!1&amp;&amp;(a+="#"+r.hash),a}function t(n,a){return r(n).params.filter(function(n){return n.name===a})[0]}function e(r,a){var e;if(!n(r)&amp;&amp;!n(a))return e=t(r,a),n(e)?void 0:e.value}function i(e,i,u){var f;if(!n(e)&amp;&amp;!n(i))return n(u)&amp;&amp;(u=""),f=r(e),n(t(e,i))?f.params.push({name:i,value:u}):f.params=f.params.map(function(n){return n.name===i&amp;&amp;(n.value=u),n}),a(f)}function u(t,e){var i;if(!n(t))return n(e)?t:(i=r(t),i.params=i.params.filter(function(n){return n.name!==e}),a(i))}!function(){var t={parse:function(a){if(0===arguments.length&amp;&amp;(a=window.location.href),!n(a))return r(a)},stringify:function(n){return a(n)},get:function(r,a){var t;return a=a||{},t=a.url,n(t)&amp;&amp;(t=window.location.href),e(t,r)},set:function(r,a,t){var e,u;if(t=t||{},e=t.hasOwnProperty("url")?t.url:window.location.href,!n(e))return u=i(e,r,a)},remove:function(r,a){var t,e;if(a=a||{},t=a.hasOwnProperty("url")?a.url:window.location.href,!n(t))return e=u(t,r)}};window.starparam=t}()}();
 
   //////////////////////////////////
   // variables global to ticker
@@ -59,6 +66,7 @@
       logStartTop: 100,
       align: 'left',
       requireBackTick: true,
+      announceMacros: false,
       channels: ['log']
     },
 
@@ -110,7 +118,7 @@
     ],
 
     // dom id of the "output" textarea
-    sTextareaId = '_tickerTextarea',
+    sTextareaId = 'tickerTextarea',
 
     // whether or not the "`" key is pressed
     keyIsDown = false,
@@ -261,23 +269,6 @@
   }
 
   /**
-   * return value of url parameter in window.location.href
-   * @param {string} name url param name
-   * @returns {string} value of named url parameter
-   */
-  function getUrlParamValue(name) {
-    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
-    var regexS = '[\\?&amp;]'+name+'=([^&amp;#]*)',
-      regex = new RegExp( regexS ),
-      results = regex.exec(window.location.href);
-    if (results === null) {
-      return null;
-    } else {
-      return results[1];
-    }
-  }
-
-  /**
    * determine whether passed-in object is an array
    * @param {object} o potential array
    * @returns {boolean} whether object is of type array
@@ -298,7 +289,7 @@
    * Example:&lt;br>
    * &lt;pre>
    * // change log speed to 400
-   * window._ticker.config({
+   * window.ticker.config({
    *   interval: 400
    * });
    * &lt;/pre>
@@ -344,7 +335,7 @@
    * Example:&lt;br>
    * &lt;pre>
    * // show log on-screen
-   * window._ticker.print('lorum ipsum');
+   * window.ticker.print('lorum ipsum');
    * &lt;/pre>
    * &lt;br>
    *
@@ -434,7 +425,7 @@
   function kill() {
     oConfig.pauseMode = false;
     aRenderBuffer = [];
-    var aLogNodes = document.querySelectorAll('._ticker_log');
+    var aLogNodes = document.querySelectorAll('.ticker_log');
     pseudoForEach(aLogNodes, function(i, oLogNode) {
       oLogNode.parentNode.removeChild(oLogNode);
     });
@@ -471,6 +462,7 @@
    * @function
    */
   function output(bAll) {
+    _flushBuffer();
     if (bAll === undefined) {
       bAll = false;
     }
@@ -484,7 +476,7 @@
       });
     } else {
       // just show items on screen
-      var aLogNodes = document.querySelectorAll('._ticker_log');
+      var aLogNodes = document.querySelectorAll('.ticker_log');
       if (aLogNodes.length > 0) {
         pseudoForEach(aLogNodes, function(i, oLogNode) {
           var string = oLogNode.innerHTML.trim();
@@ -603,7 +595,7 @@
     _postConfigApply();
 
     // move existing logs
-    var aLogNodes = document.querySelectorAll('._ticker_log');
+    var aLogNodes = document.querySelectorAll('.ticker_log');
     pseudoForEach(aLogNodes, function(i, oLogNode) {
       oLogNode.style.right = 0;
       oLogNode.style.left = 'inherit';
@@ -626,7 +618,7 @@
     _postConfigApply();
 
     // move existing logs
-    var aLogNodes = document.querySelectorAll('._ticker_log');
+    var aLogNodes = document.querySelectorAll('.ticker_log');
     pseudoForEach(aLogNodes, function(i, oLogNode) {
       oLogNode.style.left = 0;
       oLogNode.style.right = 'inherit';
@@ -639,7 +631,7 @@
    * "enter" api function.&lt;br>
    * Update url (window.location) to "save state".&lt;br>
    * Only use config props that have changed.&lt;br>
-   * Generate url-friendly, json string to use for "_ticker" param.
+   * Generate url-friendly, json string to use for "ticker" param.
    *
    * @exports ticker-log
    * @name saveConfig
@@ -647,59 +639,7 @@
    * @function
    */
   function saveConfig() {
-    var url = window.location.href;
-
-    function generateConfigString() {
-      var s = '_ticker={';
-      aConfigurableKeys.forEach(function(sKey) {
-        // don't include if default
-        if (oDEFAULTS[sKey] !== undefined &amp;&amp;
-            oDEFAULTS[sKey] === oConfig[sKey]) {
-          return;
-        }
-        s += '%22' + sKey + '%22:';
-        if (typeof oConfig[sKey] === 'string') {
-          s += '%22' + oConfig[sKey] + '%22';
-        } else {
-          s += oConfig[sKey];
-        }
-        s += ',';
-      });
-
-      // save channels
-      if (oConfig.channels.length !== 1 &amp;&amp; oConfig.channels[0] !== 'log') {
-        s += '%22channels%22:';
-        s += '%22' + oConfig.channels + '%22';
-      }
-
-      // save defaultBacktickKeys
-      if (!(oConfig.defaultBacktickKeys.length === 1 &amp;&amp;
-              oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
-        s += '%22defaultBacktickKeys%22:';
-        s += '%22' + oConfig.defaultBacktickKeys + '%22';
-      }
-
-      s += '}';
-      s = s.replace(/,}/, '}');
-      return s;
-    }
-
-    // first, remove the present ticker url param if present
-    url = url.replace(/_ticker=({.*})?&amp;?/, '');
-
-    // add opening "?" if no url params are present
-    if (url.indexOf('?') === -1) {
-      url = url + '?1=1';
-    }
-
-    // add ticker url param
-    url = url + '&amp;' + generateConfigString();
-
-    // cleanup
-    url = url.replace(/\?1=1&amp;/, '?');
-    url = url.replace(/\?&amp;/, '?');
-    url = url.replace(/(&amp;&amp;)+/, '&amp;');
-
+    var url = _generateSaveUrl();
     if (history.pushState) {
       window.history.pushState({path:url},'',url);
     } else {
@@ -763,7 +703,9 @@
       console.log('`', 'macro 9 reserved for interactive macro (`m)');
       return;
     }
-    console.log('`', 'registering macro: ' + iNumToRegister);
+    if (oConfig.announceMacros === true) {
+      console.log('`', 'registering macro: ' + iNumToRegister);
+    }
     aMacros[iNumToRegister] = fn;
   }
 
@@ -792,7 +734,9 @@
       },
       exit: function(sValue) {
         oConfig.sMacro9Code = sValue;
-        console.log('`', 'registering macro: 9');
+        if (oConfig.announceMacros === true) {
+          console.log('`', 'registering macro: 9');
+        }
         aMacros[9] = function() {
           /* eslint-disable no-eval */
           /* jshint ignore:start */
@@ -818,7 +762,9 @@
    */
   function runMacro(iMacroSlot) {
     if (typeof aMacros[iMacroSlot] === 'function') {
-      console.log('`', 'running macro: ' + iMacroSlot);
+      if (oConfig.announceMacros === true) {
+        console.log('`', 'running macro: ' + iMacroSlot);
+      }
       aMacros[iMacroSlot]();
     } else {
       console.log('`', 'macro empty');
@@ -894,8 +840,8 @@
     killTextarea();
     document.body.removeEventListener('keydown', fnKeyDown);
     document.body.removeEventListener('keyup', fnKeyUp);
-    window._ticker = undefined;
-    delete window._ticker;
+    window.ticker = undefined;
+    delete window.ticker;
 
     // reset console object
     aChannels.forEach(function(sChannel) {
@@ -995,7 +941,7 @@
       window.clearInterval(render_interval);
 
       if (!oConfig.pauseMode) {
-        var aLogNodes = document.querySelectorAll('._ticker_log');
+        var aLogNodes = document.querySelectorAll('.ticker_log');
         if (aLogNodes.length > 0) {
           pseudoForEach(aLogNodes, function(iIndex, oLogNode) {
             var iCurrentTop = parseInt(getComputedStyle(oLogNode).top, 10);
@@ -1040,7 +986,7 @@
    */
   function _loadConfigFromUrl() {
     var o,
-      sUrlParam = getUrlParamValue('_ticker');
+      sUrlParam = starparam.get('ticker-log');
 
     if (sUrlParam === null) {
       return;
@@ -1139,7 +1085,9 @@
    * @returns {int} top position value of dom ref
    */
   function _calculateTop() {
-    var oLastNode = document.querySelector('._ticker_log:last-child');
+    var oLastNode =
+      Array.prototype.slice.call(document.querySelectorAll('.ticker_log'), 0).
+        reverse()[0];
     if (!oLastNode) {
       return oConfig.logStartTop;
     } else {
@@ -1154,7 +1102,7 @@
   function _renderText(sText) {
     var div = document.createElement('div');
     assignStyle(div, oConfig.logStyle);
-    div.className += ' _ticker_log';
+    div.className += ' ticker_log';
     div.innerHTML = sText;
     var iTop = _calculateTop();
     if (iTop &lt; (oConfig.logStartTop / 2)) {
@@ -1308,6 +1256,56 @@
     }
   }
 
+  /**
+   * Returns a serialized json map representing
+   * certain property values that have changed state
+   * @returns {string} serialized config object
+   */
+  function _generateConfigSerialization() {
+    var s = '{';
+    aConfigurableKeys.forEach(function(sKey) {
+      // don't include if default
+      if (oDEFAULTS[sKey] !== undefined &amp;&amp;
+          oDEFAULTS[sKey] === oConfig[sKey]) {
+        return;
+      }
+      s += '%22' + sKey + '%22:';
+      if (typeof oConfig[sKey] === 'string') {
+        s += '%22' + oConfig[sKey] + '%22';
+      } else {
+        s += oConfig[sKey];
+      }
+      s += ',';
+    });
+
+    // channels
+    if (oConfig.channels.length !== 1 &amp;&amp; oConfig.channels[0] !== 'log') {
+      s += '%22channels%22:';
+      s += '%22' + oConfig.channels + '%22';
+    }
+
+    // defaultBacktickKeys
+    if (!(oConfig.defaultBacktickKeys.length === 1 &amp;&amp;
+            oConfig.defaultBacktickKeys[0] === KEYS.BackTick)) {
+      s += '%22defaultBacktickKeys%22:';
+      s += '%22' + oConfig.defaultBacktickKeys + '%22';
+    }
+
+    s += '}';
+    s = s.replace(/,}/, '}');
+    return s;
+  }
+
+  /**
+   * Return a url string for saving configuration state.&lt;br />
+   * Apply config string to url and account for any past url state
+   * @param {string} sPrefix the starting url
+   * @returns {string} url string representing current state
+   */
+  function _generateSaveUrl() {
+    return starparam.set('ticker-log', _generateConfigSerialization());
+  }
+
 
   //////////////////////////////////
   // execution starts
@@ -1351,37 +1349,39 @@
 
   // expose api to global namespace
   (function() {
-    var _ticker = {};
-    _ticker.config = config;
-    _ticker.test = test;
-    _ticker.help = help;
-    _ticker.kill = kill;
-    _ticker.silent = silent;
-    _ticker.pause = pause;
-    _ticker.output = output;
-    _ticker.outputAll = outputAll;
-    _ticker.dump = dump;
-    _ticker.moveDown = increaseLogStartTop;
-    _ticker.moveUp = decreaseLogStartTop;
-    _ticker.moveLeft = moveLeft;
-    _ticker.moveRight = moveRight;
-    _ticker.increaseSpeed = increaseSpeed;
-    _ticker.decreaseSpeed = decreaseSpeed;
-    _ticker.nextChannel = nextChannel;
-    _ticker.print = print;
-    _ticker.registerMacro = registerMacro;
-    _ticker.runMacro = runMacro;
-    _ticker.filter = filter;
-    _ticker.listenToEverything = listenToEverything;
+    var ticker = {};
+    ticker.config = config;
+    ticker.test = test;
+    ticker.help = help;
+    ticker.kill = kill;
+    ticker.silent = silent;
+    ticker.pause = pause;
+    ticker.output = output;
+    ticker.outputAll = outputAll;
+    ticker.dump = dump;
+    ticker.moveDown = increaseLogStartTop;
+    ticker.moveUp = decreaseLogStartTop;
+    ticker.moveLeft = moveLeft;
+    ticker.moveRight = moveRight;
+    ticker.increaseSpeed = increaseSpeed;
+    ticker.decreaseSpeed = decreaseSpeed;
+    ticker.nextChannel = nextChannel;
+    ticker.print = print;
+    ticker.registerMacro = registerMacro;
+    ticker.runMacro = runMacro;
+    ticker.filter = filter;
+    ticker.listenToEverything = listenToEverything;
 
-    _ticker.macroEdit = macroEdit;
-    _ticker.restoreAndExit = restoreAndExit;
-    _ticker.reset = reset;
+    ticker.macroEdit = macroEdit;
+    ticker.restoreAndExit = restoreAndExit;
+    ticker.reset = reset;
+    ticker.flush = _flushBuffer;
 
     // private
-    _ticker._oConfig = oConfig;
+    ticker._oConfig = oConfig;
+    ticker._generateConfigSerialization = _generateConfigSerialization;
 
-    window._ticker = _ticker;
+    window.ticker = ticker;
   }());
 }());
 </code></pre>
@@ -1400,7 +1400,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Fri May 27 2016 12:13:47 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Fri Dec 09 2016 14:51:01 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
