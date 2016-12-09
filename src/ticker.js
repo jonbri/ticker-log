@@ -972,7 +972,7 @@
    */
   function _loadConfigFromUrl() {
     var o,
-      sUrlParam = getUrlParamValue('ticker');
+      sUrlParam = getUrlParamValue('ticker-log');
 
     if (sUrlParam === null) {
       return;
@@ -1291,10 +1291,10 @@
   function _generateSaveUrl(sPrefix) {
     var sUrl = sPrefix || '',
       bHasHash = sPrefix.indexOf("#") > 1,
-      sTickerUrlParam = 'ticker=' + _generateConfigSerialization();
+      sTickerUrlParam = 'ticker-log=' + _generateConfigSerialization();
 
     // remove any present ticker url params
-    sUrl = sUrl.replace(/ticker=({.*})?&?/, '');
+    sUrl = sUrl.replace(/ticker-log=({.*})?&?/, '');
 
     // add opening "?" if no url params are currently present
     if (sUrl.indexOf('?') === -1) {

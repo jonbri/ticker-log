@@ -108,7 +108,7 @@ Property examples:
 
 Configuration settings take this format when embedded as a url parameter:
 ```
-http://localhost/index.html?ticker={"interval":275,"channel":"debug"}
+http://localhost/index.html?ticker-log={"interval":275,"channel":"debug"}
 ```
 
 ### API

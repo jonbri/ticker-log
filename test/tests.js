@@ -339,7 +339,7 @@ window.ticker_runTests = function() {
     QUnit.test("generateConfigString default", function(assert) {
         testUrlSave(assert, {
             start: defaultStartUrl,
-            expected: defaultStartUrl + "?ticker={}",
+            expected: defaultStartUrl + "?ticker-log={}",
             message: "correct default url"
         });
     });
@@ -348,7 +348,7 @@ window.ticker_runTests = function() {
         window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl,
-            expected: defaultStartUrl + "?ticker={%22interval%22:280}",
+            expected: defaultStartUrl + "?ticker-log={%22interval%22:280}",
             message: "correct url with speed change"
         });
     });
@@ -357,7 +357,7 @@ window.ticker_runTests = function() {
         window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz",
-            expected: defaultStartUrl + "?bar=baz&ticker={%22interval%22:280}",
+            expected: defaultStartUrl + "?bar=baz&ticker-log={%22interval%22:280}",
             message: "correct url with speed change with already-existing param"
         });
     });
@@ -366,7 +366,7 @@ window.ticker_runTests = function() {
         window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz&sun=moon",
-            expected: defaultStartUrl + "?bar=baz&sun=moon&ticker={%22interval%22:280}",
+            expected: defaultStartUrl + "?bar=baz&sun=moon&ticker-log={%22interval%22:280}",
             message: "correct url with speed change with already-existing params"
         });
     });
@@ -375,7 +375,7 @@ window.ticker_runTests = function() {
         window.ticker.config({ interval: 280, logStartTop: 105 });
         testUrlSave(assert, {
             start: defaultStartUrl,
-            expected: defaultStartUrl + "?ticker={%22interval%22:280,%22logStartTop%22:105}",
+            expected: defaultStartUrl + "?ticker-log={%22interval%22:280,%22logStartTop%22:105}",
             message: "correct url with speed and position change"
         });
     });
@@ -384,7 +384,7 @@ window.ticker_runTests = function() {
         window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "#foo",
-            expected: defaultStartUrl + "?ticker={%22interval%22:280}#foo",
+            expected: defaultStartUrl + "?ticker-log={%22interval%22:280}#foo",
             message: "correct url with speed change with hash present"
         });
     });
@@ -393,7 +393,7 @@ window.ticker_runTests = function() {
         window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz#foo",
-            expected: defaultStartUrl + "?bar=baz&ticker={%22interval%22:280}#foo",
+            expected: defaultStartUrl + "?bar=baz&ticker-log={%22interval%22:280}#foo",
             message: "correct url with speed change with hash present and already-existing param"
         });
     });
@@ -402,7 +402,7 @@ window.ticker_runTests = function() {
         window.ticker.config({ interval: 280 });
         testUrlSave(assert, {
             start: defaultStartUrl + "?bar=baz&sun=moon#foo",
-            expected: defaultStartUrl + "?bar=baz&sun=moon&ticker={%22interval%22:280}#foo",
+            expected: defaultStartUrl + "?bar=baz&sun=moon&ticker-log={%22interval%22:280}#foo",
             message: "correct url with speed change with hash present and multiple already-existing params"
         });
     });
