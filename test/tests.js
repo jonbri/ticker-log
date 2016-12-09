@@ -1,7 +1,6 @@
 // TODO: can I make my tests atomic so I don't need this?
 QUnit.config.reorder = false;
 
-var defaultStartUrl = "http://localhost:9000/index.html";
 
 //////////////////////////////////
 // utility functions
@@ -20,12 +19,6 @@ function getText(iLog) {
 function getTextarea() {
     return jQuery('#tickerTextarea').find('textarea');
 }
-
-function testUrlSave(assert, o) {
-    assert.strictEqual(window.ticker._generateSaveUrl(o.start), o.expected, o.message);
-}
-
-
 
 //////////////////////////////////
 // tests
@@ -337,75 +330,19 @@ window.ticker_runTests = function() {
     });
 
     QUnit.test("generateConfigString default", function(assert) {
-        testUrlSave(assert, {
-            start: defaultStartUrl,
-            expected: defaultStartUrl + "?ticker-log={}",
-            message: "correct default url"
-        });
+        assert.strictEqual(ticker._generateConfigSerialization(), '{}', "default config");
     });
 
     QUnit.test("generateConfigString reflect speed change", function(assert) {
         window.ticker.config({ interval: 280 });
-        testUrlSave(assert, {
-            start: defaultStartUrl,
-            expected: defaultStartUrl + "?ticker-log={%22interval%22:280}",
-            message: "correct url with speed change"
-        });
-    });
-
-    QUnit.test("generateConfigString reflect speed change with already-existing param", function(assert) {
-        window.ticker.config({ interval: 280 });
-        testUrlSave(assert, {
-            start: defaultStartUrl + "?bar=baz",
-            expected: defaultStartUrl + "?bar=baz&ticker-log={%22interval%22:280}",
-            message: "correct url with speed change with already-existing param"
-        });
-    });
-
-    QUnit.test("generateConfigString reflect speed change with already-existing params", function(assert) {
-        window.ticker.config({ interval: 280 });
-        testUrlSave(assert, {
-            start: defaultStartUrl + "?bar=baz&sun=moon",
-            expected: defaultStartUrl + "?bar=baz&sun=moon&ticker-log={%22interval%22:280}",
-            message: "correct url with speed change with already-existing params"
-        });
+        assert.strictEqual(ticker._generateConfigSerialization(), '{%22interval%22:280}', "speed change");
     });
 
     QUnit.test("generateConfigString reflect speed and starting position change", function(assert) {
         window.ticker.config({ interval: 280, logStartTop: 105 });
-        testUrlSave(assert, {
-            start: defaultStartUrl,
-            expected: defaultStartUrl + "?ticker-log={%22interval%22:280,%22logStartTop%22:105}",
-            message: "correct url with speed and position change"
-        });
+        assert.strictEqual(ticker._generateConfigSerialization(), '{%22interval%22:280,%22logStartTop%22:105}', "speed change");
     });
 
-    QUnit.test("generateConfigString reflect speed change with hash", function(assert) {
-        window.ticker.config({ interval: 280 });
-        testUrlSave(assert, {
-            start: defaultStartUrl + "#foo",
-            expected: defaultStartUrl + "?ticker-log={%22interval%22:280}#foo",
-            message: "correct url with speed change with hash present"
-        });
-    });
-
-    QUnit.test("generateConfigString reflect speed change with hash and already-existing param", function(assert) {
-        window.ticker.config({ interval: 280 });
-        testUrlSave(assert, {
-            start: defaultStartUrl + "?bar=baz#foo",
-            expected: defaultStartUrl + "?bar=baz&ticker-log={%22interval%22:280}#foo",
-            message: "correct url with speed change with hash present and already-existing param"
-        });
-    });
-
-    QUnit.test("generateConfigString reflect speed change with hash and multiple already-existing params", function(assert) {
-        window.ticker.config({ interval: 280 });
-        testUrlSave(assert, {
-            start: defaultStartUrl + "?bar=baz&sun=moon#foo",
-            expected: defaultStartUrl + "?bar=baz&sun=moon&ticker-log={%22interval%22:280}#foo",
-            message: "correct url with speed change with hash present and multiple already-existing params"
-        });
-    });
 
     QUnit.test("exit", function(assert) {
         assert.ok('true');

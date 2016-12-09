@@ -21,6 +21,9 @@
     return;
   }
 
+  // embed starparam
+  /* https://github.com/jonbri/starparam v1.0.0 Thu Dec 8 19:38:02 EST 2016 */
+  !function(){function n(n){return null===n||void 0===n}function r(r){var a;if(!n(r))return a=new RegExp("(^[^?&#]+)\\??([^#]*)#?(.*)$").exec(r),n(a)?{params:[]}:{prefix:a[1],params:a[2].split("&").filter(function(n){return""!==n}).map(function(n){return function(n){return{name:n[0],value:n[1]}}(n.split("="))}),hash:""===a[3]?void 0:a[3]}}function a(r){var a="";if(!n(r))return n(r.prefix)===!1&&(a+=r.prefix),n(r.params)===!1&&r.params.forEach(function(n,r){a+=0===r?"?":"&",a+=n.name+"="+n.value}),n(r.hash)===!1&&(a+="#"+r.hash),a}function t(n,a){return r(n).params.filter(function(n){return n.name===a})[0]}function e(r,a){var e;if(!n(r)&&!n(a))return e=t(r,a),n(e)?void 0:e.value}function i(e,i,u){var f;if(!n(e)&&!n(i))return n(u)&&(u=""),f=r(e),n(t(e,i))?f.params.push({name:i,value:u}):f.params=f.params.map(function(n){return n.name===i&&(n.value=u),n}),a(f)}function u(t,e){var i;if(!n(t))return n(e)?t:(i=r(t),i.params=i.params.filter(function(n){return n.name!==e}),a(i))}!function(){var t={parse:function(a){if(0===arguments.length&&(a=window.location.href),!n(a))return r(a)},stringify:function(n){return a(n)},get:function(r,a){var t;return a=a||{},t=a.url,n(t)&&(t=window.location.href),e(t,r)},set:function(r,a,t){var e,u;if(t=t||{},e=t.hasOwnProperty("url")?t.url:window.location.href,!n(e))return u=i(e,r,a)},remove:function(r,a){var t,e;if(a=a||{},t=a.hasOwnProperty("url")?a.url:window.location.href,!n(t))return e=u(t,r)}};window.starparam=t}()}();
 
   //////////////////////////////////
   // variables global to ticker
@@ -234,23 +237,6 @@
       if (oStyle.hasOwnProperty(key)) {
         domNode.style[key] = oStyle[key];
       }
-    }
-  }
-
-  /**
-   * return value of url parameter in window.location.href
-   * @param {string} name url param name
-   * @returns {string} value of named url parameter
-   */
-  function getUrlParamValue(name) {
-    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
-    var regexS = '[\\?&]'+name+'=([^&#]*)',
-      regex = new RegExp( regexS ),
-      results = regex.exec(window.location.href);
-    if (results === null) {
-      return null;
-    } else {
-      return results[1];
     }
   }
 
@@ -625,7 +611,7 @@
    * @function
    */
   function saveConfig() {
-    var url = _generateSaveUrl(window.location.href);
+    var url = _generateSaveUrl();
     if (history.pushState) {
       window.history.pushState({path:url},'',url);
     } else {
@@ -972,7 +958,7 @@
    */
   function _loadConfigFromUrl() {
     var o,
-      sUrlParam = getUrlParamValue('ticker-log');
+      sUrlParam = starparam.get('ticker-log');
 
     if (sUrlParam === null) {
       return;
@@ -1288,33 +1274,8 @@
    * @param {string} sPrefix the starting url
    * @returns {string} url string representing current state
    */
-  function _generateSaveUrl(sPrefix) {
-    var sUrl = sPrefix || '',
-      bHasHash = sPrefix.indexOf("#") > 1,
-      sTickerUrlParam = 'ticker-log=' + _generateConfigSerialization();
-
-    // remove any present ticker url params
-    sUrl = sUrl.replace(/ticker-log=({.*})?&?/, '');
-
-    // add opening "?" if no url params are currently present
-    if (sUrl.indexOf('?') === -1) {
-      sUrl = bHasHash ?
-        sUrl.replace(/^(.*)(#.*)$/, '$1?1=1$2') :
-        sUrl + '?1=1';
-    }
-
-    // add ticker url param
-    sUrl = bHasHash ?
-      sUrl.replace(/^(.*)(#.*)$/, '$1&' + sTickerUrlParam + '$2') :
-      sUrl + '&' + sTickerUrlParam;
-
-    // cleanup
-    sUrl = sUrl
-      .replace(/\?1=1&/, '?')
-      .replace(/\?&/, '?')
-      .replace(/(&&)+/, '&');
-
-    return sUrl;
+  function _generateSaveUrl() {
+    return starparam.set('ticker-log', _generateConfigSerialization());
   }
 
 
@@ -1390,7 +1351,7 @@
 
     // private
     ticker._oConfig = oConfig;
-    ticker._generateSaveUrl = _generateSaveUrl;
+    ticker._generateConfigSerialization = _generateConfigSerialization;
 
     window.ticker = ticker;
   }());
