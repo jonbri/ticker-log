@@ -357,9 +357,7 @@
       aBuffer.unshift(text);
     }
     aRenderBuffer.unshift(text);
-    setTimeout(function() {
-      _flushBuffer();
-    }, 0);
+    _flushBuffer();
   }
 
   /**
@@ -1073,7 +1071,9 @@
    * @returns {int} top position value of dom ref
    */
   function _calculateTop() {
-    var oLastNode = document.querySelector('.ticker_log:last-child');
+    var oLastNode =
+      Array.prototype.slice.call(document.querySelectorAll('.ticker_log'), 0).
+        reverse()[0];
     if (!oLastNode) {
       return oConfig.logStartTop;
     } else {

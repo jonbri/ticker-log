@@ -3,7 +3,6 @@ QUnit.config.reorder = false;
 
 var defaultStartUrl = "http://localhost:9000/index.html";
 
-
 //////////////////////////////////
 // utility functions
 function howManyLogDivs() {
@@ -31,8 +30,6 @@ function testUrlSave(assert, o) {
 //////////////////////////////////
 // tests
 window.ticker_runTests = function() {
-    var iSafeDelay = 500;
-
     var sPrefix = window.location.href;
     if (/ticker=/.test(sPrefix)) {
         alert('cannot run if settings set in url');
@@ -59,30 +56,30 @@ window.ticker_runTests = function() {
         assert.strictEqual(window.ticker._oConfig.interval, 999, 'test official property');
     });
 
-    QUnit.test("does log appear", function(assert) {
+    QUnit.test("check test setup", function(assert) {
         // at the start there are no log divs
         assert.strictEqual(howManyLogDivs(), 0, "zero log divs are present");
+    });
 
+    QUnit.test("does log appear", function(assert) {
         // add one log div
-        console.log('`', 'log 0');
-
-        window.ticker.flush();
+        console.log('`', 'log 0 a');
         assert.strictEqual(howManyLogDivs(), 1, "one log div is present");
+        assert.strictEqual('log 0 a', getText(0), 'correct text');
 
         // clear log divs
         window.ticker.kill();
 
         // add two log divs
-        console.log('`', 'log 0');
+        console.log('`', 'log 0 b');
         console.log('`', 'log 1');
-
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 2, "two log divs are present");
+        assert.strictEqual('log 0 b', getText(0), 'correct text');
+        assert.strictEqual('log 1', getText(1), 'correct text');
     });
 
     QUnit.test("print api", function(assert) {
         window.ticker.print('lorum ipsum');
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "print api works");
         assert.strictEqual('lorum ipsum', getText(0), 'correct text');
     });
@@ -161,7 +158,6 @@ window.ticker_runTests = function() {
         window.ticker.help();
 
         // make sure config shows
-        window.ticker.flush();
         assert.ok(howManyLogDivs() > 0, "help is showing");
     });
 
@@ -172,11 +168,9 @@ window.ticker_runTests = function() {
 
     QUnit.test("moveRight", function(assert) {
         function isLeft() {
-            window.ticker.flush();
             assert.strictEqual(jQuery('.ticker_log').offset().left, 0, "logs are to the left of the screen");
         }
         function isRight() {
-            window.ticker.flush();
             assert.ok(jQuery('.ticker_log').offset().left > 0, "logs are to the right of the screen");
         }
 
@@ -199,12 +193,10 @@ window.ticker_runTests = function() {
 
     QUnit.test("backtick and requireBackTick", function(assert) {
         console.log('`', 'lorum ipsum');
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "(back-tick used) one div present because back-tick used in console statement");
 
         window.ticker.kill();
         console.log('lorum ipsum');
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 0, "(no back-tick) no log shows because requireBackTick is true");
 
         window.ticker.config({
@@ -213,12 +205,10 @@ window.ticker_runTests = function() {
 
         window.ticker.kill();
         console.log('lorum ipsum');
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "(no back-tick) one div present because requireBackTick is false");
 
         window.ticker.kill();
         console.log('`', 'lorum ipsum');
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "(back-tick used) using back-tick still works");
     });
 
@@ -227,10 +217,8 @@ window.ticker_runTests = function() {
         window.ticker.registerMacro(8, function() {
             console.log('`', 'testing macro 8');
         });
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 0, "macro is registered, no logs showing");
         window.ticker.runMacro(8);
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "one log div after running macro");
     });
 
@@ -242,11 +230,9 @@ window.ticker_runTests = function() {
         window.ticker.registerMacro(8, function() {
             console.log('`', 'testing macro 8');
         });
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "registation message");
         window.ticker.kill();
         window.ticker.runMacro(8);
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 2, "two log divs after running macro");
         assert.ok(/running macro: 8/.test(getText(0)), "'running...' text shows");
     });
@@ -256,7 +242,6 @@ window.ticker_runTests = function() {
             // this should never happen
             assert.ok(false, "should never execute macro 9 when using registerMacro api");
         });
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "one log div which should be the warning message");
         assert.ok(/macro 9 reserved/.test(getText(0)), 'warning text should appear');
     });
@@ -267,7 +252,6 @@ window.ticker_runTests = function() {
         window.ticker.macroEdit();
 
         window.ticker.runMacro(9);
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "macro 9 message shows");
 
         assert.ok(/lorum ipsum/.test(getText(0)), 'console text shows');
@@ -276,7 +260,6 @@ window.ticker_runTests = function() {
     QUnit.test("reset", function(assert) {
         window.ticker.reset();
         console.log('`', 'lorum ipsum');
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "log renders after reset");
     });
 
@@ -302,7 +285,6 @@ window.ticker_runTests = function() {
         console.log('`', 'log');
         console.error('`', 'error');
 
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 2, "only warn and error logs show");
     });
 
@@ -311,7 +293,6 @@ window.ticker_runTests = function() {
         console.log('`', 'hello foo');
         console.log('`', 'bye foo');
         console.log('`', 'bye hello foo');
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 1, "only match rendered");
         assert.ok(/hello foo/.test(getText(0)), "correct text");
     });
@@ -321,7 +302,6 @@ window.ticker_runTests = function() {
         console.log('`', 'hello foo');
         console.log('`', 'bye foo');
         console.log('`', 'bye hello foo');
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 2, "two matches since string can't have anchor");
         assert.ok(/hello foo/.test(getText(0)), "correct text 0");
         assert.ok(/bye hello foo/.test(getText(1)), "correct text 1");
@@ -353,7 +333,6 @@ window.ticker_runTests = function() {
         console.error('hello error no backtick');
         console.trace('hello trace no backtick');
 
-        window.ticker.flush();
         assert.strictEqual(howManyLogDivs(), 10, "all logs show");
     });
 
