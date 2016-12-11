@@ -114,6 +114,7 @@
       'k__-> kill (remove all)____________',
       'o__-> output (show in textarea)____',
       'l__-> output all (all past logging)',
+      'f__-> flip (reverse textarea text)_',
       'd__-> dump (show config values)____',
       'b__-> toggle api "`" requirement___',
       '0-9-> invoke macros________________',
@@ -162,6 +163,7 @@
       B: 66,
       C: 67,
       D: 68,
+      F: 70,
       H: 72,
       K: 75,
       L: 76,
@@ -199,6 +201,7 @@
       KEYS.B,
       KEYS.C,
       KEYS.D,
+      KEYS.F,
       KEYS.H,
       KEYS.K,
       KEYS.L,
@@ -475,6 +478,24 @@
    */
   function outputAll() {
     output(true);
+  }
+
+  /**
+   * "f" api function.<br>
+   * flip (reverse) order of textarea
+   *
+   * @exports ticker-log
+   * @name flip
+   * @public
+   * @function
+   */
+  function flip() {
+    var textareaContainer = document.getElementById(sTextareaId),
+        textarea;
+    if (textareaContainer) {
+        textarea = textareaContainer.querySelectorAll('textarea')[0];
+        textarea.value = textarea.value.split('\n').reverse().join('\n');
+    }
   }
 
   /**
@@ -1013,6 +1034,7 @@
       };
 
       actionMap[KEYS.D] = dump;
+      actionMap[KEYS.F] = flip;
       actionMap[KEYS.S] = silent;
       actionMap[KEYS.T] = test;
       actionMap[KEYS.O] = output;
@@ -1330,6 +1352,7 @@
     ticker.pause = pause;
     ticker.output = output;
     ticker.outputAll = outputAll;
+    ticker.flip = flip;
     ticker.dump = dump;
     ticker.moveDown = increaseLogStartTop;
     ticker.moveUp = decreaseLogStartTop;

@@ -91,7 +91,7 @@ Change the vertical starting position with `` ` ``-`<pageUp>` and `` ` ``-`<page
 
 Pause movement with `` ` ``-`p` (or on-click) and remove all with `` ` ``-`k`.
 
-Show the current ticker log in a textarea (useful for copy/pasting) with `` ` ``-`o`. Show _all_ the accrued log output with `` ` ``-`l`.
+Show the current ticker log in a textarea (useful for copy/pasting) with `` ` ``-`o`. Show _all_ the accrued log output with `` ` ``-`l`. Reverse contents with `` ` ``-`f` (flip).
 
 Embed the current configuration settings in the browser-window's url with `` ` ``-`<enter>`.
 
@@ -123,6 +123,9 @@ window.ticker.moveLeft();      # move logs to the left of the screen (the defaul
 window.ticker.moveRight();     # move logs to the right of the screen
 window.ticker.pause();         # pause ticker log movement
 window.ticker.kill();          # remove all ticker logs from screen
+window.ticker.output();        # show current on-screen logs in textarea
+window.ticker.outputAll();     # show _all_ accrued logging in textarea
+window.ticker.flip();          # reverse order of textarea text
 window.ticker.dump();          # show all configuration
 ```
 

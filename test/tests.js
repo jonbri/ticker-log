@@ -132,6 +132,21 @@ window.ticker_runTests = function() {
         assert.ok(getTextarea().val().indexOf("outputAll 1") !== -1, "print api text shows");
     });
 
+    QUnit.test("flip", function(assert) {
+        function getContents() {
+            return getTextarea().val().split('\n').join();
+        }
+        console.log('`', 'one');
+        console.log('`', 'two');
+        console.log('`', 'three');
+        window.ticker.output();
+        assert.strictEqual(getContents(), 'one,two,three,', "contents in original order");
+        window.ticker.flip();
+        assert.strictEqual(getContents(), ',three,two,one', "contents have been flipped");
+        window.ticker.flip();
+        assert.strictEqual(getContents(), 'one,two,three,', "contents back to original order");
+    });
+
     QUnit.test("dump", function(assert) {
         // make sure no logging showing
         assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");
