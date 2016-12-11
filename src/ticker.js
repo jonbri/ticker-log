@@ -612,8 +612,8 @@
    */
   function saveConfig() {
     var url = _generateSaveUrl();
-    if (history.pushState) {
-      window.history.pushState({path:url},'',url);
+    if (history.replaceState) {
+      window.history.replaceState({path:url},'',url);
     } else {
       window.location.replace(url);
     }
