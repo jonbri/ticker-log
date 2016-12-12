@@ -334,7 +334,7 @@
     }
 
     if (typeof fnFilterFunction === 'function' &&
-            fnFilterFunction(text) !== true) {
+          fnFilterFunction(text) !== true) {
       return;
     }
 
@@ -491,10 +491,10 @@
    */
   function flip() {
     var textareaContainer = document.getElementById(sTextareaId),
-        textarea;
+      textarea;
     if (textareaContainer) {
-        textarea = textareaContainer.querySelectorAll('textarea')[0];
-        textarea.value = textarea.value.split('\n').reverse().join('\n');
+      textarea = textareaContainer.querySelectorAll('textarea')[0];
+      textarea.value = textarea.value.split('\n').reverse().join('\n');
     }
   }
 
@@ -870,16 +870,16 @@
    */
   function filter(matcher) {
     if (!matcher) {
-        return;
+      return;
     }
 
     if (typeof matcher === 'string') {
       fnFilterFunction = function(s) {
-          return s.indexOf(matcher) !== -1;
+        return s.indexOf(matcher) !== -1;
       };
     } else if (matcher instanceof RegExp) {
       fnFilterFunction = function(s) {
-          return matcher.test(s);
+        return matcher.test(s);
       };
     } else if (typeof matcher === 'function') {
       fnFilterFunction = matcher;
