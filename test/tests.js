@@ -140,11 +140,11 @@ window.ticker_runTests = function() {
     console.log('`', 'two');
     console.log('`', 'three');
     window.ticker.output();
-    assert.strictEqual(getContents(), 'one,two,three,', "contents in original order");
+    assert.strictEqual(getContents(), 'one,two,three', "contents in original order");
     window.ticker.flip();
-    assert.strictEqual(getContents(), ',three,two,one', "contents have been flipped");
+    assert.strictEqual(getContents(), 'three,two,one', "contents have been flipped");
     window.ticker.flip();
-    assert.strictEqual(getContents(), 'one,two,three,', "contents back to original order");
+    assert.strictEqual(getContents(), 'one,two,three', "contents back to original order");
   });
 
   QUnit.test("dump", function(assert) {

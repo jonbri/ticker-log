@@ -461,6 +461,9 @@
       }
     }
 
+    // remove final newline
+    sAllOutput = sAllOutput.replace(/\n$/, '');
+
     _toggleTextarea({
       text: sAllOutput,
       source: KEYS.O
