@@ -5,7 +5,7 @@
   "main": "ticker.js",
   "scripts": {
     "serve": "http-server -p 9000",
-    "lint": "eslint src/ticker.js",
+    "lint": "eslint ticker.js",
     "test": "npm run lint && node-qunit-phantomjs index.html",
     "package": "bin/package.sh"
   },
