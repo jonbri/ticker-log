@@ -8,10 +8,6 @@ function howManyLogDivs() {
   return jQuery('.ticker_log').length;
 }
 
-function howManyTextareas() {
-  return document.querySelectorAll('#tickerTextarea').length;
-}
-
 function getText(iLog) {
   return jQuery('.ticker_log')[iLog].innerHTML;
 }
@@ -40,6 +36,10 @@ window.ticker_runTests = function() {
     }
   });
 
+  QUnit.test("check test setup", function(assert) {
+    assert.strictEqual(howManyLogDivs(), 0, "zero log divs are present");
+  });
+
   QUnit.test("test config", function(assert) {
     window.ticker.config({
       'foo': 'bar',
@@ -47,11 +47,6 @@ window.ticker_runTests = function() {
     });
     assert.strictEqual(window.ticker._oConfig.foo, 'bar', 'test non-official property');
     assert.strictEqual(window.ticker._oConfig.interval, 999, 'test official property');
-  });
-
-  QUnit.test("check test setup", function(assert) {
-    // at the start there are no log divs
-    assert.strictEqual(howManyLogDivs(), 0, "zero log divs are present");
   });
 
   QUnit.test("does log appear", function(assert) {
@@ -82,9 +77,6 @@ window.ticker_runTests = function() {
       textarea: true
     });
     assert.strictEqual(getTextarea().length, 1, "output textarea present");
-
-    // now hide the textarea
-    window.ticker.output();
   });
 
   QUnit.test("print api -> make sure textarea's are cleaned up", function(assert) {
@@ -94,13 +86,11 @@ window.ticker_runTests = function() {
     window.ticker.print('two', {
       textarea: true
     });
-    assert.strictEqual(howManyTextareas(), 1, "only 1 textarea");
+
+    assert.strictEqual(document.querySelectorAll('#tickerTextarea').length, 1, "only 1 textarea");
   });
 
   QUnit.test("output", function (assert) {
-    // at the start there is no output textarea
-    assert.strictEqual(getTextarea().length, 0, "no output textarea present");
-
     // show a log div and output textarea
     console.log('`', 'lorum ipsum');
 
@@ -118,9 +108,6 @@ window.ticker_runTests = function() {
   });
 
   QUnit.test("output all", function (assert) {
-    // at the start there is no output textarea
-    assert.strictEqual(getTextarea().length, 0, "no output textarea present");
-
     // show a log div and output textarea
     console.log('`', 'outputAll 0');
     window.ticker.print('outputAll 1')
@@ -148,9 +135,6 @@ window.ticker_runTests = function() {
   });
 
   QUnit.test("dump", function(assert) {
-    // make sure no logging showing
-    assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");
-
     // show configuration on screen
     window.ticker.dump();
 
@@ -159,9 +143,6 @@ window.ticker_runTests = function() {
   });
 
   QUnit.test("help", function(assert) {
-    // make sure no logging showing
-    assert.strictEqual(howManyLogDivs(), 0, "no log divs at start");
-
     // show configuration on screen
     window.ticker.help();
 
@@ -221,7 +202,6 @@ window.ticker_runTests = function() {
   });
 
   QUnit.test("macro", function(assert) {
-    window.ticker.kill();
     window.ticker.registerMacro(8, function() {
       console.log('`', 'testing macro 8');
     });
@@ -231,7 +211,6 @@ window.ticker_runTests = function() {
   });
 
   QUnit.test("announceMacros property", function(assert) {
-    window.ticker.kill();
     window.ticker.config({
       announceMacros: true
     });
@@ -366,3 +345,27 @@ window.ticker_runTests = function() {
     }, 100);
   });
 };
+
+//////////////////////////////////
+// setup
+
+// turn off auto-run?
+var href = window.location.href;
+if (/[?&]autorun=false/.test(href) !== true) {
+  window.ticker_runTests();
+}
+
+jQuery('#autorun').click(function() {
+  var url = window.location.href;
+  if (url.indexOf('autorun') > 0) {
+    url = url.replace(/[\?&]+autorun=(false|true)/,'');
+  } else {
+    if (url.indexOf('?') === -1) {
+      url += "?autorun=false";
+    } else {
+      url += "&autorun=false";
+    }
+  }
+  window.location.replace(url);
+});
+
