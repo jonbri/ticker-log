@@ -1156,7 +1156,7 @@
         } else if (oConfig.requireBackTick === true && firstArg === '`') {
           print(sText);
         } else {
-          oChannels[sChannel].fnOriginal.apply(this, [arguments]);
+          oChannels[sChannel].fnOriginal.apply(this, Array.prototype.slice.call(arguments));
         }
       };
     });
