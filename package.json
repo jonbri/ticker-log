@@ -6,7 +6,8 @@
   "scripts": {
     "serve": "http-server -p 9000",
     "lint": "eslint ticker-log.js",
-    "test": "npm run lint && node-qunit-phantomjs index.html",
+    "phantom": "node bin/phantom_qunits_exec.js",
+    "test": "npm run lint && npm run phantom",
     "package": "bin/package.sh"
   },
   "repository": {
@@ -18,7 +19,7 @@
     "http-server": "^0.9.0",
     "jquery": "^2.2.3",
     "jsdoc": "^3.4.0",
-    "node-qunit-phantomjs": "^1.4.0",
+    "phantomjs": "^2.1.7",
     "qunitjs": "^2.0.0-rc1",
     "uglify-js": "^2.6.2"
   },

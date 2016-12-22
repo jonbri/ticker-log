@@ -1,3 +1,16 @@
+// log results to console
+QUnit.log(function(details) {
+  if (details.result === true) {
+    return;
+  }
+  console.log(
+    'TEST FAILURE. ' +
+    'MODULE: ' + details.module + ', ' +
+    'NAME: ' + details.name + ', ' +
+    'MESSAGE: ' + details.message
+  );
+});
+
 //////////////////////////////////
 // utility functions
 function howManyLogDivs() {
