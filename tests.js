@@ -90,6 +90,12 @@ window.ticker_runTests = function() {
     assert.strictEqual(document.querySelectorAll('#tickerTextarea').length, 1, "only 1 textarea");
   });
 
+  QUnit.test("kill should remove output textarea", function(assert) {
+    window.ticker.output();
+    window.ticker.kill();
+    assert.strictEqual(document.querySelectorAll('#tickerTextarea').length, 0, "textarea should not show");
+  });
+
   QUnit.test("output", function (assert) {
     // show a log div and output textarea
     console.log('`', 'lorum ipsum');

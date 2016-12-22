@@ -414,6 +414,7 @@
    */
   function kill() {
     oConfig.pauseMode = false;
+    killTextarea();
     aRenderBuffer = [];
     var aLogNodes = document.querySelectorAll('.ticker_log');
     pseudoForEach(aLogNodes, function(i, oLogNode) {
