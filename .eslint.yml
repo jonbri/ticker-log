@@ -1,0 +1,6 @@
+extends: standard
+rules:
+  comma-dangle:
+    - error
+    - always
+  no-empty: warn

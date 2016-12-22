@@ -32,8 +32,10 @@
         bOrig__is_starparam_embedded = window.__is_starparam_embedded;
       window.__is_starparam_embedded = true;
 
+      /*eslint-disable */
       /* https://github.com/jonbri/starparam v1.0.1 Thu Dec 22 13:41:34 EST 2016 */
       !function(){function r(r){return null===r||void 0===r}function n(n){var a;if(!r(n))return a=new RegExp("(^[^?&#]+)\\??([^#]*)#?(.*)$").exec(n),r(a)?{params:[]}:{prefix:a[1],params:a[2].split("&").filter(function(r){return""!==r}).map(function(r){return function(r){return{name:r[0],value:r[1]}}(r.split("="))}),hash:""===a[3]?void 0:a[3]}}function a(n){var a="";if(!r(n))return r(n.prefix)===!1&&(a+=n.prefix),r(n.params)===!1&&n.params.forEach(function(r,n){a+=0===n?"?":"&",a+=r.name+"="+r.value}),r(n.hash)===!1&&(a+="#"+n.hash),a}function e(r,a){return n(r).params.filter(function(r){return r.name===a})[0]}function t(n,a){var t;if(!r(n)&&!r(a))return t=e(n,a),r(t)?void 0:t.value}function i(t,i,u){var o;if(!r(t)&&!r(i))return r(u)&&(u=""),o=n(t),r(e(t,i))?o.params.push({name:i,value:u}):o.params=o.params.map(function(r){return r.name===i&&(r.value=u),r}),a(o)}function u(e,t){var i;if(!r(e))return r(t)?e:(i=n(e),i.params=i.params.filter(function(r){return r.name!==t}),a(i))}!function(){var e={parse:function(a){if(0===arguments.length&&(a=window.location.href),!r(a))return n(a)},stringify:function(r){return a(r)},get:function(n,a){var e;return a=a||{},e=a.url,r(e)&&(e=window.location.href),t(e,n)},set:function(n,a,e){var t,u;if(e=e||{},t=e.hasOwnProperty("url")?e.url:window.location.href,!r(t))return u=i(t,n,a)},remove:function(n,a){var e,t;if(a=a||{},e=a.hasOwnProperty("url")?a.url:window.location.href,!r(e))return t=u(e,n)}};window.__is_starparam_embedded===!0?window.__embedded_starparam=e:window.starparam=e}()}();
+      /*eslint-enable */
 
       starparam = window.__embedded_starparam;
       if (bOrig__is_starparam_embedded !== undefined) {
