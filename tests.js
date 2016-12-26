@@ -11,6 +11,15 @@ QUnit.log(function(details) {
   );
 });
 
+QUnit.done(function(details) {
+  console.log(
+    'Total: ' + details.total + ', ' +
+    'Failed: ' + details.failed + ', ' +
+    'Passed: ' + details.passed + ', ' +
+    'Time: ' + details.runtime + 'ms'
+  );
+});
+
 //////////////////////////////////
 // utility functions
 function howManyLogDivs() {
