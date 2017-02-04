@@ -31,7 +31,7 @@ function waitFor(fnIsDone, fnCallback, timeOutMillis) {
 
 // validate invocation
 if (system.args.length !== 2) {
-    console.log('Usage: run-qunit.js URL');
+    console.log('Usage: phantom-qunits.js URL');
     phantom.exit(1);
 }
 
