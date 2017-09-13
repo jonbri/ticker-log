@@ -51,6 +51,7 @@
 
     // default settings
     oDEFAULTS = {
+      showLineNumbers: true,
       interval: 300,
       logStartTop: 100,
       align: 'left',
@@ -63,6 +64,7 @@
     oConfig = {
       silentMode: false,
       pauseMode: false,
+      lineNumber: 0,
       adjustmentInterval: 25,
       lastTextareaAction: undefined,
       sMacro9Code: '// macro 9\r\r',
@@ -98,6 +100,7 @@
 
     // the config settings that are configurable
     aConfigurableKeys = [
+      'showLineNumbers',
       'interval',
       'logStartTop',
       'align',
@@ -320,7 +323,9 @@
    * <tr>
    * <th>overrideSilentMode</th><td>still print, even if silent mode is on
    * <tr>
-   * <th>internal<td>do not track in aBuffer
+   * <th>internal<td>do not track in aBuffer. Implies showLineNumbers=>true
+   * <tr>
+   * <th>showLineNumbers</th><td>no line numbers, overrides global setting
    * </table>
    * <br>
    *
@@ -360,6 +365,9 @@
     }
 
     if (o.internal !== true) {
+      if (o.showLineNumbers !== false && oConfig.showLineNumbers === true) {
+        text = oConfig.lineNumber++ + ") " + text;
+      }
       aBuffer.unshift(text);
     }
     aRenderBuffer.unshift(text);
@@ -380,7 +388,9 @@
       _nonSavedPrint('pauseMode');
       return;
     }
-    print('test: ' + new Date());
+    print('test: ' + new Date(), {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -401,7 +411,9 @@
     for (var i = 0; i < aHelp.length; i++) {
       var text = aHelp[i];
       text = text.replace(/\_/g, '&nbsp;');
-      print(text);
+      print(text, {
+        showLineNumbers: false
+      });
     }
   }
 
@@ -435,9 +447,13 @@
    */
   function pause() {
     if (oConfig.pauseMode) {
-      print('pause off');
+      print('pause off', {
+        showLineNumbers: false
+      });
     } else {
-      print('paused');
+      print('paused', {
+        showLineNumbers: false
+      });
     }
     oConfig.pauseMode = !oConfig.pauseMode;
   }
@@ -553,7 +569,9 @@
   function silent() {
     if (oConfig.silentMode === true) {
       oConfig.silentMode = false;
-      print('silent mode off');
+      print('silent mode off', {
+        showLineNumbers: false
+      });
     } else {
       oConfig.silentMode = true;
     }
@@ -574,7 +592,9 @@
       return;
     }
     oConfig.interval -= (oConfig.adjustmentInterval/2);
-    print('speed: ' + oConfig.interval);
+    print('speed: ' + oConfig.interval, {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -592,7 +612,9 @@
       return;
     }
     oConfig.interval += oConfig.adjustmentInterval;
-    print('speed: ' + oConfig.interval);
+    print('speed: ' + oConfig.interval, {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -677,7 +699,9 @@
     }
     kill();
     oConfig.logStartTop += 5;
-    print('start: ' + oConfig.logStartTop);
+    print('start: ' + oConfig.logStartTop, {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -696,7 +720,9 @@
     }
     kill();
     oConfig.logStartTop -= 5;
-    print('start: ' + oConfig.logStartTop);
+    print('start: ' + oConfig.logStartTop, {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -817,7 +843,9 @@
     _listenToChannels();
 
     // there will only be one channel at this point
-    print('listening to ' + oConfig.channels[0]);
+    print('listening to ' + oConfig.channels[0], {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -1051,7 +1079,9 @@
       // toggle requireBackTick
       actionMap[KEYS.B] = function() {
         oConfig.requireBackTick = !!!oConfig.requireBackTick;
-        print('requireBackTick: ' + oConfig.requireBackTick);
+        print('requireBackTick: ' + oConfig.requireBackTick, {
+          showLineNumbers: false
+        });
       };
 
       actionMap[KEYS.D] = dump;

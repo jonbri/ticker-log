@@ -71,7 +71,7 @@ window.ticker_runTests = function() {
     // add one log div
     console.log('`', 'log 0 a');
     assert.strictEqual(howManyLogDivs(), 1, "one log div is present");
-    assert.strictEqual('log 0 a', getText(0), 'correct text');
+    assert.strictEqual('0) log 0 a', getText(0), 'correct text');
 
     // clear log divs
     window.ticker.kill();
@@ -80,14 +80,14 @@ window.ticker_runTests = function() {
     console.log('`', 'log 0 b');
     console.log('`', 'log 1');
     assert.strictEqual(howManyLogDivs(), 2, "two log divs are present");
-    assert.strictEqual('log 0 b', getText(0), 'correct text');
-    assert.strictEqual('log 1', getText(1), 'correct text');
+    assert.strictEqual('1) log 0 b', getText(0), 'correct text');
+    assert.strictEqual('2) log 1', getText(1), 'correct text');
   });
 
   QUnit.test("print api", function(assert) {
     window.ticker.print('lorum ipsum');
     assert.strictEqual(howManyLogDivs(), 1, "print api works");
-    assert.strictEqual('lorum ipsum', getText(0), 'correct text');
+    assert.strictEqual('0) lorum ipsum', getText(0), 'correct text');
   });
 
   QUnit.test("print api with output textarea", function(assert) {
@@ -122,7 +122,7 @@ window.ticker_runTests = function() {
 
     // make sure the textarea shows with the correct content
     assert.strictEqual(getTextarea().length, 1, "output textarea shows");
-    assert.strictEqual(getTextarea().val().indexOf("lorum ipsum"), 0, "output textarea has correct content");
+    assert.strictEqual(getTextarea().val().indexOf("lorum ipsum"), 3, "output textarea has correct content");
 
     // now hide the textarea
     window.ticker.output();
@@ -151,11 +151,11 @@ window.ticker_runTests = function() {
     console.log('`', 'two');
     console.log('`', 'three');
     window.ticker.output();
-    assert.strictEqual(getContents(), 'one,two,three', "contents in original order");
+    assert.strictEqual(getContents(), '0) one,1) two,2) three', "contents in original order");
     window.ticker.flip();
-    assert.strictEqual(getContents(), 'three,two,one', "contents have been flipped");
+    assert.strictEqual(getContents(), '2) three,1) two,0) one', "contents have been flipped");
     window.ticker.flip();
-    assert.strictEqual(getContents(), 'one,two,three', "contents back to original order");
+    assert.strictEqual(getContents(), '0) one,1) two,2) three', "contents back to original order");
   });
 
   QUnit.test("dump", function(assert) {
@@ -359,6 +359,25 @@ window.ticker_runTests = function() {
   QUnit.test("generateConfigString reflect speed and starting position change", function(assert) {
     window.ticker.config({ interval: 280, logStartTop: 105 });
     assert.strictEqual(ticker._generateConfigSerialization(), '{%22interval%22:280,%22logStartTop%22:105}', "speed change");
+  });
+
+  QUnit.test("generateConfigString reflects showLineNumbers", function(assert) {
+    window.ticker.config({ showLineNumbers: false });
+    assert.strictEqual(ticker._generateConfigSerialization(), '{%22showLineNumbers%22:false}', "showLineNumbers is included in config dump");
+    window.ticker.config({ showLineNumbers: true });
+    assert.strictEqual(ticker._generateConfigSerialization(), '{}', "showLineNumbers is not included in config dump");
+  });
+
+  QUnit.test("showLineNumbers config setting", function(assert) {
+    window.ticker.config({ showLineNumbers: true });
+    window.ticker.print('zero');
+    window.ticker.config({ showLineNumbers: false });
+    window.ticker.print('one');
+    window.ticker.config({ showLineNumbers: true });
+    window.ticker.print('two');
+    assert.strictEqual('0) zero', getText(0), 'correct text 0');
+    assert.strictEqual('one', getText(1), 'correct text 1');
+    assert.strictEqual('1) two', getText(2), 'correct text 2');
   });
 
 

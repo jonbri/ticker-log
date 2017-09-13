@@ -101,6 +101,7 @@ For the full list of actions, show the help screen with `` ` ``-`h`.
 A configuration object is maintained, of which most properties (if they differ from their default) can be expressed as a JSON object url parameter.
 
 Property examples:
+* whether to show line numbers (default=true) (`showLineNumbers`)
 * speed logs travel up the screen (`interval`)
 * starting position of logs (`logStartTop`)
 * flush to left or right of screen (`align`)
