@@ -32,8 +32,10 @@
         bOrig__is_starparam_embedded = window.__is_starparam_embedded;
       window.__is_starparam_embedded = true;
 
+      /*eslint-disable */
       /* https://github.com/jonbri/starparam v1.0.1 Thu Dec 22 13:41:34 EST 2016 */
       !function(){function r(r){return null===r||void 0===r}function n(n){var a;if(!r(n))return a=new RegExp("(^[^?&#]+)\\??([^#]*)#?(.*)$").exec(n),r(a)?{params:[]}:{prefix:a[1],params:a[2].split("&").filter(function(r){return""!==r}).map(function(r){return function(r){return{name:r[0],value:r[1]}}(r.split("="))}),hash:""===a[3]?void 0:a[3]}}function a(n){var a="";if(!r(n))return r(n.prefix)===!1&&(a+=n.prefix),r(n.params)===!1&&n.params.forEach(function(r,n){a+=0===n?"?":"&",a+=r.name+"="+r.value}),r(n.hash)===!1&&(a+="#"+n.hash),a}function e(r,a){return n(r).params.filter(function(r){return r.name===a})[0]}function t(n,a){var t;if(!r(n)&&!r(a))return t=e(n,a),r(t)?void 0:t.value}function i(t,i,u){var o;if(!r(t)&&!r(i))return r(u)&&(u=""),o=n(t),r(e(t,i))?o.params.push({name:i,value:u}):o.params=o.params.map(function(r){return r.name===i&&(r.value=u),r}),a(o)}function u(e,t){var i;if(!r(e))return r(t)?e:(i=n(e),i.params=i.params.filter(function(r){return r.name!==t}),a(i))}!function(){var e={parse:function(a){if(0===arguments.length&&(a=window.location.href),!r(a))return n(a)},stringify:function(r){return a(r)},get:function(n,a){var e;return a=a||{},e=a.url,r(e)&&(e=window.location.href),t(e,n)},set:function(n,a,e){var t,u;if(e=e||{},t=e.hasOwnProperty("url")?e.url:window.location.href,!r(t))return u=i(t,n,a)},remove:function(n,a){var e,t;if(a=a||{},e=a.hasOwnProperty("url")?a.url:window.location.href,!r(e))return t=u(e,n)}};window.__is_starparam_embedded===!0?window.__embedded_starparam=e:window.starparam=e}()}();
+      /*eslint-enable */
 
       starparam = window.__embedded_starparam;
       if (bOrig__is_starparam_embedded !== undefined) {
@@ -49,6 +51,7 @@
 
     // default settings
     oDEFAULTS = {
+      showLineNumbers: true,
       interval: 300,
       logStartTop: 100,
       align: 'left',
@@ -61,6 +64,7 @@
     oConfig = {
       silentMode: false,
       pauseMode: false,
+      lineNumber: 0,
       adjustmentInterval: 25,
       lastTextareaAction: undefined,
       sMacro9Code: '// macro 9\r\r',
@@ -96,6 +100,7 @@
 
     // the config settings that are configurable
     aConfigurableKeys = [
+      'showLineNumbers',
       'interval',
       'logStartTop',
       'align',
@@ -318,7 +323,9 @@
    * <tr>
    * <th>overrideSilentMode</th><td>still print, even if silent mode is on
    * <tr>
-   * <th>internal<td>do not track in aBuffer
+   * <th>internal<td>do not track in aBuffer. Implies showLineNumbers=>true
+   * <tr>
+   * <th>showLineNumbers</th><td>no line numbers, overrides global setting
    * </table>
    * <br>
    *
@@ -358,6 +365,9 @@
     }
 
     if (o.internal !== true) {
+      if (o.showLineNumbers !== false && oConfig.showLineNumbers === true) {
+        text = oConfig.lineNumber++ + ") " + text;
+      }
       aBuffer.unshift(text);
     }
     aRenderBuffer.unshift(text);
@@ -378,7 +388,9 @@
       _nonSavedPrint('pauseMode');
       return;
     }
-    print('test: ' + new Date());
+    print('test: ' + new Date(), {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -399,7 +411,9 @@
     for (var i = 0; i < aHelp.length; i++) {
       var text = aHelp[i];
       text = text.replace(/\_/g, '&nbsp;');
-      print(text);
+      print(text, {
+        showLineNumbers: false
+      });
     }
   }
 
@@ -433,9 +447,13 @@
    */
   function pause() {
     if (oConfig.pauseMode) {
-      print('pause off');
+      print('pause off', {
+        showLineNumbers: false
+      });
     } else {
-      print('paused');
+      print('paused', {
+        showLineNumbers: false
+      });
     }
     oConfig.pauseMode = !oConfig.pauseMode;
   }
@@ -551,7 +569,9 @@
   function silent() {
     if (oConfig.silentMode === true) {
       oConfig.silentMode = false;
-      print('silent mode off');
+      print('silent mode off', {
+        showLineNumbers: false
+      });
     } else {
       oConfig.silentMode = true;
     }
@@ -572,7 +592,9 @@
       return;
     }
     oConfig.interval -= (oConfig.adjustmentInterval/2);
-    print('speed: ' + oConfig.interval);
+    print('speed: ' + oConfig.interval, {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -590,7 +612,9 @@
       return;
     }
     oConfig.interval += oConfig.adjustmentInterval;
-    print('speed: ' + oConfig.interval);
+    print('speed: ' + oConfig.interval, {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -675,7 +699,9 @@
     }
     kill();
     oConfig.logStartTop += 5;
-    print('start: ' + oConfig.logStartTop);
+    print('start: ' + oConfig.logStartTop, {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -694,7 +720,9 @@
     }
     kill();
     oConfig.logStartTop -= 5;
-    print('start: ' + oConfig.logStartTop);
+    print('start: ' + oConfig.logStartTop, {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -815,7 +843,9 @@
     _listenToChannels();
 
     // there will only be one channel at this point
-    print('listening to ' + oConfig.channels[0]);
+    print('listening to ' + oConfig.channels[0], {
+      showLineNumbers: false
+    });
   }
 
   /**
@@ -935,7 +965,7 @@
   /**
    * print but don't save to aBuffer
    * uses "print" function's o.internal parameter
-   * @param {string} text text text to put in log dom ref
+   * @param {string} text text to put in log dom ref
    */
   function _nonSavedPrint(text) {
     print(text, {
@@ -1049,7 +1079,9 @@
       // toggle requireBackTick
       actionMap[KEYS.B] = function() {
         oConfig.requireBackTick = !!!oConfig.requireBackTick;
-        print('requireBackTick: ' + oConfig.requireBackTick);
+        print('requireBackTick: ' + oConfig.requireBackTick, {
+          showLineNumbers: false
+        });
       };
 
       actionMap[KEYS.D] = dump;
