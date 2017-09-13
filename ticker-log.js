@@ -965,7 +965,7 @@
   /**
    * print but don't save to aBuffer
    * uses "print" function's o.internal parameter
-   * @param {string} text text text to put in log dom ref
+   * @param {string} text text to put in log dom ref
    */
   function _nonSavedPrint(text) {
     print(text, {
