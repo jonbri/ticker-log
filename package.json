@@ -2,11 +2,11 @@
   "name": "ticker-log",
   "version": "1.2.0",
   "description": "On-screen VanillaJS logging utility.",
-  "main": "ticker-log.js",
+  "main": "index.js",
   "scripts": {
     "start": "npm run serve",
     "serve": "http-server -p 9000",
-    "lint": "eslint ticker-log.js",
+    "lint": "eslint index.js",
     "phantom": "node bin/phantom_qunits_exec.js",
     "test": "npm run lint && npm run phantom",
     "package": "bin/package.sh"
