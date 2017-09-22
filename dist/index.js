@@ -57,7 +57,8 @@
       align: 'left',
       requireBackTick: true,
       announceMacros: false,
-      channels: ['log']
+      channels: ['log'],
+      trailPreviousLog: true
     },
 
     // global (to ticker) config
@@ -104,7 +105,8 @@
       'interval',
       'logStartTop',
       'align',
-      'requireBackTick'
+      'requireBackTick',
+      'trailPreviousLog'
       // channels has special handling
       // defaultBacktickKeys has special handling
     ],
@@ -1133,7 +1135,7 @@
     var oLastNode =
       Array.prototype.slice.call(document.querySelectorAll('.ticker_log'), 0).
         reverse()[0];
-    if (!oLastNode) {
+    if (!oLastNode || oConfig.trailPreviousLog === false) {
       return oConfig.logStartTop;
     } else {
       return parseInt(oLastNode.style.top, 10) + (oLastNode.offsetHeight);
