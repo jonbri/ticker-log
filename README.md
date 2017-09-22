@@ -106,6 +106,7 @@ Property examples:
 * starting position of logs (`logStartTop`)
 * flush to left or right of screen (`align`)
 * `console` channel to listen to (`channel`)
+* don't trail previous log (default=true) (`trailPreviousLog`)
 
 Configuration settings take this format when embedded as a url parameter:
 ```
