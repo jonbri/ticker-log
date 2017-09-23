@@ -299,6 +299,16 @@ window.ticker_runTests = function() {
     assert.strictEqual(howManyLogDivs(), 2, "only warn and error logs show");
   });
 
+  QUnit.test("align", function(assert) {
+    window.ticker.config({ align: "right" });
+    window.ticker.test();
+    assert.strictEqual(jQuery(".ticker_log").css('text-align'), "right");
+    window.ticker.kill();
+    window.ticker.config({ align: "left" });
+    window.ticker.test();
+    assert.strictEqual(jQuery(".ticker_log").css('text-align'), "left");
+  });
+
   QUnit.test("filtering - regex", function(assert) {
     window.ticker.filter(/^hello/);
     console.log('`', 'hello foo');

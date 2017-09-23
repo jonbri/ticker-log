@@ -312,6 +312,8 @@
     if (bChannels) {
       _listenToChannels();
     }
+
+    _postConfigApply();
   }
 
   /**
