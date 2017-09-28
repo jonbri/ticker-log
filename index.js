@@ -321,8 +321,6 @@
     if (bChannels) {
       _listenToChannels();
     }
-
-    _postConfigApply();
   }
 
   /**
@@ -641,7 +639,6 @@
    */
   function moveRight() {
     oConfig.align = 'right';
-    _postConfigApply();
 
     // move existing logs
     var aLogNodes = document.querySelectorAll('.ticker_log');
@@ -664,7 +661,6 @@
    */
   function moveLeft() {
     oConfig.align = 'left';
-    _postConfigApply();
 
     // move existing logs
     var aLogNodes = document.querySelectorAll('.ticker_log');
@@ -1017,26 +1013,6 @@
   }
 
   /**
-   * apply config properties
-   * used after oConfig is updated
-   */
-  function _postConfigApply() {
-    function applyAlign() {
-      if (oConfig.align === 'right') {
-        oConfig.logStyle.right = 0;
-        oConfig.logStyle.left = 'inherit';
-        oConfig.logStyle['text-align'] = 'right';
-      } else {
-        oConfig.logStyle.right = 'inherit';
-        oConfig.logStyle.left = 0;
-        oConfig.logStyle['text-align'] = 'left';
-      }
-    }
-
-    applyAlign();
-  }
-
-  /**
    * parse url parameter and populate oConfig
    */
   function _loadConfigFromUrl() {
@@ -1167,6 +1143,17 @@
       iTop = oConfig.logStartTop;
     }
     div.style.top = iTop + 'px';
+
+    // apply alignment
+    if (oConfig.align === 'left') {
+      div.style.right = 'inherit';
+      div.style.left = 0;
+      div.style['text-align'] = 'left';
+    } else if (oConfig.align === 'right') {
+      div.style.right = 0;
+      div.style.left = 'inherit';
+      div.style['text-align'] = 'right';
+    }
 
     // pause log on click
     // div will be destroyed when it reaches off-screen
@@ -1388,7 +1375,6 @@
     oConfig[sKey] = oDEFAULTS[sKey];
   }
   _loadConfigFromUrl();
-  _postConfigApply();
 
   // manage proxying of console
   _listenToChannels();
