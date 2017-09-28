@@ -108,6 +108,18 @@ Property examples:
 * `console` channel to listen to (`channel`)
 * don't trail previous log (default=true) (`trailPreviousLog`)
 
+Return a copy of the current config settings by invoking the `config` API with no arguments:
+```js
+var alignment = window.ticker.config().align;
+```
+
+Set a configuration property by passing an object into `config`:
+```js
+window.ticker.config({
+    align: 'right'
+});
+```
+
 Configuration settings take this format when embedded as a url parameter:
 ```
 http://localhost/index.html?ticker-log={"interval":275,"channel":"debug"}
@@ -117,6 +129,8 @@ http://localhost/index.html?ticker-log={"interval":275,"channel":"debug"}
 Most on-screen actions can be scripted by using the global `ticker` object:
 ```
 window.ticker.help();          # show help screen
+window.ticker.config();        # return config object clone
+window.ticker.config(o);       # o overlays configuration object
 window.ticker.increaseSpeed(); # increase speed
 window.ticker.decreaseSpeed(); # decrease speed
 window.ticker.moveUp();        # make starting position a little higher

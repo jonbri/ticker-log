@@ -279,12 +279,15 @@
   // api functions
 
   /**
-   * Overlay object over configuration object.<br>
+   * If passed no arguments, return a copy of the current configuration.<br>
+   * Otherwise, overlay object over configuration object.<br>
    * Only an api function...doesn't map to a key.<br>
    * Public+private way of setting configuration properties.<br><br>
    *
    * Example:<br>
    * <pre>
+   * var interval = window.ticker.config().interval;
+   *
    * // change log speed to 400
    * window.ticker.config({
    *   interval: 400
@@ -299,7 +302,13 @@
    * @function
    */
   function config(o) {
-    var bChannels = isArray(o.channels);
+    var bChannels;
+
+    if (o === undefined) {
+      return JSON.parse(JSON.stringify(oConfig));
+    }
+
+    bChannels = isArray(o.channels);
 
     if (bChannels) {
       o.previousChannels = oConfig.channels;
@@ -1428,7 +1437,6 @@
     ticker.flush = _flushBuffer;
 
     // private
-    ticker._oConfig = oConfig;
     ticker._generateConfigSerialization = _generateConfigSerialization;
 
     window.ticker = ticker;

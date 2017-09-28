@@ -58,13 +58,17 @@ window.ticker_runTests = function() {
     assert.strictEqual(howManyLogDivs(), 0, "zero log divs are present");
   });
 
-  QUnit.test("test config", function(assert) {
+  QUnit.test("config", function(assert) {
+    assert.strictEqual(window.ticker.config().align, 'left', 'config api returns configuration when given no args');
+  });
+
+  QUnit.test("config - setting properties", function(assert) {
     window.ticker.config({
       'foo': 'bar',
       'interval': 999
     });
-    assert.strictEqual(window.ticker._oConfig.foo, 'bar', 'test non-official property');
-    assert.strictEqual(window.ticker._oConfig.interval, 999, 'test official property');
+    assert.strictEqual(window.ticker.config().foo, 'bar', 'test non-official property');
+    assert.strictEqual(window.ticker.config().interval, 999, 'test official property');
   });
 
   QUnit.test("does log appear", function(assert) {
@@ -176,7 +180,7 @@ window.ticker_runTests = function() {
 
   QUnit.test("pause", function(assert) {
     window.ticker.pause();
-    assert.strictEqual(window.ticker._oConfig.pauseMode, true, 'test pauseMode property');
+    assert.strictEqual(window.ticker.config().pauseMode, true, 'test pauseMode property');
   });
 
   QUnit.test("moveRight", function(assert) {
@@ -275,16 +279,16 @@ window.ticker_runTests = function() {
   });
 
   QUnit.test("channels", function(assert) {
-    assert.strictEqual('log', window.ticker._oConfig.channels[0], 'default channel is log');
+    assert.strictEqual('log', window.ticker.config().channels[0], 'default channel is log');
     window.ticker.nextChannel();
-    assert.strictEqual('debug', window.ticker._oConfig.channels[0], 'after change channel we are at debug');
+    assert.strictEqual('debug', window.ticker.config().channels[0], 'after change channel we are at debug');
 
     window.ticker.config({
       channels: ['warn']
     });
-    assert.strictEqual('warn', window.ticker._oConfig.channels[0], 'explicitly set channel to warn');
+    assert.strictEqual('warn', window.ticker.config().channels[0], 'explicitly set channel to warn');
     window.ticker.nextChannel();
-    assert.strictEqual('error', window.ticker._oConfig.channels[0], 'after change channel we are at error');
+    assert.strictEqual('error', window.ticker.config().channels[0], 'after change channel we are at error');
   });
 
   QUnit.test("channels - multiple", function(assert) {
