@@ -156,12 +156,15 @@ On-screen, ticker-tape-style logging tool<br><br>
 
 
 <div class="description">
-    Overlay object over configuration object.<br>
+    If passed no arguments, return a copy of the current configuration.<br>
+Otherwise, overlay object over configuration object.<br>
 Only an api function...doesn't map to a key.<br>
 Public+private way of setting configuration properties.<br><br>
 
 Example:<br>
 <pre>
+var interval = window.ticker.config().interval;
+
 // change log speed to 400
 window.ticker.config({
   interval: 400
@@ -342,7 +345,7 @@ Change starting vertical position (logStartTop) for on-screen logs.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line711">line 711</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line720">line 720</a>
     </li></ul></dd>
     
 
@@ -425,7 +428,7 @@ Increase delay interval by adjustmentInterval.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line604">line 604</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line613">line 613</a>
     </li></ul></dd>
     
 
@@ -508,7 +511,7 @@ Show configuration properties in output textarea.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line542">line 542</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line551">line 551</a>
     </li></ul></dd>
     
 
@@ -643,7 +646,7 @@ Only an api function...doesn't map to a key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line913">line 913</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line922">line 922</a>
     </li></ul></dd>
     
 
@@ -726,7 +729,7 @@ flip (reverse) order of textarea
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line524">line 524</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line533">line 533</a>
     </li></ul></dd>
     
 
@@ -809,7 +812,7 @@ Show help text on-screen as logs.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line400">line 400</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line409">line 409</a>
     </li></ul></dd>
     
 
@@ -892,7 +895,7 @@ Change starting vertical position (logStartTop) for on-screen logs.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line690">line 690</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line699">line 699</a>
     </li></ul></dd>
     
 
@@ -975,7 +978,7 @@ Decrease delay interval by half the adjustmentInterval.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line584">line 584</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line593">line 593</a>
     </li></ul></dd>
     
 
@@ -1058,7 +1061,7 @@ Clear render buffer and remove all ticker log dom elements.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line424">line 424</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line433">line 433</a>
     </li></ul></dd>
     
 
@@ -1141,7 +1144,7 @@ Remove textarea dom element.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line855">line 855</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line864">line 864</a>
     </li></ul></dd>
     
 
@@ -1230,7 +1233,7 @@ Listen to all console invocations:
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line942">line 942</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line951">line 951</a>
     </li></ul></dd>
     
 
@@ -1315,7 +1318,7 @@ Show a textarea where macro can be edited.<br>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line756">line 756</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line765">line 765</a>
     </li></ul></dd>
     
 
@@ -1398,7 +1401,7 @@ Change log container position and alignment of log dom elements.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line647">line 647</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line656">line 656</a>
     </li></ul></dd>
     
 
@@ -1481,7 +1484,7 @@ Change log container position and alignment of log dom elements.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line624">line 624</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line633">line 633</a>
     </li></ul></dd>
     
 
@@ -1565,7 +1568,7 @@ Order is determined by aChannels.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line818">line 818</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line827">line 827</a>
     </li></ul></dd>
     
 
@@ -1698,7 +1701,7 @@ Show log text in the "output textarea".
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line465">line 465</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line474">line 474</a>
     </li></ul></dd>
     
 
@@ -1781,7 +1784,7 @@ Api function to show all saved log messages.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line511">line 511</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line520">line 520</a>
     </li></ul></dd>
     
 
@@ -1864,7 +1867,7 @@ Toggle pauseMode config prop boolean.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line443">line 443</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line452">line 452</a>
     </li></ul></dd>
     
 
@@ -2039,7 +2042,7 @@ window.ticker.print('lorum ipsum');
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line319">line 319</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line328">line 328</a>
     </li></ul></dd>
     
 
@@ -2195,7 +2198,7 @@ Only an api function...doesn't map to a key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line732">line 732</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line741">line 741</a>
     </li></ul></dd>
     
 
@@ -2279,7 +2282,7 @@ Only an api function...doesn't map to a key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line898">line 898</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line907">line 907</a>
     </li></ul></dd>
     
 
@@ -2365,7 +2368,7 @@ Only an api function...doesn't map to a key.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line871">line 871</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line880">line 880</a>
     </li></ul></dd>
     
 
@@ -2498,7 +2501,7 @@ Execute macro.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line795">line 795</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line804">line 804</a>
     </li></ul></dd>
     
 
@@ -2583,7 +2586,7 @@ Generate url-friendly, json string to use for "ticker" param.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line670">line 670</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line679">line 679</a>
     </li></ul></dd>
     
 
@@ -2666,7 +2669,7 @@ Toggle silentMode config prop boolean.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line564">line 564</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line573">line 573</a>
     </li></ul></dd>
     
 
@@ -2749,7 +2752,7 @@ Print out test log (plus date).
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line381">line 381</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line390">line 390</a>
     </li></ul></dd>
     
 
@@ -2797,7 +2800,7 @@ Print out test log (plus date).
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Fri Sep 22 2017 21:44:22 GMT-0400 (EDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Sep 27 2017 21:27:29 GMT-0400 (EDT)
 </footer>
 
 <script> prettyPrint(); </script>
