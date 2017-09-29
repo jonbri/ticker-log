@@ -1130,30 +1130,77 @@
   }
 
   /**
-   * create and append to body a log dom element
+   * create and append to body a text log dom element<br>
+   * Handle:
+   * <ul>
+   * <li>positioning
+   * <li>apply config (oConfig.logStyle)
+   * <li>apply "align" configuration
+   * <li>log click handler
    * @param {string} sText the log text
    */
   function _renderText(sText) {
-    var div = document.createElement('div');
-    assignStyle(div, oConfig.logStyle);
-    div.className += ' ticker_log';
-    div.innerHTML = sText;
-    var iTop = _calculateTop();
-    if (iTop < (oConfig.logStartTop / 2)) {
-      iTop = oConfig.logStartTop;
-    }
-    div.style.top = iTop + 'px';
+    var div,
+      iTop = _calculateTop();
 
-    // apply alignment
-    if (oConfig.align === 'left') {
+    // convert percentage to number
+    function _percentageToNumber(s) {
+      var aMatch = s.match(/^\d+/) || [];
+      return parseInt(aMatch[0], 10);
+    }
+
+    // make div flush left (text-align)
+    function applyLeft() {
       div.style.right = 'inherit';
       div.style.left = 0;
       div.style['text-align'] = 'left';
-    } else if (oConfig.align === 'right') {
+    }
+
+    // make div flush right (text-align)
+    function applyRight() {
       div.style.right = 0;
       div.style.left = 'inherit';
       div.style['text-align'] = 'right';
     }
+
+    // set the div's left position value using a percentage (oConfig.align)
+    // take into account the width of the div node
+    // if text goes off-screen, make flush to that side
+    function applyPercentage() {
+      var iLeft,
+        iPercentage = _percentageToNumber(oConfig.align);
+
+      // first, determine the exact percentage position
+      // relative to the total screen width
+      iLeft = window.innerWidth * (iPercentage / 100);
+
+      // adjust for text node width
+      iLeft = iLeft - (div.offsetWidth / 2);
+      iLeft = Math.floor(iLeft);
+
+      // try to keep on-screen
+      if (iLeft <= 0) {
+        applyLeft();
+      } else if ((iLeft + div.offsetWidth) >= window.innerWidth) {
+        applyRight();
+      } else {
+        div.style.left = iLeft + 'px';
+      }
+    }
+
+    // create text node
+    // assign basic styles
+    // apply style config
+    div = document.createElement('div');
+    div.innerHTML = sText;
+    div.className += ' ticker_log';
+    assignStyle(div, oConfig.logStyle);
+
+    // vertically-position the text node
+    if (iTop < (oConfig.logStartTop / 2)) {
+      iTop = oConfig.logStartTop;
+    }
+    div.style.top = iTop + 'px';
 
     // pause log on click
     // div will be destroyed when it reaches off-screen
@@ -1162,7 +1209,24 @@
       pause();
     });
 
+    // render invisible because we may need to
+    // do a sizing measurement and adjustment
+    div.style.opacity = '0';
+
     document.body.appendChild(div);
+
+    // apply alignment
+    if (oConfig.align === 'left') {
+      applyLeft();
+    } else if (oConfig.align === 'right') {
+      applyRight();
+    } else if (/^\d+%?$/.test(oConfig.align) === true) {
+      // the div node needs to be in the dom by this point (appendChild)
+      applyPercentage();
+    }
+
+    // log appears
+    div.style.opacity = oConfig.logStyle.opacity;
   }
 
   /**

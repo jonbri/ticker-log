@@ -313,6 +313,39 @@ window.ticker_runTests = function() {
     assert.strictEqual(jQuery(".ticker_log").css('text-align'), "left");
   });
 
+  QUnit.test("align with percentages - increasing", function(assert) {
+    window.ticker.config({ align: "10%" });
+    window.ticker.print('foo');
+    var iLeft0 = jQuery('.ticker_log').eq(0).offset().left;
+    window.ticker.kill();
+
+    window.ticker.config({ align: "20%" });
+    window.ticker.print('foo');
+    var iLeft1 = jQuery('.ticker_log').eq(0).offset().left;
+
+    assert.ok(iLeft0 < iLeft1, "percentage values are applied");
+  });
+
+  QUnit.test("align with percentages - decreasing", function(assert) {
+    window.ticker.config({ align: "30%" });
+    window.ticker.print('foo');
+    var iLeft0 = jQuery('.ticker_log').eq(0).offset().left;
+    window.ticker.kill();
+
+    window.ticker.config({ align: "20%" });
+    window.ticker.print('foo');
+    var iLeft1 = jQuery('.ticker_log').eq(0).offset().left;
+
+    assert.ok(iLeft0 > iLeft1, "percentage values are applied");
+  });
+
+  QUnit.test("align snaps to edge", function(assert) {
+    window.ticker.config({ align: "10%" });
+    window.ticker.print('this is a long message that needs to snap to edge');
+    var iLeft = jQuery('.ticker_log').eq(0).offset().left;
+    assert.ok(iLeft >= 0, "left-edge of log is not off-screen");
+  });
+
   QUnit.test("filtering - regex", function(assert) {
     window.ticker.filter(/^hello/);
     console.log('`', 'hello foo');
