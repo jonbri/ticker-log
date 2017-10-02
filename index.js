@@ -1114,6 +1114,13 @@
     document.body.addEventListener('keyup', fnKeyUp);
   }
 
+    // convert percentage to number
+    function _percentageToNumber(s) {
+      var aMatch = s.match(/^\d+/) || [];
+      return parseInt(aMatch[0], 10);
+    }
+
+
   /**
    * determine "top" position of last log dom element
    * @returns {int} top position value of dom ref
@@ -1123,9 +1130,15 @@
       Array.prototype.slice.call(document.querySelectorAll('.ticker_log'), 0).
         reverse()[0];
     if (!oLastNode || oConfig.trailPreviousLog === false) {
-      return oConfig.logStartTop;
+      if (/^\d+%$/.test(oConfig.logStartTop) === true) {
+          // percentage
+          var iPercentageValue = _percentageToNumber(oConfig.logStartTop);
+          return window.innerHeight * (iPercentageValue / 100);
+      } else {
+          return oConfig.logStartTop;
+      }
     } else {
-      return parseInt(oLastNode.style.top, 10) + (oLastNode.offsetHeight);
+      return parseInt(oLastNode.style.top, 10) + oLastNode.offsetHeight;
     }
   }
 
@@ -1142,12 +1155,6 @@
   function _renderText(sText) {
     var div,
       iTop = _calculateTop();
-
-    // convert percentage to number
-    function _percentageToNumber(s) {
-      var aMatch = s.match(/^\d+/) || [];
-      return parseInt(aMatch[0], 10);
-    }
 
     // make div flush left (text-align)
     function applyLeft() {

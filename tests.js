@@ -346,6 +346,32 @@ window.ticker_runTests = function() {
     assert.ok(iLeft >= 0, "left-edge of log is not off-screen");
   });
 
+  QUnit.test("logStartTop with percentages - increasing", function(assert) {
+    window.ticker.config({ logStartTop: "25%" });
+    window.ticker.print('foo');
+    var iTop0 = jQuery('.ticker_log').eq(0).offset().top;
+    window.ticker.kill();
+
+    window.ticker.config({ logStartTop: "50%" });
+    window.ticker.print('foo');
+    var iTop1 = jQuery('.ticker_log').eq(0).offset().top;
+
+    assert.ok(iTop0 < iTop1, "percentage values are applied");
+  });
+
+  QUnit.test("logStartTop with percentages - decreasing", function(assert) {
+    window.ticker.config({ logStartTop: "50%" });
+    window.ticker.print('foo');
+    var iTop0 = jQuery('.ticker_log').eq(0).offset().top;
+    window.ticker.kill();
+
+    window.ticker.config({ logStartTop: "25%" });
+    window.ticker.print('foo');
+    var iTop1 = jQuery('.ticker_log').eq(0).offset().top;
+
+    assert.ok(iTop0 > iTop1, "percentage values are applied");
+  });
+
   QUnit.test("filtering - regex", function(assert) {
     window.ticker.filter(/^hello/);
     console.log('`', 'hello foo');
@@ -458,4 +484,3 @@ jQuery('#autorun').click(function() {
   }
   window.location.replace(url);
 });
-
