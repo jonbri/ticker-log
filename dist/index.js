@@ -972,6 +972,18 @@
   // domain/private functions
 
   /**
+   * convert percentage to number
+   * @param {string} s percent-formatted string (e.g. '25%')
+   * @return {int} percentage value
+   */
+  function _percentageToNumber(s) {
+    // extract the number from the string
+    var aMatch = s.match(/^\d+/) || [];
+    // return number type
+    return parseInt(aMatch[0], 10);
+  }
+
+  /**
    * print but don't save to aBuffer
    * uses "print" function's o.internal parameter
    * @param {string} text text to put in log dom ref
@@ -1123,9 +1135,14 @@
       Array.prototype.slice.call(document.querySelectorAll('.ticker_log'), 0).
         reverse()[0];
     if (!oLastNode || oConfig.trailPreviousLog === false) {
-      return oConfig.logStartTop;
+      if (/^\d+%$/.test(oConfig.logStartTop) === true) {
+          // percentage
+          return window.innerHeight * (_percentageToNumber(oConfig.logStartTop) / 100);
+      } else {
+          return oConfig.logStartTop;
+      }
     } else {
-      return parseInt(oLastNode.style.top, 10) + (oLastNode.offsetHeight);
+      return parseInt(oLastNode.style.top, 10) + oLastNode.offsetHeight;
     }
   }
 
@@ -1142,12 +1159,6 @@
   function _renderText(sText) {
     var div,
       iTop = _calculateTop();
-
-    // convert percentage to number
-    function _percentageToNumber(s) {
-      var aMatch = s.match(/^\d+/) || [];
-      return parseInt(aMatch[0], 10);
-    }
 
     // make div flush left (text-align)
     function applyLeft() {
