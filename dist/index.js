@@ -449,7 +449,8 @@
 
   /**
    * "p" api function.<br>
-   * Toggle pauseMode config prop boolean.
+   * Toggle pauseMode config prop boolean.<br>
+   * Show "pause" log message if no logs are currently showing.
    *
    * @exports ticker-log
    * @name pause
@@ -457,11 +458,8 @@
    * @function
    */
   function pause() {
-    if (oConfig.pauseMode) {
-      print('pause off', {
-        showLineNumbers: false
-      });
-    } else {
+    if (oConfig.pauseMode === false &&
+        document.querySelectorAll('.ticker_log').length === 0) {
       print('paused', {
         showLineNumbers: false
       });
