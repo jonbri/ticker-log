@@ -183,6 +183,16 @@ window.ticker_runTests = function() {
     assert.strictEqual(window.ticker.config().pauseMode, true, 'test pauseMode property');
   });
 
+  QUnit.test("pause - message should only show if there are no logs on-screen", function(assert) {
+    window.ticker.pause();
+    assert.strictEqual(howManyLogDivs(), 1, "pause message shows");
+    window.ticker.kill();
+
+    window.ticker.print('foo');
+    window.ticker.pause();
+    assert.strictEqual(howManyLogDivs(), 1, "pause message does not show");
+  });
+
   QUnit.test("moveRight", function(assert) {
     function isLeft() {
       assert.strictEqual(jQuery('.ticker_log').offset().left, 0, "logs are to the left of the screen");
