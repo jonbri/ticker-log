@@ -643,7 +643,6 @@
     pseudoForEach(aLogNodes, function(i, oLogNode) {
       oLogNode.style.right = 0;
       oLogNode.style.left = 'inherit';
-      oLogNode.style['text-align'] = 'right';
     });
     test();
   }
@@ -665,7 +664,6 @@
     pseudoForEach(aLogNodes, function(i, oLogNode) {
       oLogNode.style.left = 0;
       oLogNode.style.right = 'inherit';
-      oLogNode.style['text-align'] = 'left';
     });
     test();
   }
@@ -1155,87 +1153,90 @@
    * @param {string} sText the log text
    */
   function _renderText(sText) {
-    var div,
-      iTop = _calculateTop();
+    var div;
 
-    // make div flush left (text-align)
-    function applyLeft() {
-      div.style.right = 'inherit';
-      div.style.left = 0;
-      div.style['text-align'] = 'left';
-    }
+    // uses sText in closure
+    function render(sAlignment) {
+      var iTop = _calculateTop();
 
-    // make div flush right (text-align)
-    function applyRight() {
-      div.style.right = 0;
-      div.style.left = 'inherit';
-      div.style['text-align'] = 'right';
-    }
+      // set the div's left position value using a percentage (oConfig.align)
+      // take into account the width of the div node
+      // if text goes off-screen, make flush to that side
+      function applyPercentage() {
+        var iLeft;
 
-    // set the div's left position value using a percentage (oConfig.align)
-    // take into account the width of the div node
-    // if text goes off-screen, make flush to that side
-    function applyPercentage() {
-      var iLeft,
-        iPercentage = _percentageToNumber(oConfig.align);
+        // first, determine the exact percentage position
+        // relative to the total screen width
+        iLeft = window.innerWidth * (_percentageToNumber(sAlignment) / 100);
 
-      // first, determine the exact percentage position
-      // relative to the total screen width
-      iLeft = window.innerWidth * (iPercentage / 100);
+        // adjust for text node width
+        iLeft = iLeft - (div.offsetWidth / 2);
+        iLeft = Math.floor(iLeft);
 
-      // adjust for text node width
-      iLeft = iLeft - (div.offsetWidth / 2);
-      iLeft = Math.floor(iLeft);
-
-      // try to keep on-screen
-      if (iLeft <= 0) {
-        applyLeft();
-      } else if ((iLeft + div.offsetWidth) >= window.innerWidth) {
-        applyRight();
-      } else {
-        div.style.left = iLeft + 'px';
+        // try to keep on-screen
+        if (iLeft <= 0) {
+          // make div flush left
+          div.style.right = 'inherit';
+          div.style.left = 0;
+        } else if ((iLeft + div.offsetWidth) >= window.innerWidth) {
+          // make div flush right
+          div.style.right = 0;
+          div.style.left = 'inherit';
+        } else {
+          div.style.left = iLeft + 'px';
+        }
       }
+
+      // create text node
+      // assign basic styles
+      // apply style config
+      div = document.createElement('div');
+      div.innerHTML = sText;
+      div.className += ' ticker_log';
+      assignStyle(div, oConfig.logStyle);
+
+      // vertically-position the text node
+      if (iTop < (oConfig.logStartTop / 2)) {
+        iTop = oConfig.logStartTop;
+      }
+      div.style.top = iTop + 'px';
+
+      // pause log on click
+      // div will be destroyed when it reaches off-screen
+      // which will release the event listener
+      div.addEventListener('click', function() {
+        pause();
+      });
+
+      // render invisible because we may need to
+      // do a sizing measurement and adjustment
+      div.style.opacity = '0';
+
+      document.body.appendChild(div);
+
+      if (/^\d+%?$/.test(sAlignment) === true) {
+        applyPercentage();
+      }
+
+      // log appears
+      div.style.opacity = oConfig.logStyle.opacity;
     }
 
-    // create text node
-    // assign basic styles
-    // apply style config
-    div = document.createElement('div');
-    div.innerHTML = sText;
-    div.className += ' ticker_log';
-    assignStyle(div, oConfig.logStyle);
+    // _renderText execution starts here
 
-    // vertically-position the text node
-    if (iTop < (oConfig.logStartTop / 2)) {
-      iTop = oConfig.logStartTop;
-    }
-    div.style.top = iTop + 'px';
-
-    // pause log on click
-    // div will be destroyed when it reaches off-screen
-    // which will release the event listener
-    div.addEventListener('click', function() {
-      pause();
-    });
-
-    // render invisible because we may need to
-    // do a sizing measurement and adjustment
-    div.style.opacity = '0';
-
-    document.body.appendChild(div);
-
-    // apply alignment
+    // semantic alignment
     if (oConfig.align === 'left') {
-      applyLeft();
+      render('0%');
+      return;
     } else if (oConfig.align === 'right') {
-      applyRight();
-    } else if (/^\d+%?$/.test(oConfig.align) === true) {
-      // the div node needs to be in the dom by this point (appendChild)
-      applyPercentage();
+      render('100%');
+      return;
+    } else if (oConfig.align === 'center') {
+      render('50%');
+      return;
     }
 
-    // log appears
-    div.style.opacity = oConfig.logStyle.opacity;
+    render(oConfig.align);
   }
 
   /**

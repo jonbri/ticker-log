@@ -314,13 +314,21 @@ window.ticker_runTests = function() {
   });
 
   QUnit.test("align", function(assert) {
-    window.ticker.config({ align: "right" });
-    window.ticker.test();
-    assert.strictEqual(jQuery(".ticker_log").css('text-align'), "right");
-    window.ticker.kill();
     window.ticker.config({ align: "left" });
-    window.ticker.test();
-    assert.strictEqual(jQuery(".ticker_log").css('text-align'), "left");
+    window.ticker.print('foo');
+    assert.strictEqual(jQuery(".ticker_log").offset().left, 0);
+    window.ticker.kill();
+
+    window.ticker.config({ align: "right" });
+    window.ticker.print('foo');
+    var iAlignRightPosLeft = jQuery(".ticker_log").offset().left;
+    window.ticker.kill();
+
+    window.ticker.config({ align: "center" });
+    window.ticker.print('foo');
+    var iAlignCenterPosLeft = jQuery(".ticker_log").offset().left;
+
+    assert.ok(iAlignRightPosLeft > iAlignCenterPosLeft, 'right align pos left > center align pos left');
   });
 
   QUnit.test("align with percentages - increasing", function(assert) {
