@@ -18,10 +18,10 @@
   "devDependencies": {
     "eslint": "^2.9.0",
     "http-server": "^0.9.0",
-    "jquery": "^2.2.3",
+    "jquery": "^3.3.1",
     "jsdoc": "^3.4.0",
     "phantomjs": "^2.1.7",
-    "qunitjs": "^2.0.0-rc1",
+    "qunitjs": "^2.4.1",
     "uglify-js": "^2.6.2"
   },
   "author": "Jonathan Brink",
