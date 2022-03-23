@@ -99,6 +99,18 @@ window.ticker.registerMacro(3, function() {
   }
 });
 
+
+// view the current active element
+var printActiveElement = false;
+setInterval(function() {
+  if (!printActiveElement) return;
+  console.log('`', 'activeElement: ' + document.activeElement);
+}, 1500);
+
+window.ticker.registerMacro(4, function() {
+  printActiveElement = !printActiveElement;
+});
+
 // also allow 'z' key to be used as a "backtick" key
 window.ticker.config({
     defaultBacktickKeys: [192, 90] // ` and Z
